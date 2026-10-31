@@ -1,5 +1,6 @@
 from alembic import context
 
+from launchcase.infrastructure import models  # noqa: F401
 from launchcase.infrastructure.config import Settings
 from launchcase.infrastructure.db import Base, database
 
