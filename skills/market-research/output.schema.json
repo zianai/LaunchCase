@@ -1,0 +1,95 @@
+{
+  "$defs": {
+    "Theme": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "supporting_evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Supporting Evidence Refs",
+          "type": "array"
+        },
+        "contradicting_evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Contradicting Evidence Refs",
+          "type": "array"
+        },
+        "interpretation": {
+          "title": "Interpretation",
+          "type": "string"
+        },
+        "confidence_class": {
+          "enum": [
+            "limited",
+            "conflicted"
+          ],
+          "title": "Confidence Class",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "supporting_evidence_refs",
+        "contradicting_evidence_refs",
+        "interpretation",
+        "confidence_class"
+      ],
+      "title": "Theme",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "themes": {
+      "items": {
+        "$ref": "#/$defs/Theme"
+      },
+      "title": "Themes",
+      "type": "array"
+    },
+    "sample_limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Sample Limitations",
+      "type": "array"
+    },
+    "stop_reason": {
+      "enum": [
+        "completed_offline",
+        "insufficient_evidence"
+      ],
+      "title": "Stop Reason",
+      "type": "string"
+    },
+    "category_prevalence": {
+      "default": null,
+      "title": "Category Prevalence",
+      "type": "null"
+    }
+  },
+  "required": [
+    "themes",
+    "sample_limitations",
+    "stop_reason"
+  ],
+  "title": "ResearchOutput",
+  "type": "object"
+}

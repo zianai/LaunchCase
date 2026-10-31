@@ -1,0 +1,21 @@
+F841 Local variable `raw` is assigned to but never used
+  --> src/launchcase/agents/runtime.py:62:9
+   |
+60 |     groups = {}
+61 |     for item in evidence:
+62 |         raw = item["data"]["raw"]
+   |         ^^^
+63 |         if item["data"]["source_type"] != "review":
+64 |             continue
+   |
+help: Remove assignment to unused variable `raw`
+   |
+61 |     for item in evidence:
+   -         raw = item["data"]["raw"]
+62 +         item["data"]["raw"]
+63 |         if item["data"]["source_type"] != "review":
+   |
+note: This is an unsafe fix and may change runtime behavior
+
+Found 1 error.
+1 unsafe fix available with `--fix --unsafe-fixes`.

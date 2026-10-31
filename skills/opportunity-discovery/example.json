@@ -1,0 +1,11 @@
+{
+  "is_synthetic": true,
+  "evidence": [
+    {
+      "id": "fixture-row-2",
+      "quote": "The screws were hard to align during assembly.",
+      "source_locator": "synthetic-voc.csv#row=2"
+    }
+  ],
+  "expected_limit": "One selected observation; no prevalence or product verification."
+}

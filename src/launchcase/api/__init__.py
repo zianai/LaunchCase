@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, Header, Query, Request
+from fastapi import BackgroundTasks, Depends, FastAPI, Header, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 
@@ -7,6 +7,8 @@ from launchcase.domain.common import DomainError
 from launchcase.domain.contracts import BriefRevision, ProductBrief, RightsChange, SourceImport
 from launchcase.infrastructure.config import Settings
 from launchcase.infrastructure.models import Artifact, AuditEvent, BriefVersion, Evidence, SourceDocument
+from launchcase.infrastructure.tasks import TaskManager
+from launchcase.workflow.graph import enqueue_run, execute_task
 
 
 def create_app(settings=None):
@@ -81,6 +83,18 @@ def create_app(settings=None):
     for suffix, model in [("sources", SourceDocument), ("evidence", Evidence), ("activity", AuditEvent), ("brief-versions", BriefVersion)]:
         app.add_api_route(f"/api/v1/product-cases/{{case_id}}/{suffix}", listing(model), methods=["GET"])
     app.add_api_route("/api/v1/product-cases/{case_id}/market-snapshots", listing(Artifact, "MarketSnapshot"), methods=["GET"])
+    for suffix, kind in [("insights", "Insight"), ("opportunities", "Opportunity"), ("research", "Research")]:
+        app.add_api_route(f"/api/v1/product-cases/{{case_id}}/{suffix}", listing(Artifact, kind), methods=["GET"])
+
+    @app.post("/api/v1/product-cases/{case_id}/runs/{kind}", status_code=202)
+    def run(case_id: str, kind: str, background: BackgroundTasks, actor=Depends(identity), request_key=Depends(key)):
+        task = enqueue_run(service, actor, case_id, kind, request_key)
+        background.add_task(execute_task, service, actor, task["id"])
+        return task
+
+    @app.get("/api/v1/tasks/{task_id}")
+    def task(task_id: str, actor=Depends(identity)):
+        return TaskManager(service).get(actor, task_id)
 
     return app
 

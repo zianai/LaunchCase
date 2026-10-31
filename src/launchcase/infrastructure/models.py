@@ -1,4 +1,4 @@
-from sqlalchemy import JSON, Boolean, ForeignKey, Index, Integer, String, Text, UniqueConstraint
+from sqlalchemy import JSON, Boolean, Float, ForeignKey, Index, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from launchcase.domain.common import now, uid
@@ -97,3 +97,30 @@ class Receipt(Base):
     result: Mapped[dict] = mapped_column(JSON)
     created_at: Mapped[str] = mapped_column(String(40), default=now)
     __table_args__ = (UniqueConstraint("tenant_id", "key"), Index("ix_receipt_tenant", "tenant_id"))
+
+
+class Task(Scoped, Base):
+    __tablename__ = "tasks"
+    __table_args__ = (UniqueConstraint("tenant_id", "case_id", "kind", "input_hash"),)
+    kind: Mapped[str] = mapped_column(String(40))
+    input_hash: Mapped[str] = mapped_column(String(64))
+    input_data: Mapped[dict] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(30), default="queued", index=True)
+    lease_owner: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    lease_until: Mapped[float] = mapped_column(Float, default=0)
+    fence: Mapped[int] = mapped_column(Integer, default=0)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    result: Mapped[dict] = mapped_column(JSON, default=dict)
+    error_code: Mapped[str | None] = mapped_column(String(80), nullable=True)
+
+
+class Attempt(Base):
+    __tablename__ = "attempts"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=uid)
+    tenant_id: Mapped[str] = mapped_column(String(100), index=True)
+    task_id: Mapped[str] = mapped_column(ForeignKey("tasks.id"), index=True)
+    fence: Mapped[int] = mapped_column(Integer)
+    owner: Mapped[str] = mapped_column(String(100))
+    started_at: Mapped[str] = mapped_column(String(40), default=now)
+    status: Mapped[str] = mapped_column(String(30), default="running")
+    __table_args__ = (UniqueConstraint("task_id", "fence"),)

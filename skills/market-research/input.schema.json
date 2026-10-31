@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": [
+    "evidence"
+  ],
+  "properties": {
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "quote",
+          "source_locator"
+        ]
+      }
+    }
+  }
+}
