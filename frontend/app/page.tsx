@@ -1,5 +1,7 @@
 "use client";
 import HandoffWorkspace from "./handoff";
+import SkuWorkspace from "./sku";
+import Provenance from "./provenance";
 import {
   activityLabel,
   blockerLabel,
@@ -49,6 +51,7 @@ const kinds = [
   "truth",
   "rules",
   "handoff-preparations",
+  "sku-images",
 ];
 const costNames: Record<string, string> = {
   net_sales_revenue_ex_tax: "不含税销售收入",
@@ -461,8 +464,12 @@ export default function Workbench() {
       const info = asset ? await api(`visual-assets/${asset.id}`) : task;
       setReview({
         title: asset
-          ? "审核概念图片"
-          : "审核概念图片计划（模拟制作，不产生费用）",
+          ? task.request?.intent === "listing"
+            ? "审核严格保真商品素材（仅内部）"
+            : "审核概念图片"
+          : task.request?.intent === "listing"
+            ? "审核严格保真计划（本地确定性合成）"
+            : "审核概念图片计划（模拟制作，不产生费用）",
         endpoint: asset
           ? `visual-assets/${asset.id}/review`
           : `visual-tasks/${task.id}/approve-plan`,
@@ -623,7 +630,7 @@ export default function Workbench() {
             ["cases", "◫", "产品项目"],
             ["inbox", "◷", "审核收件箱"],
             ["sources", "≡", "来源与知识"],
-            ["assets", "▧", "概念图片"],
+            ["assets", "▧", "图片与素材"],
             ["settings", "⚙", "能力与设置"],
           ].map(([id, icon, label]) => (
             <button
@@ -633,7 +640,7 @@ export default function Workbench() {
                 setScreen(id);
                 if (id === "cases" || id === "inbox") setCurrent(null);
                 if (id === "sources") setTab("证据来源");
-                if (id === "assets") setTab("概念图片");
+                if (id === "assets") setTab("图片与素材");
               }}
             >
               <span aria-hidden="true">{icon}</span>
@@ -710,6 +717,8 @@ export default function Workbench() {
                 <dd>{capabilities?.paid_models ? "启用" : "关闭"}</dd>
                 <dt>对外发布</dt>
                 <dd>不可用</dd>
+                <dt>运行拓扑</dt>
+                <dd>单主机 · 未验证多主机共享</dd>
                 <dt>样品验证与内部交接</dt>
                 <dd>真实样品、事实、规则和授权需要独立确认</dd>
                 <dt>界面设计</dt>
@@ -988,6 +997,7 @@ export default function Workbench() {
                         <option value="spec">产品资料</option>
                         <option value="sample">真实样品记录</option>
                         <option value="rule">规则来源</option>
+                        <option value="rights">素材权利证明</option>
                       </select>
                     </label>
                     <label>
@@ -1125,7 +1135,12 @@ export default function Workbench() {
                           .at(-1)
                           ?.data.output.sample_limitations.join(" ")}
                       </p>
-                      <small>由本地模拟模型生成，不代表真实模型效果</small>
+                      <small>
+                        {items("research").at(-1)?.data.status ===
+                        "tested_live_scoped"
+                          ? "授权范围内的模型输出；事实与业务仍待人工评审"
+                          : "由本地模拟模型生成，不代表真实模型效果"}
+                      </small>
                     </div>
                   )}
                   <div className="insights">
@@ -1137,6 +1152,7 @@ export default function Workbench() {
                           </span>
                           <h3>{i.data.name}</h3>
                           <p>{i.data.interpretation}</p>
+                          <Provenance id={i.id} api={api} />
                         </div>
                         <div>
                           <strong>
@@ -1456,8 +1472,17 @@ export default function Workbench() {
                   )}
                 </>
               )}
-              {tab === "概念图片" && (
+              {tab === "图片与素材" && (
                 <>
+                  <SkuWorkspace
+                    key={current.id}
+                    current={current}
+                    data={data}
+                    busy={busy}
+                    api={api}
+                    act={act}
+                    reload={() => load(current.id)}
+                  />
                   <div className="section-heading">
                     <div>
                       <p className="eyebrow">概念图片 · 仅内部使用</p>
@@ -1553,10 +1578,20 @@ export default function Workbench() {
                           <div key={asset.id} className="asset">
                             <img
                               src={`/api/visual-assets/${asset.id}/content`}
-                              alt="模拟的内部概念图片，不代表真实产品"
+                              alt={
+                                asset.identity === "real_product"
+                                  ? "基于授权原图的严格保真商品素材，仅内部使用"
+                                  : "模拟或概念图片，不代表真实产品"
+                              }
                             />
                             <div>
-                              <Badge>模拟图 · 概念</Badge>
+                              <Badge>
+                                {asset.identity === "real_product"
+                                  ? "原图确定性合成 · 仅内部"
+                                  : asset.identity === "mock"
+                                    ? "模拟图 · 概念"
+                                    : "生成概念图 · 非产品事实"}
+                              </Badge>
                               <p>
                                 自动检查：
                                 {qaResult(asset.qa).label}

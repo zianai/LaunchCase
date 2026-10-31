@@ -85,6 +85,10 @@ class LaunchPackService:
                 {"id": d["id"], "hash": d["subject_hash"], "status": d["status"]} for d in decisions
             ],
             "assets": approved,
+            "rule_versions": [
+                {"id": rule.id, "sha256": rule.sha256}
+                for rule in product.artifacts(s, actor, case.id, "RuleSnapshot")
+            ],
         }
 
     def build(self, actor, case_id, key):
@@ -241,8 +245,15 @@ class LaunchPackService:
                 raise DomainError("RULE_BLOCKED", "Rule belongs to another Case/type", 409)
             src = self.service.get_row(s, SourceDocument, actor, rule.data["source_id"])
             self.service.objects.get(src.sha256)
+            latest = next(
+                candidate
+                for candidate in ProductService(self.service).artifacts(s, actor, case_id, "RuleSnapshot")
+                if candidate.data["source_id"] == rule.data["source_id"]
+                or candidate.data["authority_url"] == rule.data["authority_url"]
+            )
             valid = (
-                src.case_id == case_id
+                latest.id == rule.id
+                and src.case_id == case_id
                 and src.source_type == "rule"
                 and not src.is_synthetic
                 and not rule.data["is_synthetic"]

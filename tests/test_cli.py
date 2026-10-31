@@ -57,3 +57,25 @@ def test_cli_visual_uses_service_gate_and_persistent_receipts(
     )
     invoke("visual", "review-asset", asset["id"], "--file", str(request))
     assert invoke("visual", "status", task["id"])["state"] == "approved"
+
+
+def test_cli_rotation_writes_private_file_and_never_prints_token(setup, monkeypatch, capsys, tmp_path):
+    svc, actor, _, _ = setup
+    owner_token, _ = svc.provision(actor.tenant_id, "TEST ONLY rotation owner", "owner", True)
+    old_token, target = svc.provision(actor.tenant_id, "TEST ONLY target", "viewer", True)
+    monkeypatch.setenv("LAUNCHCASE_TOKEN", owner_token)
+    monkeypatch.setenv("LAUNCHCASE_DATA_DIR", str(svc.settings.data_dir))
+    monkeypatch.setenv("LAUNCHCASE_DATABASE_URL", svc.settings.database_url)
+    destination = tmp_path / "private-token"
+    monkeypatch.setattr(
+        sys, "argv", ["launchcase", "rotate-token", "--identity", target.id, "--out", str(destination)]
+    )
+    main()
+    replacement = destination.read_text()
+    printed = capsys.readouterr().out
+    assert replacement not in printed and old_token not in printed
+    assert destination.stat().st_mode & 0o777 == 0o600
+    assert svc.authenticate(replacement).id == target.id
+    with pytest.raises(SystemExit):
+        main()
+    assert svc.authenticate(replacement).id == target.id

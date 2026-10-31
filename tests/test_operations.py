@@ -18,7 +18,7 @@ FIXTURE = Path(__file__).resolve().parents[1] / "fixtures/scenarios/pet-furnitur
 def test_full_demo_strict_validator_and_false_label(tmp_path):
     output = tmp_path / "demo"
     manifest = demo(FIXTURE, output)
-    assert manifest["counts"]["concepts"] == 2 and manifest["counts"]["evidence"] == 28
+    assert manifest["counts"]["concepts"] == 2 and manifest["counts"]["evidence"] == 29
     assert validate(output)["valid"]
     manifest["scope"] = "tested_live"
     (output / "demo-manifest.json").write_text(json.dumps(manifest))

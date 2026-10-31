@@ -5,7 +5,7 @@ from launchcase.application.services import row_dict
 from launchcase.application.sku_visuals import SkuVisualService
 from launchcase.domain.common import DomainError, digest, now
 from launchcase.infrastructure.models import VisualAsset, VisualTask
-from launchcase.integrations.creative import UnknownReceipt, provider
+from launchcase.integrations.creative import UnknownReceipt, provider, validate_asset, validate_batch
 
 
 class VisualService:
@@ -187,6 +187,10 @@ class VisualService:
             )
         try:
             batch = self.client.submit(plan, submission_key)
+            try:
+                validate_batch(batch, plan)
+            except DomainError as exc:
+                raise UnknownReceipt() from exc
         except DomainError as exc:
             with self.service.write() as s:
                 task = self.service.get_row(s, VisualTask, actor, task_id)
@@ -229,11 +233,13 @@ class VisualService:
                 batch_id = batch["id"]
                 task.remote = {"batch_id": batch_id}
             batch = self.client.batch(batch_id)
+            validate_batch(batch, task.plan)
             if batch["status"] in {"failed", "blocked", "cancelled", "reconciling"}:
                 task.state = batch["status"]
                 return row_dict(task)
             assets = self.client.assets(batch)
             for asset in assets:
+                validate_asset(asset, batch)
                 strict = task.request.get("intent") == "listing"
                 permitted = (
                     (asset.get("identity") == "real_product" and asset.get("provider") == "deterministic")
@@ -282,7 +288,7 @@ class VisualService:
             )
             if subject_hash != request.expected_subject_hash:
                 raise DomainError("STALE_SUBJECT", "Asset review subject changed", 409)
-            if asset.qa.get("status") == "block" and request.decision == "approved":
+            if asset.qa.get("status") not in {"pass", "warn"} and request.decision == "approved":
                 raise DomainError("QA_BLOCKED", "Machine QA block cannot be overridden", 409)
             self.client.review(asset.remote_id, request.decision, actor.id, request.reason)
             asset.review = {
@@ -313,6 +319,18 @@ class VisualService:
             task = self.service.get_row(s, VisualTask, actor, asset.visual_task_id)
             data = self.service.objects.get(asset.sha256)
             result = row_dict(asset)
+            try:
+                self.current(s, actor, task)
+                result["current"] = True
+            except DomainError as error:
+                result["current"] = False
+                result["stale_reason"] = error.code
+                if content:
+                    raise DomainError(
+                        "STALE_VISUAL",
+                        "Current source rights and dependencies required for content export",
+                        409,
+                    ) from error
             result["subject_hash"] = digest(
                 {"asset": asset.sha256, "plan": task.plan_hash, "dependency": task.dependency_hash}
             )

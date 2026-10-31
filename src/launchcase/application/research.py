@@ -1,6 +1,7 @@
 from sqlalchemy import select
 
 from launchcase.agents.runtime import FakeSDKRunner
+from launchcase.application.provenance import evidence_proof
 from launchcase.application.services import row_dict
 from launchcase.domain.common import DomainError, digest
 from launchcase.infrastructure.models import Artifact, Evidence, SourceDocument
@@ -70,7 +71,26 @@ class ResearchService:
             from launchcase.agents.live import RealAgentRunner
 
             runner = RealAgentRunner(actor.tenant_id, task["case_id"])
+        known = {e["id"]: e for e in evidence}
+        proofs = {}
+        with self.service.sessions() as s:
+            # Validate the full input before accepting any derived claim, including injected adapters.
+            for item in evidence:
+                proofs[item["id"]] = evidence_proof(self.service, s, actor, task["case_id"], item)
         result = (runner or FakeSDKRunner()).run(evidence)
+        for theme in result["output"]["themes"]:
+            refs = theme["supporting_evidence_refs"] + theme["contradicting_evidence_refs"]
+            if not refs or any(ref not in known for ref in refs):
+                raise DomainError("INVALID_CITATION", "Important claim has an unsupported citation", 409)
+            theme["provenance"] = {
+                "citations": [proofs[ref] for ref in dict.fromkeys(refs)],
+                "input_hash": digest(evidence),
+                "prompt_hash": result.get("prompt_hash"),
+                "model_id": result.get("model", "unrecorded"),
+                "skill_versions": result.get("skill_hashes", {}),
+                "provider": result["provider"],
+                "run_status": result["status"],
+            }
         reviews = [e for e in evidence if e["data"]["source_type"] == "review"]
         products = {e["data"]["product_identity"] for e in reviews} - {"unresolved"}
         dated = all(e["data"]["observed_at"] for e in reviews)

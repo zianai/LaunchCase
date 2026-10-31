@@ -72,6 +72,17 @@ class CaseService:
                 raise DomainError("UNAUTHORIZED", "Valid bearer identity required", 401)
             return Actor(item.id, item.tenant_id, item.role, item.synthetic)
 
+    def rotate_token(self, actor, identity_id, revoke_only=False):
+        self.require(actor, human=True)
+        if actor.role != "owner":
+            raise DomainError("FORBIDDEN", "Tenant owner required for token rotation", 403)
+        token = secrets.token_urlsafe(32)
+        with self.write() as s:
+            item = self.get_row(s, Identity, actor, identity_id)
+            item.token_hash = digest(token.encode())
+        # For revocation the replacement token is deliberately discarded.
+        return None if revoke_only else token
+
     def require(self, actor, human=False):
         allowed = {"owner", "reviewer"} if human else {"owner", "reviewer", "analyst", "agent"}
         if actor.role not in allowed:

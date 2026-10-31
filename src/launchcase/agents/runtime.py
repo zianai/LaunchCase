@@ -215,6 +215,14 @@ class FakeSDKRunner:
         return {
             "output": output.model_dump(),
             "provider": "fake_sdk",
+            "model": "deterministic-sdk-test",
+            "input_hash": digest(evidence),
+            "prompt_hash": digest(
+                {
+                    "instructions": agent.instructions,
+                    "input": "Analyze the frozen evidence with its source limits.",
+                }
+            ),
             "model_calls": model.calls,
             "tool_calls": calls,
             "reported_synthetic_tokens": usage,

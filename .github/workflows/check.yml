@@ -12,6 +12,9 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pytest -q
+      - run: uv run pytest tests/test_ce_contract.py -q
+        name: Frozen LaunchCase 1.0.0 consumer (no other repository)
+      - run: uv run python ops/verify_p10_recovery.py
       - run: uv run python ops/verify_migrations.py
       - uses: actions/setup-node@v4
         with:

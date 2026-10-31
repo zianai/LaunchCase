@@ -29,9 +29,60 @@ class CreativeProvider(Protocol):
 
 
 def remote_id(value):
-    if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,160}", value):
+    if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_.:-]{1,160}", value):
         raise DomainError("ENGINE_CONTRACT", "Invalid remote ID", 502)
     return value
+
+
+def validate_batch(batch, plan):
+    """Only the zero-cost consumer contract is enabled; unknown cost is not zero."""
+    if not isinstance(batch, dict) or any(
+        name not in batch for name in ("id", "project_id", "plan_id", "status", "cost_usd")
+    ):
+        raise DomainError("ENGINE_CONTRACT", "Required batch receipt fields missing", 502)
+    remote_id(batch["id"])
+    if batch["project_id"] != plan["project_id"] or batch["plan_id"] != plan["plan_id"]:
+        raise DomainError("ENGINE_CONTRACT", "Foreign project or plan receipt", 502)
+    if type(batch["cost_usd"]) not in (int, float) or batch["cost_usd"] != 0:
+        raise DomainError("ENGINE_CONTRACT", "Unknown or unauthorized USD cost; reconcile receipt", 502)
+    if batch["status"] not in {
+        "queued",
+        "running",
+        "qa_pending",
+        "review_pending",
+        "completed",
+        "succeeded",
+        "failed",
+        "blocked",
+        "cancelled",
+        "reconciling",
+        "approved",
+    }:
+        raise DomainError("ENGINE_CONTRACT", "Unknown batch status", 502)
+    if batch.get("authorize_paid", False) is not False:
+        raise DomainError("ENGINE_CONTRACT", "Unexpected paid authorization", 502)
+    return batch
+
+
+def validate_asset(asset, batch):
+    if not isinstance(asset, dict) or any(
+        name not in asset for name in ("id", "project_id", "batch_id", "sha256", "identity", "provider", "qa")
+    ):
+        raise DomainError("ENGINE_CONTRACT", "Required asset fields missing", 502)
+    remote_id(asset["id"])
+    if asset["project_id"] != batch["project_id"] or asset["batch_id"] != batch["id"]:
+        raise DomainError("ENGINE_CONTRACT", "Asset belongs to a foreign project or batch", 502)
+    if not isinstance(asset["sha256"], str) or not re.fullmatch(r"[0-9a-f]{64}", asset["sha256"]):
+        raise DomainError("ENGINE_CONTRACT", "Asset content hash missing or invalid", 502)
+    qa = asset["qa"]
+    if (
+        not isinstance(qa, dict)
+        or qa.get("status") not in {"pass", "warn", "block"}
+        or not isinstance(qa.get("checks"), list)
+        or not isinstance(qa.get("issues"), list)
+    ):
+        raise DomainError("ENGINE_CONTRACT", "Machine QA result missing or unknown", 502)
+    return asset
 
 
 class CreativeEngineClient:

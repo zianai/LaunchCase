@@ -1,0 +1,83 @@
+{
+  "p7_live": {
+    "system": "launchcase",
+    "run_id": "live-synthetic-20261031T080134Z",
+    "environment": "E2",
+    "data_classification": "synthetic",
+    "actual_api_smoke": "succeeded",
+    "business_pilot_reviewed": false,
+    "business_validation": "not_evaluable",
+    "billing_actual_usd": null,
+    "external_business_writes": 0,
+    "user_authorization": "2026-10-31: synthetic paid three-system smoke, total <= USD 10, no business writes",
+    "source_sha_at_live_call": "6ec11f4d072e13c4f02ae9bc6d7929a8c985811b",
+    "limitations": [
+      "Synthetic smoke only; no human business assessment or real-case validation.",
+      "The complete model response need not be retained; this run saved only a summary without specific findings and citations, so its substantive content cannot be independently reviewed later. Future business reviews need traceable findings, source locators and versions."
+    ]
+  },
+  "p7_go_no_go_is_historical": true,
+  "current_business": "not_evaluable",
+  "new_live_authorized": false,
+  "remote": {
+    "visibility": "public",
+    "sha": "13bfd8ba088ab671978cfc5463f2626a58c6e563",
+    "runs": [
+      {
+        "name": "local-equivalent-checks",
+        "sha": "13bfd8ba088ab671978cfc5463f2626a58c6e563",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/zianai/LaunchCase/actions/runs/41183876651"
+      },
+      {
+        "name": "local-equivalent-checks",
+        "sha": "fee9707f559e3884ef966a4b390687d68293e3ee",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/zianai/LaunchCase/actions/runs/41183731730"
+      },
+      {
+        "name": "local-equivalent-checks",
+        "sha": "63bc37b321fb1f03a9fb387d04fba67f745f692e",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/zianai/LaunchCase/actions/runs/41173143872"
+      }
+    ]
+  },
+  "local": {
+    "base_sha": "13bfd8ba088ab671978cfc5463f2626a58c6e563",
+    "original_path": "/Users/a/workspaces/AForeign Trade/LaunchCase",
+    "original_dirty": "",
+    "branch_snapshot": "+ codex/launchcase-v1          4e5a451 (/Users/a/workspaces/AForeign Trade/LaunchCase) [origin/main: behind 5] fix: report image QA as passed only on an explicit pass\n* codex/p7-validation-20261031 13bfd8b Use offline Docker images only when explicitly requested\n  remotes/origin/main          13bfd8b Use offline Docker images only when explicitly requested\n",
+    "p7_historical_sha256": {
+      "docs/validation/p7/go_no_go.json": "0affd670337e49471f4a2a0ef7194dc05704f56f34675c3d95190cfdc4dc5045",
+      "docs/validation/p7/RV-07.md": "2fbdebaf4025a9ac3cd2efb7ca817ba05c866f73bda08f07af2d736c4f6a9fb4",
+      "docs/validation/p7/RV-03.md": "44950353202ab87c38b2df88ee1e31c5fcf309cb54705e4610522d83848bf189",
+      "docs/validation/p7/RV-02.md": "1c39113f33e6d5431db2257b8fdcc666f214b36dfbf98e82fb57c4df94bd77e1",
+      "docs/validation/p7/RV-06.md": "287437356bba69971453230eba7237b1f59a0c734135865b23d429c3804677ae",
+      "docs/validation/p7/evidence-index.json": "b9e74d8eed18b179c2f531eefa45d483c96c70a08c8b7b367fd1060b16041ff8",
+      "docs/validation/p7/request.synthetic.json": "ab523d5b292e585d4d252257faeb36d353b0941037574701b4822ea1b7d7d0ba",
+      "docs/validation/p7/README.md": "31fe120b697b72a54588dce9c3d7c369c0ea05d40dcaed4beefa53e0a0907aca",
+      "docs/validation/p7/LIVE_SMOKE.json": "6d45158fdb8f4e8c2b0a02964064bab6caf4082979e9dee64f8bd0ba39b1c669",
+      "docs/validation/p7/KNOWN_LIMITATIONS.md": "5501ef72624b7a33349cb64bf4b7542d1a4f4a8ba279e2388a595893ccc6a240",
+      "docs/validation/p7/RV-01.md": "c24e4c2ea1bdd31089e71041f89a0e230b2244e4dfebed01c014594c5bd4fc6c",
+      "docs/validation/p7/RV-05.md": "bbe0f77df005639425f9a76bb960781327c523197569dbbc2cebcb62cb571f1a",
+      "docs/validation/p7/ADR.md": "c81ae0f3b2d25dafee3f19710b18371d86cbf89ea42a88c20b6e55aba5897092",
+      "docs/validation/p7/grant.disabled.example.json": "a5d06bcb7855532fb954c208d500ecec4cf55e8fd8452640f1fec7fee7653166",
+      "docs/validation/p7/RV-04.md": "2854f01c8491fa5a465c04b571bb741f520dff20f1b64b275e5be4a6129e906e",
+      "docs/validation/p7/CURRENT_STATUS.md": "c88d1b180a12b71fc749b501c7d9e88839c225aebd51a72f5321b23aac35a465",
+      "docs/validation/p7/RV-00.md": "bd78524e8cf4eaea886b6394b41458b3c4f3e87cb8fc5ee1bef3e89db6850066",
+      "docs/validation/p7/evidence/release-lc-ce-http/result.json": "74efe0bd8874a7dd865dc212f7c612bab45ba35140322ee0cd66a1a41722702d",
+      "docs/validation/p7/evidence/release-lc-ce-http/output.log": "d8790d0c8d7e517074817ad2167cb0722fe09a9a89ce5b56c54e937667071472",
+      "docs/validation/p7/evidence/live-synthetic-20261031/result.json": "90135f6c9a90b9cce4a623041464d5822db9501a44bcb59eb478781c627ed60f",
+      "docs/validation/p7/evidence/live-synthetic-20261031/launchcase-execute.log": "97d895227dfef41d4bfaf3b461cd9a830783736d0d2d8970cb41ca1a7ae3f639",
+      "docs/validation/p7/evidence/release-lc-supplemental/result.json": "d317f3a79e5ef6a1258605f1524bb30fa060b331a510f97f3cbc617b178289bc",
+      "docs/validation/p7/evidence/release-lc-supplemental/subcommands.json": "968e1aa2f338eb859472406d1b100dc05131caec6d94088626a9cb77cff2c0c7",
+      "docs/validation/p7/evidence/release-lc-supplemental/output.log": "b4768e47bb99d8b26b7fa5076c69d0e84c84c30a7a8882fc8a16f24a63a8f15d",
+      "docs/validation/p7/evidence/release-lc-check/result.json": "969fea17e5eaa3040b58f189477a4ca4d2f48c0528ce28fdd9569ccbe3df4ae6",
+      "docs/validation/p7/evidence/release-lc-check/output.log": "4ba14b38ff854576c8b1f6df91ba7a42c5632978e5867123384a9e8d68eb58cf"
+    }
+  }
+}

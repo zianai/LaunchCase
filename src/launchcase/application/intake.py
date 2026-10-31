@@ -47,14 +47,9 @@ def parse_import(request):
                 or request.rights_status == "synthetic_fixture"
                 or str(row.get("is_synthetic", "")).lower() == "true"
             )
-            fingerprint = digest(
-                {
-                    "type": request.source_type,
-                    "product": row.get("product_id"),
-                    "variant": row.get("variant"),
-                    "text": " ".join(quote.casefold().split()),
-                }
-            )
+            # Identical wording does not establish one reviewer/event. Preserve
+            # independently identified/date-stamped rows and variant conflicts.
+            fingerprint = digest({"type": request.source_type, "raw_row": row})
             normalized.append(
                 {
                     "quote": quote,

@@ -1,6 +1,7 @@
 import json
 import shutil
 import sqlite3
+import time
 from pathlib import Path
 
 from sqlalchemy import delete, select
@@ -8,6 +9,34 @@ from sqlalchemy import delete, select
 from launchcase.domain.common import DomainError, digest
 from launchcase.infrastructure.db import Base
 from launchcase.infrastructure.models import ProductCase, SourceDocument, Task, VisualAsset, VisualTask
+
+
+def status(service, actor):
+    service.require(actor, human=True)
+    if actor.role != "owner":
+        raise DomainError("FORBIDDEN", "Tenant owner required for operations status", 403)
+    with service.sessions() as s:
+
+        def count(model, *conditions):
+            return len(
+                s.scalars(select(model.id).where(model.tenant_id == actor.tenant_id, *conditions)).all()
+            )
+
+        counts = {
+            "queued_tasks": count(Task, Task.status == "queued"),
+            "failed_tasks": count(Task, Task.status == "failed"),
+            "expired_leases": count(Task, Task.status == "running", Task.lease_until < time.time()),
+            "reconciling_visuals": count(VisualTask, VisualTask.state.in_(["submitting", "reconciling"])),
+            "awaiting_asset_review": count(VisualTask, VisualTask.state == "awaiting_asset_review"),
+        }
+    return {
+        "topology": "single-host",
+        "multi_host_validated": False,
+        "counts": counts,
+        "alerts": [key for key in ("failed_tasks", "expired_leases", "reconciling_visuals") if counts[key]],
+        "paid_calls_enabled_by_this_endpoint": False,
+        "production_slo": "not_evaluated",
+    }
 
 
 def backup(settings, destination: Path):

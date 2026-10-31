@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests",
-  testIgnore: "handoff.spec.ts",
+  testIgnore: ["handoff.spec.ts", "p8-p10.spec.ts"],
   timeout: 90000,
   workers: 1,
   use: {

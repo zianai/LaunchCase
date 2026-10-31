@@ -21,6 +21,11 @@ def main():
     sub.add_parser("doctor")
     sub.add_parser("init-db")
     sub.add_parser("worker-once")
+    sub.add_parser("operations-status")
+    rotate = sub.add_parser("rotate-token")
+    rotate.add_argument("--identity", required=True)
+    rotate.add_argument("--out", type=Path)
+    rotate.add_argument("--revoke-only", action="store_true")
     demo_parser = sub.add_parser("demo")
     demo_parser.add_argument("--fixture", type=Path, required=True)
     demo_parser.add_argument("--out", type=Path, required=True)
@@ -121,7 +126,34 @@ def main():
             result = {"token": token, "tenant_id": actor.tenant_id, "role": actor.role}
         else:
             actor = service.authenticate(os.getenv("LAUNCHCASE_TOKEN", ""))
-            if args.command == "retention":
+            if args.command == "operations-status":
+                from launchcase.infrastructure.operations import status
+
+                result = status(service, actor)
+            elif args.command == "rotate-token":
+                if not args.revoke_only and (not args.out or args.out.exists() or args.out.is_symlink()):
+                    raise DomainError("OUTPUT_EXISTS", "A new private token file is required")
+                descriptor = None
+                if not args.revoke_only:
+                    descriptor = os.open(
+                        args.out, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600
+                    )
+                try:
+                    replacement = service.rotate_token(actor, args.identity, args.revoke_only)
+                    if descriptor is not None:
+                        with os.fdopen(descriptor, "w") as output:
+                            descriptor = None
+                            output.write(replacement)
+                finally:
+                    if descriptor is not None:
+                        os.close(descriptor)
+                        args.out.unlink(missing_ok=True)
+                result = {
+                    "identity_id": args.identity,
+                    "revoked": True,
+                    "replacement_written": bool(replacement),
+                }
+            elif args.command == "retention":
                 from launchcase.infrastructure.operations import retention
 
                 result = retention(service, actor, args.confirm_tenant)

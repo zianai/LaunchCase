@@ -19,7 +19,7 @@ def test_idempotency_and_payload_conflict(setup, brief, case):
 def test_exact_row_provenance_duplicate_and_conflict_preserved(setup, case, imported):
     svc, actor, _, _ = setup
     request, result = imported
-    assert result["rows_imported"] == 23 and result["rows_skipped"] == 1
+    assert result["rows_imported"] == 24 and result["rows_skipped"] == 0
     rows = svc.list_scoped(actor, case["id"], Evidence)
     assert any(
         x["source_locator"] == "synthetic-voc.csv#row=2"
@@ -28,7 +28,7 @@ def test_exact_row_provenance_duplicate_and_conflict_preserved(setup, case, impo
     )
     assert any("simple" in x["quote"] for x in rows)
     assert svc.import_source(actor, case["id"], request, "again")["rows_imported"] == 0
-    assert len(svc.list_scoped(actor, case["id"], Evidence)) == 23
+    assert len(svc.list_scoped(actor, case["id"], Evidence)) == 24
     assert svc.read_source(actor, result["source_id"], True) == request.content.encode()
 
 

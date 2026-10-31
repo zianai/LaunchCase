@@ -3,5 +3,5 @@ protocol_version: "3.0"
 project_id: LAUNCHCASE_V1
 project_name: LaunchCase
 status: active
-active_task: T-010-p7-validation
+active_task: T-011-p8-p10
 updated: "2026-10-31"

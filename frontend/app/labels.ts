@@ -8,7 +8,7 @@ function lookup(table: Record<string, string>, value: unknown, other: string) {
 export const tabGroups: { label: string; tabs: string[] }[] = [
   { label: "", tabs: ["总览"] },
   { label: "研究需求", tabs: ["证据来源", "用户反馈研究", "产品机会"] },
-  { label: "选择方案", tabs: ["产品方案与规格", "概念图片"] },
+  { label: "选择方案", tabs: ["产品方案与规格", "图片与素材"] },
   { label: "核算", tabs: ["成本与风险"] },
   { label: "验证与交接", tabs: ["样品与交接", "内部交接资料"] },
   { label: "记录", tabs: ["变更记录"] },

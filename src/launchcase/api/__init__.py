@@ -82,7 +82,15 @@ def create_app(settings=None):
             "paid_models": False,
             "external_actions": False,
             "publication": "unavailable",
+            "deployment_topology": "single-host",
+            "multi_host_validated": False,
         }
+
+    @app.get("/api/v1/operations/status")
+    def operation_status(actor=Depends(identity)):
+        from launchcase.infrastructure.operations import status
+
+        return status(service, actor)
 
     @app.post("/api/v1/product-cases", status_code=201)
     def create_case(body: ProductBrief, actor=Depends(identity), request_key=Depends(key)):
@@ -109,6 +117,34 @@ def create_app(settings=None):
         from launchcase.application.sku_visuals import SkuVisualService
 
         return SkuVisualService(service).upload(actor, case_id, body, request_key)
+
+    @app.get("/api/v1/product-cases/{case_id}/sku-images")
+    def sku_images(case_id: str, actor=Depends(identity)):
+        from launchcase.application.sku_visuals import SkuVisualService
+
+        return {"items": SkuVisualService(service).list(actor, case_id)}
+
+    @app.get("/api/v1/sku-images/{source_id}/content")
+    def sku_preview(source_id: str, actor=Depends(identity)):
+        from launchcase.application.sku_visuals import SkuVisualService
+
+        return Response(
+            SkuVisualService(service).preview(actor, source_id),
+            media_type="image/png",
+            headers={"X-Content-Type-Options": "nosniff", "Cache-Control": "no-store"},
+        )
+
+    @app.get("/api/v1/insights/{insight_id}/provenance")
+    def provenance(insight_id: str, actor=Depends(identity)):
+        from launchcase.application.provenance import insight_provenance
+
+        return insight_provenance(service, actor, insight_id)
+
+    @app.get("/api/v1/product-cases/{case_id}/pilot-export")
+    def pilot_export(case_id: str, actor=Depends(identity)):
+        from launchcase.application.pilot import export_pilot
+
+        return export_pilot(service, actor, case_id)
 
     @app.post("/api/v1/sku-images/{source_id}/review")
     def sku_review(source_id: str, body: ReviewRequest, actor=Depends(identity), request_key=Depends(key)):

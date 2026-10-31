@@ -195,7 +195,10 @@ def test_actual_http_strict_sku_and_review(sku):
     svc, actor, case, _, _, _, _, _ = sku
     src = original(sku)
     request = visual_request(sku, src)
-    client = CreativeEngineClient(os.environ["LAUNCHCASE_TEST_ENGINE_URL"], "launchcase-isolated-test-token")
+    client = CreativeEngineClient(
+        os.environ["LAUNCHCASE_TEST_ENGINE_URL"],
+        os.getenv("LAUNCHCASE_TEST_ENGINE_TOKEN", "launchcase-isolated-test-token"),
+    )
     api = VisualService(svc, client)
     task = api.create(actor, case["id"], request, uid())
     assert task["state"] == "awaiting_plan_review", task
@@ -239,3 +242,34 @@ def test_actual_http_strict_sku_and_review(sku):
     from launchcase.infrastructure.models import SourceDocument
 
     assert asset["sha256"] not in [x["sha256"] for x in svc.list_scoped(actor, case["id"], SourceDocument)]
+
+    # A real HTTP receipt never makes old source rights permanent.
+    from launchcase.application.launchpacks import LaunchPackService
+
+    pack = LaunchPackService(svc).build(actor, case["id"], uid())
+    assert LaunchPackService(svc).export(actor, pack["id"])
+    _, outsider = svc.provision("other-http-tenant", "TEST ONLY outsider", "owner", False)
+    for read in (
+        lambda: api.asset(outsider, asset["id"], True),
+        lambda: LaunchPackService(svc).export(outsider, pack["id"]),
+    ):
+        with pytest.raises(DomainError) as denied:
+            read()
+        assert denied.value.status == 404
+    upload = sku[4]
+    svc.change_rights(
+        actor,
+        upload.rights.source_id,
+        RightsChange(
+            expected_revision=svc.get_case(actor, case["id"])["revision"],
+            rights_status="revoked",
+            reason="TEST ONLY revoke after asset approval",
+        ),
+        uid(),
+    )
+    assert api.get(actor, task["id"])["current"] is False
+    assert api.asset(actor, asset["id"])["current"] is False
+    with pytest.raises(DomainError):
+        api.asset(actor, asset["id"], True)
+    with pytest.raises(DomainError):
+        LaunchPackService(svc).export(actor, pack["id"])

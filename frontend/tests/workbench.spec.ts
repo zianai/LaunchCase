@@ -115,7 +115,7 @@ for (const viewport of [
       .getByRole("button", { name: "记录人工决定" })
       .click();
     await expect(page.getByRole("dialog")).not.toBeVisible();
-    await page.getByRole("tab", { name: "概念图片", exact: true }).click();
+    await page.getByRole("tab", { name: "图片与素材", exact: true }).click();
     await page.getByRole("button", { name: "＋ 创建概念图片计划" }).click();
     await page.getByRole("button", { name: "审核计划", exact: true }).click();
     await page
@@ -130,7 +130,11 @@ for (const viewport of [
       .click();
     await expect(page.getByRole("dialog")).not.toBeVisible();
     await page.getByRole("button", { name: "执行已批准计划" }).click();
-    await expect(page.getByRole("img")).toBeVisible();
+    await expect(async () => {
+      const refresh = page.getByRole("button", { name: "刷新制作进度" });
+      if (await refresh.count()) await refresh.click();
+      await expect(page.getByRole("img")).toBeVisible();
+    }).toPass({ timeout: 15000, intervals: [250, 500, 1000] });
     await expect(page.getByText("人工审核：待独立审核")).toBeVisible();
     await page.getByRole("button", { name: "审核这张图片" }).click();
     await page

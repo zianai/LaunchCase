@@ -3,6 +3,7 @@
 import base64
 import io
 from datetime import datetime, timezone
+from pathlib import Path
 from types import SimpleNamespace
 
 from PIL import Image
@@ -55,6 +56,9 @@ class SkuVisualService:
         except ValueError as exc:
             raise DomainError("UNSAFE_IMAGE", "Invalid base64") from exc
         meta = raster(raw)
+        expected_format = {".png": "PNG", ".jpg": "JPEG", ".jpeg": "JPEG", ".webp": "WEBP"}
+        if expected_format.get(Path(request.filename).suffix.lower()) != meta["format"]:
+            raise DomainError("UNSAFE_IMAGE", "Filename and decoded image format must match")
         if digest(raw) != request.original_sha256:
             raise DomainError("SOURCE_HASH", "Original image hash mismatch")
         if request.kind == "cutout" and not meta["transparent"]:
@@ -141,6 +145,47 @@ class SkuVisualService:
             }
         )
         return data
+
+    def list(self, actor, case_id):
+        with self.service.sessions() as s:
+            self.service.case_row(s, actor, case_id)
+            sources = s.scalars(
+                select(SourceDocument)
+                .where(
+                    SourceDocument.tenant_id == actor.tenant_id,
+                    SourceDocument.case_id == case_id,
+                    SourceDocument.source_type == "image",
+                )
+                .order_by(SourceDocument.created_at, SourceDocument.id)
+            )
+            result = []
+            for source in sources:
+                data = self.describe(source)
+                try:
+                    self.valid_source(s, actor, source, review_required=False)
+                    data["review_allowed"] = True
+                    self.valid_source(s, actor, source)
+                    data["eligibility"] = {"current": True, "reason": None}
+                except DomainError as exc:
+                    data.setdefault("review_allowed", False)
+                    data["eligibility"] = {"current": False, "reason": exc.code}
+                result.append(data)
+            return result
+
+    def preview(self, actor, source_id):
+        with self.service.sessions() as s:
+            source = self.service.get_row(s, SourceDocument, actor, source_id)
+            if source.source_type != "image":
+                raise DomainError("NOT_FOUND", "Image source not found", 404)
+            raw = self.service.objects.get(source.sha256)
+        raster(raw)
+        # Strip metadata and cap preview dimensions; original bytes remain immutable.
+        with Image.open(io.BytesIO(raw)) as image:
+            image = image.convert("RGBA")
+            image.thumbnail((1024, 1024))
+            out = io.BytesIO()
+            image.save(out, format="PNG")
+            return out.getvalue()
 
     def review(self, actor, source_id, request, key):
         self.service.require(actor, human=True)
