@@ -1,0 +1,16 @@
+{
+  "status": "human_baseline_pending",
+  "scope": "actual browser renders and independent paired overview review",
+  "files": {
+    "docs/evidence/browser/overview-1440.png": "850a65a3ea16a0aaaf99afebe28631ee9ff4d577884cd373730fdbddcc5139ce",
+    "docs/evidence/browser/overview-390.png": "6cec918984694cf340dfce0711c4f724f394341f603d451c0ca887110b275031",
+    "docs/evidence/browser/pack-1440.png": "c8bf6dfa4423a980e170d7a3e4a16f0e360b61f2bd91ebeddb123369c33adaa8",
+    "docs/evidence/browser/pack-390.png": "28e32453c9960d7dc6fe13aedca5dd173dc6435fbdd37fa978355f7ca31a79e6",
+    "docs/evidence/browser/visual-1440.png": "b0c602efe5a4ce74cfe5dae68e7faa7cea4a45a786daf8c3eb9173fff42dc0ad",
+    "docs/evidence/browser/visual-390.png": "18afd6f7db81a5a14b36b03a33c320c9a64ad4b35a67ce2f0bf40d87706a1577",
+    "design/rounds/3/pair/1440x900-default-first.png": "3468d6fd6ac6d9929add92b722cd6bdae5e43fd3491cd39b822cdf8cfdd871f0",
+    "design/rounds/3/pair/1440x900-default-full.png": "dbc29765f319a111415ff69beffc86570fff8274141530c921b6a6c9e32bf0b4",
+    "design/rounds/3/pair/390x844-default-first.png": "7dfbb8d9d9a8f09c09eac41b60831631b151801762e3ef6a398e1ebae5c0700f",
+    "design/rounds/3/pair/390x844-default-full.png": "209e0aad364b061f1fdbf777b3ca48d258d61ad40175a08a42d94fd8ed4e0804"
+  }
+}

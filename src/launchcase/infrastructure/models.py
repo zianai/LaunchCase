@@ -70,6 +70,7 @@ class Evidence(Scoped, Base):
 
 class Artifact(Scoped, Base):
     """Immutable versioned domain documents; typed payloads validated by their services."""
+
     __tablename__ = "artifacts"
     __table_args__ = (UniqueConstraint("tenant_id", "case_id", "kind", "version"),)
     kind: Mapped[str] = mapped_column(String(50))

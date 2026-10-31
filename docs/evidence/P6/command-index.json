@@ -1,0 +1,456 @@
+[
+  {
+    "record": "docs/evidence/P6/20261031T034915384579.json",
+    "command": [
+      "uv",
+      "run",
+      "launchcase",
+      "demo",
+      "--fixture",
+      "fixtures/scenarios/pet-furniture-us",
+      "--out",
+      ".launchcase/demo-001"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T034915384579.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T034919667223.json",
+    "command": [
+      "uv",
+      "run",
+      "launchcase",
+      "validate",
+      "--case",
+      ".launchcase/demo-001",
+      "--strict"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T034919667223.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T034921030514.json",
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T034921030514.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T035027999659.json",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 1,
+    "log": "docs/evidence/P6/20261031T035027999659.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T035137015783.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_infrastructure.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T035137015783.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T035203359241.json",
+    "command": [
+      "uv",
+      "run",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T035203359241.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T035258292120.json",
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T035258292120.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T035403490475.json",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T035403490475.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040038683801.json",
+    "command": [
+      "uv",
+      "run",
+      "pytest",
+      "-q",
+      "tests/test_api_boundaries.py",
+      "tests/test_operations.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040038683801.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040047479951.json",
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040047479951.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040048636335.json",
+    "command": [
+      "uv",
+      "build"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040048636335.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040135432679.json",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040135432679.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040137231892.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_install.py"
+    ],
+    "exit_code": 1,
+    "log": "docs/evidence/P6/20261031T040137231892.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040137690916.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_migrations.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040137690916.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040156447560.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_install.py",
+      "--allow-downloads"
+    ],
+    "exit_code": 1,
+    "log": "docs/evidence/P6/20261031T040156447560.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040317453202.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_install.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040317453202.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040357176228.json",
+    "command": [
+      "uv",
+      "run",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040357176228.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040838293767.json",
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040838293767.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040839228582.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_infrastructure.py"
+    ],
+    "exit_code": 1,
+    "log": "docs/evidence/P6/20261031T040839228582.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040842647517.json",
+    "command": [
+      "uv",
+      "build"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040842647517.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040843876738.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_install.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040843876738.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040939749925.json",
+    "command": [
+      "uv",
+      "run",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 1,
+    "log": "docs/evidence/P6/20261031T040939749925.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T040954677894.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_infrastructure.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T040954677894.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041022646002.json",
+    "command": [
+      "uv",
+      "run",
+      "pytest",
+      "-q"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041022646002.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041040699140.json",
+    "command": [
+      "npm",
+      "run",
+      "test:e2e",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041040699140.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041215960137.json",
+    "command": [
+      "uv",
+      "sync",
+      "--frozen",
+      "--extra",
+      "dev"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041215960137.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041216142927.json",
+    "command": [
+      "uv",
+      "run",
+      "ruff",
+      "check",
+      "."
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041216142927.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041216328444.json",
+    "command": [
+      "uv",
+      "run",
+      "ruff",
+      "format",
+      "--check",
+      "."
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041216328444.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041216428220.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "-m",
+      "compileall",
+      "-q",
+      "src"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041216428220.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041216532840.json",
+    "command": [
+      "uv",
+      "run",
+      "launchcase",
+      "doctor"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041216532840.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041217230919.json",
+    "command": [
+      "uv",
+      "run",
+      "launchcase",
+      "validate",
+      "--case",
+      ".launchcase/demo-001",
+      "--strict"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041217230919.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041220238846.json",
+    "command": [
+      "npm",
+      "ci",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041220238846.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041223454476.json",
+    "command": [
+      "npm",
+      "run",
+      "typecheck",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041223454476.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041224986780.json",
+    "command": [
+      "npm",
+      "run",
+      "format:check",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041224986780.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041301856734.json",
+    "command": [
+      "uv",
+      "build"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041301856734.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041304273975.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_install.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041304273975.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041325219545.json",
+    "command": [
+      "uv",
+      "run",
+      "python",
+      "ops/verify_migrations.py"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041325219545.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041325789518.json",
+    "command": [
+      "npm",
+      "run",
+      "build",
+      "--prefix",
+      "frontend"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041325789518.log"
+  },
+  {
+    "record": "docs/evidence/P6/20261031T041627525450.json",
+    "command": [
+      "python3",
+      "/Users/a/.agents/skills/managing-vibe-project-memory/scripts/check_project_memory.py",
+      "/Users/a/workspaces/AForeign Trade/LaunchCase",
+      "--full"
+    ],
+    "exit_code": 0,
+    "log": "docs/evidence/P6/20261031T041627525450.log"
+  }
+]

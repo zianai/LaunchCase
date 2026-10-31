@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-10-31T03:53:58.508Z",
+  "browser": "playwright-chromium",
+  "directions": [
+    {
+      "index": 1,
+      "name": "1 案例档案",
+      "target": "design/directions/ledger.html",
+      "shots": {
+        "1440x900": "1-1440x900.png",
+        "390x844": "1-390x844.png"
+      }
+    },
+    {
+      "index": 2,
+      "name": "2 技术实验台",
+      "target": "design/directions/lab.html",
+      "shots": {
+        "1440x900": "2-1440x900.png",
+        "390x844": "2-390x844.png"
+      }
+    }
+  ]
+}

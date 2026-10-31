@@ -1,0 +1,14 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "launchcase",
+    "demo",
+    "--fixture",
+    "fixtures/scenarios/pet-furniture-us",
+    "--out",
+    ".launchcase/demo-001"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T034915384579.log"
+}

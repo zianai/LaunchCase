@@ -1,0 +1,13 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "-m",
+    "compileall",
+    "-q",
+    "src"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T041216428220.log"
+}

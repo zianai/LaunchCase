@@ -14,12 +14,19 @@ class SchemaInfo(Base):
 
 def database(settings):
     settings.prepare()
-    engine = create_engine(settings.database_url, **(
-        {"connect_args": {"check_same_thread": False, "timeout": 30}} if settings.database_url.startswith("sqlite") else {}
-    ))
+    engine = create_engine(
+        settings.database_url,
+        **(
+            {"connect_args": {"check_same_thread": False, "timeout": 30}}
+            if settings.database_url.startswith("sqlite")
+            else {}
+        ),
+    )
     if engine.dialect.name == "sqlite":
+
         @event.listens_for(engine, "connect")
         def configure(conn, _):
             conn.execute("PRAGMA foreign_keys=ON")
             conn.execute("PRAGMA journal_mode=WAL")
+
     return engine, sessionmaker(engine, expire_on_commit=False)

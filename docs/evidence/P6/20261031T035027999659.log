@@ -1,0 +1,78 @@
+
+> launchcase-workbench@0.1.0 test:e2e
+> playwright test
+
+
+Running 3 tests using 1 worker
+
+(node:74530) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 tests/workbench.spec.ts:9:6 › real API full internal workflow 1440px (1.5m)
+(node:75007) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  2 tests/workbench.spec.ts:9:6 › real API full internal workflow 390px (1.5m)
+(node:75442) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/workbench.spec.ts:84:5 › server proxy rejects missing session and cross-origin writes (75ms)
+
+
+  1) tests/workbench.spec.ts:9:6 › real API full internal workflow 1440px ──────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: '＋ 创建产品 Case' })
+
+
+      13 |   await page.getByLabel('本地身份凭证').fill(readFileSync(path.join(root,'.launchcase/browser-token'),'utf8').trim());
+      14 |   await page.getByRole('button',{name:'进入工作区 →'}).click();
+    > 15 |   await page.getByRole('button',{name:'＋ 创建产品 Case'}).click();
+         |                                                       ^
+      16 |   let dialog=page.getByRole('dialog');
+      17 |   await dialog.getByRole('button',{name:'载入合成宠物家具示例'}).click();
+      18 |   await dialog.getByRole('button',{name:'创建 Case',exact:true}).click();
+        at /Users/a/workspaces/AForeign Trade/LaunchCase/frontend/tests/workbench.spec.ts:15:55
+
+    Error Context: test-results/workbench-real-API-full-internal-workflow-1440px/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/workbench-real-API-full-internal-workflow-1440px/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/workbench-real-API-full-internal-workflow-1440px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/workbench.spec.ts:9:6 › real API full internal workflow 390px ───────────────────────────
+
+    Test timeout of 90000ms exceeded.
+
+    Error: locator.click: Test timeout of 90000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: '＋ 创建产品 Case' })
+
+
+      13 |   await page.getByLabel('本地身份凭证').fill(readFileSync(path.join(root,'.launchcase/browser-token'),'utf8').trim());
+      14 |   await page.getByRole('button',{name:'进入工作区 →'}).click();
+    > 15 |   await page.getByRole('button',{name:'＋ 创建产品 Case'}).click();
+         |                                                       ^
+      16 |   let dialog=page.getByRole('dialog');
+      17 |   await dialog.getByRole('button',{name:'载入合成宠物家具示例'}).click();
+      18 |   await dialog.getByRole('button',{name:'创建 Case',exact:true}).click();
+        at /Users/a/workspaces/AForeign Trade/LaunchCase/frontend/tests/workbench.spec.ts:15:55
+
+    Error Context: test-results/workbench-real-API-full-internal-workflow-390px/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/workbench-real-API-full-internal-workflow-390px/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/workbench-real-API-full-internal-workflow-390px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/workbench.spec.ts:9:6 › real API full internal workflow 1440px ───────────────────────────
+    tests/workbench.spec.ts:9:6 › real API full internal workflow 390px ────────────────────────────
+  1 passed (3.1m)

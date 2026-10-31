@@ -1,0 +1,11 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build",
+    "--prefix",
+    "frontend"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T040838293767.log"
+}

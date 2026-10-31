@@ -3,8 +3,19 @@ from decimal import Decimal, InvalidOperation
 
 from launchcase.domain.common import DomainError
 
-COMPONENTS = ("net_sales_revenue_ex_tax", "ex_factory", "freight", "tariff_duty", "import_handling",
-              "referral_fee", "fulfillment", "variable_storage", "advertising_allocated", "returns_allowance", "other_variable_costs")
+COMPONENTS = (
+    "net_sales_revenue_ex_tax",
+    "ex_factory",
+    "freight",
+    "tariff_duty",
+    "import_handling",
+    "referral_fee",
+    "fulfillment",
+    "variable_storage",
+    "advertising_allocated",
+    "returns_allowance",
+    "other_variable_costs",
+)
 FIXED = {"rnd", "tooling", "sample", "overhead"}
 
 
@@ -49,7 +60,13 @@ def calculate(request, valid_sources, at=None):
             raise DomainError("COST_AMOUNT", "Invalid decimal amount") from exc
         if not amount.is_finite() or amount < 0 or amount > Decimal("1000000000"):
             raise DomainError("COST_AMOUNT", "Amount outside finite nonnegative range")
-        divisor = Decimal(12) if item.unit == "dozen" else Decimal(item.units_per_carton or 0) if item.unit == "carton" else Decimal(1)
+        divisor = (
+            Decimal(12)
+            if item.unit == "dozen"
+            else Decimal(item.units_per_carton or 0)
+            if item.unit == "carton"
+            else Decimal(1)
+        )
         if divisor <= 0:
             raise DomainError("COST_UNIT", "Carton requires a positive pieces-per-carton count")
         rate = Decimal(1) if item.currency == "USD" else rates.get(item.currency)
@@ -59,16 +76,32 @@ def calculate(request, valid_sources, at=None):
         return amount * rate / divisor
 
     values = {name: convert(name, request.components.get(name)) for name in COMPONENTS}
-    fixed = {name: convert("fixed_"+name, item) for name, item in request.fixed_costs.items()}
+    fixed = {name: convert("fixed_" + name, item) for name, item in request.fixed_costs.items()}
     required_missing = any(value is None for value in values.values())
-    landed = None if any(values[x] is None for x in ("ex_factory", "freight", "tariff_duty", "import_handling")) else sum(values[x] for x in ("ex_factory", "freight", "tariff_duty", "import_handling"))
-    contribution = None if required_missing else values[COMPONENTS[0]] - sum(values[x] for x in COMPONENTS[1:])
+    landed = (
+        None
+        if any(values[x] is None for x in ("ex_factory", "freight", "tariff_duty", "import_handling"))
+        else sum(values[x] for x in ("ex_factory", "freight", "tariff_duty", "import_handling"))
+    )
+    contribution = (
+        None if required_missing else values[COMPONENTS[0]] - sum(values[x] for x in COMPONENTS[1:])
+    )
+
     def money(value):
         return None if value is None else str(value.quantize(Decimal("0.0001")))
-    return {"currency": "USD", "unit": "piece", "components": {k: money(v) for k, v in values.items()},
-            "fixed_costs": {k: money(v) for k, v in fixed.items()}, "landed_product_cost": money(landed),
-            "unit_contribution": money(contribution), "missing": missing, "assumed_components": conditional,
-            "status": "needs_input" if required_missing else "conditional" if conditional else "calculated",
-            "formula": "net_sales_revenue_ex_tax - ex_factory - freight - tariff_duty - import_handling - referral_fee - fulfillment - variable_storage - advertising_allocated - returns_allowance - other_variable_costs",
-            "fixed_costs_excluded_from_unit_contribution": True, "assumptions": request.assumptions,
-            "profitability_decision": "requires_human_review"}
+
+    return {
+        "currency": "USD",
+        "unit": "piece",
+        "components": {k: money(v) for k, v in values.items()},
+        "fixed_costs": {k: money(v) for k, v in fixed.items()},
+        "landed_product_cost": money(landed),
+        "unit_contribution": money(contribution),
+        "missing": missing,
+        "assumed_components": conditional,
+        "status": "needs_input" if required_missing else "conditional" if conditional else "calculated",
+        "formula": "net_sales_revenue_ex_tax - ex_factory - freight - tariff_duty - import_handling - referral_fee - fulfillment - variable_storage - advertising_allocated - returns_allowance - other_variable_costs",
+        "fixed_costs_excluded_from_unit_contribution": True,
+        "assumptions": request.assumptions,
+        "profitability_decision": "requires_human_review",
+    }

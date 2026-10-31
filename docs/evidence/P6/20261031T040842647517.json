@@ -1,0 +1,8 @@
+{
+  "command": [
+    "uv",
+    "build"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T040842647517.log"
+}

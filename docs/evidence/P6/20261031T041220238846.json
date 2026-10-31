@@ -1,0 +1,10 @@
+{
+  "command": [
+    "npm",
+    "ci",
+    "--prefix",
+    "frontend"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T041220238846.log"
+}

@@ -1,0 +1,12 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "ruff",
+    "format",
+    "--check",
+    "."
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T041216328444.log"
+}

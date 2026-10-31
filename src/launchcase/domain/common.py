@@ -1,6 +1,7 @@
 import hashlib
 import json
 from datetime import datetime, timezone
+from typing import Literal
 from uuid import uuid4
 
 from pydantic import BaseModel, ConfigDict
@@ -8,7 +9,7 @@ from pydantic import BaseModel, ConfigDict
 
 class Contract(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True, allow_inf_nan=False)
-    schema_version: str = "1.0.0"
+    schema_version: Literal["1.0.0"] = "1.0.0"
 
 
 class DomainError(Exception):
@@ -26,7 +27,9 @@ def uid() -> str:
 
 
 def canonical(value) -> bytes:
-    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    return json.dumps(
+        value, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False
+    ).encode()
 
 
 def digest(value) -> str:

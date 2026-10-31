@@ -1,0 +1,11 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "ops/verify_install.py",
+    "--allow-downloads"
+  ],
+  "exit_code": 1,
+  "log": "docs/evidence/P6/20261031T040156447560.log"
+}

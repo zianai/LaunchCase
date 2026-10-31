@@ -1,0 +1,43 @@
+.....F...........s..................................                     [100%]
+=================================== FAILURES ===================================
+__________ test_cli_visual_uses_service_gate_and_persistent_receipts ___________
+
+setup = (<launchcase.application.services.CaseService object at 0x10d11e300>, Actor(id='4969a5ba-41da-44d1-99fb-990685784e8a',...fe8160c', tenant_id='tenant-b', role='owner', synthetic=True), <starlette.testclient.TestClient object at 0x10d1d5160>)
+case = {'id': 'c8ca9629-4e53-4b7e-9464-878534af5a76', 'tenant_id': 'tenant-a', 'owner': '4969a5ba-41da-44d1-99fb-990685784e8a', 'title': '[SYNTHETIC] US Pet Furniture: Easier Assembly', ...}
+concepts = [{'kind': 'Concept', 'version': 1, 'sha256': 'c5930fdbbd13eba69c7def52b4fee84851b22a2dc2ed6ad19c11706540a2e594', 'data...differentiators': ['Carry-unit compactness', 'Repairable panel modules', 'Configurable assembly sequence'], ...}, ...}]
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10dcdbec0>
+capsys = <_pytest.capture.CaptureFixture object at 0x10dd2e5a0>
+tmp_path = PosixPath('/private/var/folders/3c/8s26_dx95_ncnyq26yv52vwr0000gn/T/pytest-of-a/pytest-533/test_cli_visual_uses_service_g0')
+
+    def test_cli_visual_uses_service_gate_and_persistent_receipts(
+        setup, case, concepts, monkeypatch, capsys, tmp_path
+    ):
+        svc, actor, _, _ = setup
+        decide(svc, actor, case["id"], "G2", concepts[0]["id"], "select")
+        token, cli_actor = svc.provision(actor.tenant_id, "CLI synthetic operator", "owner", True)
+        monkeypatch.setenv("LAUNCHCASE_TOKEN", token)
+        monkeypatch.setenv("LAUNCHCASE_DATA_DIR", str(svc.settings.data_dir))
+        monkeypatch.setenv("LAUNCHCASE_DATABASE_URL", svc.settings.database_url)
+    
+        def invoke(*args):
+            monkeypatch.setattr(sys, "argv", ["launchcase", "--json", *args])
+            main()
+            return json.loads(capsys.readouterr().out)
+    
+        request = tmp_path / "visual.json"
+        request.write_text(
+            json.dumps({"concept_id": concepts[0]["id"], "requirements": "Synthetic internal plan only"})
+        )
+        task = invoke("visual", "plan", "--case", case["id"], "--file", str(request))
+        with pytest.raises(SystemExit):
+            invoke("visual", "submit", task["id"])
+>       assert "PLAN_APPROVAL_REQUIRED" in capsys.readouterr().out
+E       assert 'PLAN_APPROVAL_REQUIRED' in '{"error": {"code": "PLAN_REVIEW_REQUIRED", "message": "Approve the exact plan before execution"}}\n'
+E        +  where '{"error": {"code": "PLAN_REVIEW_REQUIRED", "message": "Approve the exact plan before execution"}}\n' = CaptureResult(out='{"error": {"code": "PLAN_REVIEW_REQUIRED", "message": "Approve the exact plan before execution"}}\n', err='').out
+E        +    where CaptureResult(out='{"error": {"code": "PLAN_REVIEW_REQUIRED", "message": "Approve the exact plan before execution"}}\n', err='') = readouterr()
+E        +      where readouterr = <_pytest.capture.CaptureFixture object at 0x10dd2e5a0>.readouterr
+
+tests/test_cli.py:33: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_cli.py::test_cli_visual_uses_service_gate_and_persistent_receipts
+1 failed, 50 passed, 1 skipped in 6.42s

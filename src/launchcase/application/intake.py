@@ -27,7 +27,9 @@ def parse_import(request):
             raise ValueError("Expected 1..5000 record objects")
         normalized = []
         for i, row in enumerate(rows, 2 if request.filename.endswith(".csv") else 1):
-            quote = row.get("review_text", row.get("text", json.dumps(row, ensure_ascii=False, sort_keys=True)))
+            quote = row.get(
+                "review_text", row.get("text", json.dumps(row, ensure_ascii=False, sort_keys=True))
+            )
             if not isinstance(quote, str) or not quote.strip() or len(quote) > 20000:
                 raise ValueError("Invalid quote")
             if request.source_type == "review" and not row.get("review_text", row.get("text")):
@@ -40,15 +42,38 @@ def parse_import(request):
                 observed = dt.astimezone(timezone.utc).isoformat()
             else:
                 observed = None
-            synthetic = request.is_synthetic or request.rights_status == "synthetic_fixture" or str(row.get("is_synthetic", "")).lower() == "true"
-            fingerprint = digest({"type": request.source_type, "product": row.get("product_id"),
-                                  "variant": row.get("variant"), "text": " ".join(quote.casefold().split())})
-            normalized.append({"quote": quote, "fingerprint": fingerprint, "row": i,
-                               "is_synthetic": synthetic,
-                               "data": {"raw": row, "observed_at": observed, "collected_at": request.collected_at or now(),
-                                        "classification": "observed", "product_identity": row.get("product_id", "unresolved"),
-                                        "variant": row.get("variant", "unknown"), "source_type": request.source_type,
-                                        "identity_status": "unverified", "flags": [] if observed else ["date_unknown"]}})
+            synthetic = (
+                request.is_synthetic
+                or request.rights_status == "synthetic_fixture"
+                or str(row.get("is_synthetic", "")).lower() == "true"
+            )
+            fingerprint = digest(
+                {
+                    "type": request.source_type,
+                    "product": row.get("product_id"),
+                    "variant": row.get("variant"),
+                    "text": " ".join(quote.casefold().split()),
+                }
+            )
+            normalized.append(
+                {
+                    "quote": quote,
+                    "fingerprint": fingerprint,
+                    "row": i,
+                    "is_synthetic": synthetic,
+                    "data": {
+                        "raw": row,
+                        "observed_at": observed,
+                        "collected_at": request.collected_at or now(),
+                        "classification": "observed",
+                        "product_identity": row.get("product_id", "unresolved"),
+                        "variant": row.get("variant", "unknown"),
+                        "source_type": request.source_type,
+                        "identity_status": "unverified",
+                        "flags": [] if observed else ["date_unknown"],
+                    },
+                }
+            )
         return raw, normalized
     except (ValueError, TypeError, csv.Error, OverflowError) as exc:
         raise DomainError("INVALID_SOURCE", "Malformed source; no rows were imported") from exc

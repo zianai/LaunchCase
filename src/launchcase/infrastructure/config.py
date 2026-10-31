@@ -14,10 +14,13 @@ class Settings:
     @classmethod
     def from_env(cls):
         root = Path(os.getenv("LAUNCHCASE_DATA_DIR", ".launchcase")).absolute()
-        return cls(root, os.getenv("LAUNCHCASE_DATABASE_URL", f"sqlite:///{root}/launchcase.db"),
-                   os.getenv("LAUNCHCASE_CREATIVE_ENGINE_MODE", "mock"),
-                   os.getenv("LAUNCHCASE_CREATIVE_ENGINE_URL", "http://127.0.0.1:4311"),
-                   os.getenv("LAUNCHCASE_CREATIVE_ENGINE_TOKEN", ""))
+        return cls(
+            root,
+            os.getenv("LAUNCHCASE_DATABASE_URL", f"sqlite:///{root}/launchcase.db"),
+            os.getenv("LAUNCHCASE_CREATIVE_ENGINE_MODE", "mock"),
+            os.getenv("LAUNCHCASE_CREATIVE_ENGINE_URL", "http://127.0.0.1:4311"),
+            os.getenv("LAUNCHCASE_CREATIVE_ENGINE_TOKEN", ""),
+        )
 
     def prepare(self):
         self.data_dir.mkdir(parents=True, exist_ok=True)

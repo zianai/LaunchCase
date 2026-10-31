@@ -1,0 +1,10 @@
+{
+  "command": [
+    "python3",
+    "/Users/a/.agents/skills/managing-vibe-project-memory/scripts/check_project_memory.py",
+    "/Users/a/workspaces/AForeign Trade/LaunchCase",
+    "--full"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T041627525450.log"
+}

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "launchcase",
+    "validate",
+    "--case",
+    ".launchcase/demo-001",
+    "--strict"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T034919667223.log"
+}

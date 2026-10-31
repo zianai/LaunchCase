@@ -1,0 +1,11 @@
+{
+  "command": [
+    "uv",
+    "sync",
+    "--frozen",
+    "--extra",
+    "dev"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T041215960137.log"
+}

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "launchcase",
+    "doctor"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T041216532840.log"
+}

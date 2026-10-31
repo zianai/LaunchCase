@@ -1,0 +1,27 @@
+{
+  "name": "launchcase-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev --hostname 127.0.0.1 --port 3310",
+    "build": "NEXT_TELEMETRY_DISABLED=1 next build",
+    "start": "NEXT_TELEMETRY_DISABLED=1 next start --hostname 127.0.0.1 --port 3310",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "format:check": "prettier --check app tests playwright.config.ts next.config.ts package.json tsconfig.json"
+  },
+  "dependencies": {
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "25.5.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "axe-core": "4.11.0",
+    "prettier": "3.6.2",
+    "typescript": "5.9.3"
+  }
+}

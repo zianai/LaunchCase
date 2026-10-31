@@ -13,20 +13,47 @@ class ProductService:
         self.service = service
 
     def artifacts(self, s, actor, case_id, kind):
-        return list(s.scalars(select(Artifact).where(Artifact.tenant_id == actor.tenant_id,
-            Artifact.case_id == case_id, Artifact.kind == kind).order_by(Artifact.version.desc())))
+        return list(
+            s.scalars(
+                select(Artifact)
+                .where(
+                    Artifact.tenant_id == actor.tenant_id, Artifact.case_id == case_id, Artifact.kind == kind
+                )
+                .order_by(Artifact.version.desc())
+            )
+        )
 
     def latest_spec(self, s, actor, case_id, concept_id):
-        return next((x for x in self.artifacts(s, actor, case_id, "ProductSpec") if x.data["concept_id"] == concept_id), None)
+        return next(
+            (
+                x
+                for x in self.artifacts(s, actor, case_id, "ProductSpec")
+                if x.data["concept_id"] == concept_id
+            ),
+            None,
+        )
 
     def latest_decision(self, s, actor, case_id, gate):
-        return s.scalar(select(GateDecision).where(GateDecision.tenant_id == actor.tenant_id,
-            GateDecision.case_id == case_id, GateDecision.gate == gate).order_by(GateDecision.created_at.desc(), GateDecision.id.desc()))
+        return s.scalar(
+            select(GateDecision)
+            .where(
+                GateDecision.tenant_id == actor.tenant_id,
+                GateDecision.case_id == case_id,
+                GateDecision.gate == gate,
+            )
+            .order_by(GateDecision.created_at.desc(), GateDecision.id.desc())
+        )
 
     def subject(self, s, actor, case_id, gate, subject_id):
         source = ResearchService(self.service).snapshot(actor, case_id)
         artifact = self.service.get_row(s, Artifact, actor, subject_id)
-        kinds = {"G1": "Opportunity", "G2": "Concept", "G3": "Feasibility", "G4": "SampleValidation", "G5": "LaunchPack"}
+        kinds = {
+            "G1": "Opportunity",
+            "G2": "Concept",
+            "G3": "Feasibility",
+            "G4": "SampleValidation",
+            "G5": "LaunchPack",
+        }
         if artifact.case_id != case_id or artifact.kind != kinds.get(gate):
             raise DomainError("SUBJECT_MISMATCH", "Gate subject belongs to another case/type")
         dependencies = {"source": source, "artifact_id": artifact.id, "artifact_hash": artifact.sha256}
@@ -49,17 +76,22 @@ class ProductService:
             dependencies["g2_id"] = g2.id
             if gate == "G3":
                 from launchcase.application.feasibility import FeasibilityService
+
                 valid, invalid = FeasibilityService(self.service).source_validity(s, actor, case_id)
                 dependencies.update(valid_cost_sources=valid, invalid_cost_sources=invalid)
                 latest = self.artifacts(s, actor, case_id, "Feasibility")
                 if not latest or latest[0].id != artifact.id or artifact.data["g2_hash"] != g2.subject_hash:
-                    raise DomainError("STALE_SUBJECT", "Feasibility no longer describes current selection", 409)
+                    raise DomainError(
+                        "STALE_SUBJECT", "Feasibility no longer describes current selection", 409
+                    )
                 if valid != artifact.data["source_hashes"] or invalid != artifact.data["invalid_source_ids"]:
                     raise DomainError("STALE_SUBJECT", "Quote validity changed; recalculate feasibility", 409)
             if gate in {"G4", "G5"}:
                 g3 = self.current(s, actor, case_id, "G3", {"sample_validation"})
                 if not g3:
-                    raise DomainError("GATE_BLOCKED", "Current G3 sample investigation approval required", 409)
+                    raise DomainError(
+                        "GATE_BLOCKED", "Current G3 sample investigation approval required", 409
+                    )
                 dependencies["g3_id"] = g3.id
                 if gate == "G4":
                     spec = self.latest_spec(s, actor, case_id, g2.subject_id)
@@ -67,9 +99,14 @@ class ProductService:
                         raise DomainError("STALE_SUBJECT", "Sample refers to an older Spec", 409)
                     for fact in artifact.data["facts"]:
                         from launchcase.infrastructure.models import SourceDocument
+
                         src = self.service.get_row(s, SourceDocument, actor, fact["source_id"])
                         self.service.objects.get(src.sha256)
-                        if src.rights_status != "authorized" or src.is_synthetic or src.sha256 != fact["source_sha256"]:
+                        if (
+                            src.rights_status != "authorized"
+                            or src.is_synthetic
+                            or src.sha256 != fact["source_sha256"]
+                        ):
                             raise DomainError("GATE_BLOCKED", "Sample evidence rights/integrity invalid", 409)
                 else:
                     g4 = self.current(s, actor, case_id, "G4", {"verify_sample"})
@@ -97,8 +134,13 @@ class ProductService:
     def decisions(self, actor, case_id):
         with self.service.sessions() as s:
             self.service.case_row(s, actor, case_id)
-            rows = list(s.scalars(select(GateDecision).where(GateDecision.tenant_id == actor.tenant_id,
-                GateDecision.case_id == case_id).order_by(GateDecision.created_at)))
+            rows = list(
+                s.scalars(
+                    select(GateDecision)
+                    .where(GateDecision.tenant_id == actor.tenant_id, GateDecision.case_id == case_id)
+                    .order_by(GateDecision.created_at)
+                )
+            )
             result = []
             latest = {r.gate: r.id for r in rows}
             for row in rows:
@@ -112,44 +154,97 @@ class ProductService:
 
     def decide(self, actor, case_id, gate, request, key):
         self.service.require(actor, human=True)
-        choices = {"G1": {"accept", "research_more", "reject"}, "G2": {"select", "revise", "reject"},
-            "G3": {"sample_validation", "revise", "hold"}, "G4": {"verify_sample", "rework", "hold"}, "G5": {"internal_handoff", "needs_changes"}}
-        types = {"G1": "opportunity", "G2": "concept", "G3": "feasibility", "G4": "sample", "G5": "launch_pack"}
+        choices = {
+            "G1": {"accept", "research_more", "reject"},
+            "G2": {"select", "revise", "reject"},
+            "G3": {"sample_validation", "revise", "hold"},
+            "G4": {"verify_sample", "rework", "hold"},
+            "G5": {"internal_handoff", "needs_changes"},
+        }
+        types = {
+            "G1": "opportunity",
+            "G2": "concept",
+            "G3": "feasibility",
+            "G4": "sample",
+            "G5": "launch_pack",
+        }
         if request.decision not in choices.get(gate, set()) or request.subject_type != types.get(gate):
             raise DomainError("INVALID_DECISION", "Decision/type does not match this gate")
+
         def run(s):
             case = self.service.case_row(s, actor, case_id, True)
             dependencies, sha = self.subject(s, actor, case_id, gate, request.subject_id)
             if sha != request.expected_subject_hash:
-                raise DomainError("STALE_SUBJECT", "Subject changed; re-read and review the current version", 409)
+                raise DomainError(
+                    "STALE_SUBJECT", "Subject changed; re-read and review the current version", 409
+                )
             subject = self.service.get_row(s, Artifact, actor, request.subject_id)
-            if gate == "G1" and request.decision == "accept" and subject.data["data_sufficiency_status"] == "needs_more_data":
+            if (
+                gate == "G1"
+                and request.decision == "accept"
+                and subject.data["data_sufficiency_status"] == "needs_more_data"
+            ):
                 raise DomainError("GATE_BLOCKED", "Insufficient traceable evidence", 409)
-            if gate == "G4" and request.decision == "verify_sample" and (case.is_synthetic or actor.synthetic or subject.data["is_synthetic"]):
+            if (
+                gate == "G4"
+                and request.decision == "verify_sample"
+                and (case.is_synthetic or actor.synthetic or subject.data["is_synthetic"])
+            ):
                 raise DomainError("GATE_BLOCKED", "Synthetic approvals cannot validate real samples", 409)
             if gate == "G5" and request.decision == "internal_handoff":
                 from launchcase.application.launchpacks import LaunchPackService
+
                 LaunchPackService(self.service).outward_prerequisites(s, actor, case, subject)
-            row = GateDecision(tenant_id=actor.tenant_id, case_id=case_id, gate=gate, decision=request.decision,
-                subject_type=request.subject_type, subject_id=request.subject_id, subject_hash=sha, dependencies=dependencies,
-                actor_id=actor.id, role=actor.role, reason=request.reason, is_synthetic=actor.synthetic or case.is_synthetic)
+            row = GateDecision(
+                tenant_id=actor.tenant_id,
+                case_id=case_id,
+                gate=gate,
+                decision=request.decision,
+                subject_type=request.subject_type,
+                subject_id=request.subject_id,
+                subject_hash=sha,
+                dependencies=dependencies,
+                actor_id=actor.id,
+                role=actor.role,
+                reason=request.reason,
+                is_synthetic=actor.synthetic or case.is_synthetic,
+            )
             s.add(row)
             s.flush()
-            stage = {("G1", "accept"): "concepting", ("G2", "select"): "feasibility_review",
-                     ("G3", "sample_validation"): "awaiting_sample_validation", ("G4", "verify_sample"): "launch_draft",
-                     ("G5", "internal_handoff"): "ready_for_internal_handoff"}.get((gate, request.decision),
-                     {"G1": "opportunity_review", "G2": "concept_review", "G3": "feasibility_review", "G4": "awaiting_sample_validation", "G5": "launch_draft"}[gate])
+            stage = {
+                ("G1", "accept"): "concepting",
+                ("G2", "select"): "feasibility_review",
+                ("G3", "sample_validation"): "awaiting_sample_validation",
+                ("G4", "verify_sample"): "launch_draft",
+                ("G5", "internal_handoff"): "ready_for_internal_handoff",
+            }.get(
+                (gate, request.decision),
+                {
+                    "G1": "opportunity_review",
+                    "G2": "concept_review",
+                    "G3": "feasibility_review",
+                    "G4": "awaiting_sample_validation",
+                    "G5": "launch_draft",
+                }[gate],
+            )
             self.service.bump(case, stage, "needs_review")
-            self.service.event(s, actor, case_id, "gate.decided", {"gate": gate, "decision_id": row.id, "subject_hash": sha})
+            self.service.event(
+                s, actor, case_id, "gate.decided", {"gate": gate, "decision_id": row.id, "subject_hash": sha}
+            )
             return row_dict(row)
-        return self.service.command(actor, key, {"action": "gate.decide", "case": case_id, "gate": gate, **request.model_dump()}, run)
+
+        return self.service.command(
+            actor, key, {"action": "gate.decide", "case": case_id, "gate": gate, **request.model_dump()}, run
+        )
 
     def concept_input(self, actor, case_id):
         with self.service.sessions() as s:
             self.service.case_row(s, actor, case_id)
             decision = self.current(s, actor, case_id, "G1", {"accept"})
             if not decision:
-                raise DomainError("GATE_BLOCKED", "Current G1 approval required before concept generation", 409)
+                raise DomainError(
+                    "GATE_BLOCKED", "Current G1 approval required before concept generation", 409
+                )
             return {"case_id": case_id, "g1_id": decision.id, "g1_hash": decision.subject_hash}
 
     def develop(self, actor, task_id, fence):
@@ -159,13 +254,18 @@ class ProductService:
         if digest(snapshot) != task["input_hash"]:
             raise DomainError("STALE_INPUT", "Opportunity selection changed", 409)
         with self.service.sessions() as s:
-            existing = [x for x in self.artifacts(s, actor, task["case_id"], "Concept") if x.dependency_hash == task["input_hash"]]
+            existing = [
+                x
+                for x in self.artifacts(s, actor, task["case_id"], "Concept")
+                if x.dependency_hash == task["input_hash"]
+            ]
             if existing:
                 return {"concept_ids": [x.id for x in existing]}
             decision = self.service.get_row(s, GateDecision, actor, snapshot["g1_id"])
             opp = self.service.get_row(s, Artifact, actor, decision.subject_id)
             context = opp.data
         from launchcase.agents.product import ProductRunner
+
         output = ProductRunner().run(context)
         with self.service.write() as s:
             manager.check_fence(s, actor, task_id, fence)
@@ -174,13 +274,49 @@ class ProductService:
                 raise DomainError("STALE_INPUT", "G1 changed during product reasoning", 409)
             ids = []
             for draft in output["concepts"]:
-                concept = self.service.artifact(s, actor, case, "Concept", {**draft, "opportunity_id": opp.id,
-                    "evidence_refs": context["evidence_refs"], "classification": "proposal", "internal_only": True}, task["input_hash"])
+                concept = self.service.artifact(
+                    s,
+                    actor,
+                    case,
+                    "Concept",
+                    {
+                        **draft,
+                        "opportunity_id": opp.id,
+                        "evidence_refs": context["evidence_refs"],
+                        "classification": "proposal",
+                        "internal_only": True,
+                    },
+                    task["input_hash"],
+                )
                 ids.append(concept.id)
-                claims = [SpecClaim(name="design_direction", value=draft["design_intent"], status="proposed").model_dump(),
-                          *[SpecClaim(name=n).model_dump() for n in ["dimensions", "material", "load_rating", "pet_safety", "manufacturing_tolerance"]]]
-                self.service.artifact(s, actor, case, "ProductSpec", {"concept_id": concept.id, "claims": claims,
-                    "reason": "Initial proposed definition; no product performance verified", "parent_spec_id": None}, concept.sha256)
+                claims = [
+                    SpecClaim(
+                        name="design_direction", value=draft["design_intent"], status="proposed"
+                    ).model_dump(),
+                    *[
+                        SpecClaim(name=n).model_dump()
+                        for n in [
+                            "dimensions",
+                            "material",
+                            "load_rating",
+                            "pet_safety",
+                            "manufacturing_tolerance",
+                        ]
+                    ],
+                ]
+                self.service.artifact(
+                    s,
+                    actor,
+                    case,
+                    "ProductSpec",
+                    {
+                        "concept_id": concept.id,
+                        "claims": claims,
+                        "reason": "Initial proposed definition; no product performance verified",
+                        "parent_spec_id": None,
+                    },
+                    concept.sha256,
+                )
             self.service.artifact(s, actor, case, "AgentRun", output["run"], task["input_hash"])
             self.service.bump(case, "concept_review", "needs_review")
             self.service.event(s, actor, case.id, "concepts.created", {"concept_ids": ids})
@@ -195,16 +331,33 @@ class ProductService:
             current = self.latest_spec(s, actor, case_id, concept_id)
             if not current or current.sha256 != request.expected_subject_hash:
                 raise DomainError("STALE_SUBJECT", "Spec changed", 409)
-            refs = {e.id for e in s.scalars(select(Evidence).where(Evidence.tenant_id == actor.tenant_id, Evidence.case_id == case_id))}
+            refs = {
+                e.id
+                for e in s.scalars(
+                    select(Evidence).where(Evidence.tenant_id == actor.tenant_id, Evidence.case_id == case_id)
+                )
+            }
             if any(ref not in refs for c in request.claims for ref in c.evidence_refs):
                 raise DomainError("INVALID_CITATION", "Spec evidence outside current case")
-            data = {"concept_id": concept_id, "claims": [c.model_dump() for c in request.claims],
-                    "reason": request.reason, "parent_spec_id": current.id}
+            data = {
+                "concept_id": concept_id,
+                "claims": [c.model_dump() for c in request.claims],
+                "reason": request.reason,
+                "parent_spec_id": current.id,
+            }
             artifact = self.service.artifact(s, actor, case, "ProductSpec", data, concept.sha256)
             self.service.bump(case, "concept_review", "needs_review")
-            self.service.event(s, actor, case_id, "spec.revised", {"spec_id": artifact.id, "prior_spec_id": current.id})
+            self.service.event(
+                s, actor, case_id, "spec.revised", {"spec_id": artifact.id, "prior_spec_id": current.id}
+            )
             return row_dict(artifact)
-        return self.service.command(actor, key, {"action": "spec.revise", "case": case_id, "concept": concept_id, **request.model_dump()}, run)
+
+        return self.service.command(
+            actor,
+            key,
+            {"action": "spec.revise", "case": case_id, "concept": concept_id, **request.model_dump()},
+            run,
+        )
 
     def spec_diff(self, actor, case_id, left_id, right_id):
         with self.service.sessions() as s:
@@ -213,4 +366,10 @@ class ProductService:
             if any(x.case_id != case_id or x.kind != "ProductSpec" for x in rows):
                 raise DomainError("SUBJECT_MISMATCH", "Spec comparison requires same case")
             left, right = [{c["name"]: c for c in r.data["claims"]} for r in rows]
-            return {"changes": [{"name": n, "before": left.get(n), "after": right.get(n)} for n in sorted(left.keys() | right.keys()) if left.get(n) != right.get(n)]}
+            return {
+                "changes": [
+                    {"name": n, "before": left.get(n), "after": right.get(n)}
+                    for n in sorted(left.keys() | right.keys())
+                    if left.get(n) != right.get(n)
+                ]
+            }

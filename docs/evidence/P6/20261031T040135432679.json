@@ -1,0 +1,11 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "test:e2e",
+    "--prefix",
+    "frontend"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T040135432679.log"
+}

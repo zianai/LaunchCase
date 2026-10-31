@@ -56,7 +56,19 @@ class RightsChange(Contract):
 
 
 class GateRequest(Contract):
-    decision: Literal["accept", "research_more", "reject", "select", "revise", "sample_validation", "hold", "verify_sample", "rework", "internal_handoff", "needs_changes"]
+    decision: Literal[
+        "accept",
+        "research_more",
+        "reject",
+        "select",
+        "revise",
+        "sample_validation",
+        "hold",
+        "verify_sample",
+        "rework",
+        "internal_handoff",
+        "needs_changes",
+    ]
     subject_type: Literal["opportunity", "concept", "feasibility", "sample", "launch_pack"]
     subject_id: str = Field(min_length=1, max_length=100)
     expected_subject_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
@@ -93,7 +105,7 @@ class ReviewRequest(Contract):
 
 
 class MoneyInput(Contract):
-    amount: str | None = Field(default=None, pattern=r"^\d+(\.\d{1,8})?$")
+    amount: str | None = Field(default=None, max_length=24, pattern=r"^\d+(\.\d{1,8})?$")
     currency: str = Field(default="USD", pattern=r"^[A-Z]{3}$")
     unit: Literal["piece", "dozen", "carton"] = "piece"
     units_per_carton: int | None = Field(default=None, ge=1, le=10000)
@@ -103,7 +115,7 @@ class MoneyInput(Contract):
 
 class FXRate(Contract):
     currency: str = Field(pattern=r"^[A-Z]{3}$")
-    usd_per_unit: str = Field(pattern=r"^\d+(\.\d{1,10})?$")
+    usd_per_unit: str = Field(max_length=24, pattern=r"^\d+(\.\d{1,10})?$")
     effective_at: str
     source_id: str
 

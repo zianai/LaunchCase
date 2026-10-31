@@ -1,0 +1,10 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "pytest",
+    "-q"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T041022646002.log"
+}

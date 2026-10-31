@@ -1,0 +1,12 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "pytest",
+    "-q",
+    "tests/test_api_boundaries.py",
+    "tests/test_operations.py"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P6/20261031T040038683801.log"
+}

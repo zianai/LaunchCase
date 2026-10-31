@@ -1,0 +1,780 @@
+{
+  "target": "http://127.0.0.1:3310",
+  "url": "http://127.0.0.1:3310",
+  "generatedAt": "2026-10-31T04:01:36.431Z",
+  "browser": "playwright-chromium 156.0.8078.4",
+  "options": {
+    "out": "design/rounds/2/login-audit",
+    "viewports": "1440x900,390x844",
+    "states": [],
+    "tokens": null,
+    "primary": null,
+    "grid": 4,
+    "minTarget": 24,
+    "minTargetMobile": 44,
+    "wait": 300,
+    "browser": null,
+    "fullPage": true,
+    "target": "http://127.0.0.1:3310"
+  },
+  "runs": [
+    {
+      "viewport": "1440x900",
+      "state": "default",
+      "screenshots": {
+        "first": "1440x900-default.png",
+        "full": "1440x900-default-full.png"
+      },
+      "checks": {
+        "console-errors": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "failed-requests": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "horizontal-overflow": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "clipped-text": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "touch-target": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "primary-action": {
+          "level": "ok",
+          "count": 1,
+          "items": [
+            {
+              "selector": "body > main.login-shell > form.login-form > button.primary",
+              "label": "进入工作区 →",
+              "rect": [
+                868,
+                548,
+                400,
+                44
+              ],
+              "fill": "rgb(24, 60, 52)",
+              "contrastWithSurround": 10.9
+            }
+          ],
+          "note": "heuristic: 实心且与周围背景对比 ≥ 3 的按钮；首屏内 1 个"
+        },
+        "focus-visible": {
+          "level": "ok",
+          "count": 0,
+          "items": [],
+          "note": "Tab 走过 2 个焦点"
+        },
+        "focus-hidden-stop": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "a11y-axe": {
+          "level": "info",
+          "count": 0,
+          "items": [],
+          "note": "另有 10 处对比度 axe 无法判断（渐变/图片背景、被遮挡等），需人工看：.monogram；span:nth-child(2)；.login-copy > .eyebrow"
+        },
+        "font-families": {
+          "level": "ok",
+          "count": 2,
+          "items": [
+            {
+              "family": "Helvetica Neue",
+              "chars": 179,
+              "inTokens": null
+            },
+            {
+              "family": "Georgia",
+              "chars": 13,
+              "inTokens": null
+            }
+          ],
+          "note": "等宽字体不计入"
+        },
+        "off-token-colors": {
+          "level": "warn",
+          "count": 3,
+          "items": [
+            {
+              "color": "rgb(119, 142, 124)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "body > main.login-shell > div.login-brand > span.monogram",
+                "body > main.login-shell > div.login-brand > span.monogram",
+                "body > main.login-shell > div.login-brand > span.monogram"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(171, 183, 167)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "main.login-shell > form.login-form > label > input",
+                "main.login-shell > form.login-form > label > input",
+                "main.login-shell > form.login-form > label > input"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(255, 254, 246)",
+              "count": 1,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "body > main.login-shell > form.login-form > button.primary"
+              ],
+              "token": null
+            }
+          ],
+          "note": "token 来源：page :root，9 个颜色 token"
+        },
+        "spacing-off-grid": {
+          "level": "warn",
+          "count": 7,
+          "items": [
+            {
+              "value": "115.2px",
+              "count": 2,
+              "examples": [
+                "html > body > main.login-shell {paddingRight}",
+                "html > body > main.login-shell {paddingLeft}"
+              ]
+            },
+            {
+              "value": "10px",
+              "count": 2,
+              "examples": [
+                "main.login-shell > form.login-form > label > input {paddingTop}",
+                "main.login-shell > form.login-form > label > input {paddingBottom}"
+              ]
+            },
+            {
+              "value": "18px",
+              "count": 2,
+              "examples": [
+                "body > main.login-shell > form.login-form > button.primary {paddingRight}",
+                "body > main.login-shell > form.login-form > button.primary {paddingLeft}"
+              ]
+            },
+            {
+              "value": "19.92px",
+              "count": 1,
+              "examples": [
+                "body > main.login-shell > form.login-form > h2 {marginBottom}"
+              ]
+            }
+          ],
+          "note": "栅格 4px，≤2px 视为光学微调不计"
+        },
+        "gradients": {
+          "level": "info",
+          "count": 1,
+          "items": [
+            {
+              "selector": "html > body > main.login-shell",
+              "label": "LC LAUNCHCASE PRODUCT DEVELOPMENT / AMAZ",
+              "rect": [
+                0,
+                0,
+                1440,
+                900
+              ],
+              "value": "linear-gradient(90deg, rgb(228, 232, 220) 54%, rgb(245, 243, 237) 54%)"
+            }
+          ]
+        }
+      },
+      "inventory": {
+        "tokenSource": "page :root",
+        "tokenColorCount": 9,
+        "fonts": [
+          {
+            "family": "Helvetica Neue",
+            "chars": 179,
+            "inTokens": null
+          },
+          {
+            "family": "Georgia",
+            "chars": 13,
+            "inTokens": null
+          }
+        ],
+        "fontSizes": [
+          {
+            "size": "10px/700",
+            "count": 2
+          },
+          {
+            "size": "10px/400",
+            "count": 1
+          },
+          {
+            "size": "12px/500",
+            "count": 2
+          },
+          {
+            "size": "12px/400",
+            "count": 1
+          },
+          {
+            "size": "13px/400",
+            "count": 1
+          },
+          {
+            "size": "13px/500",
+            "count": 1
+          },
+          {
+            "size": "14px/400",
+            "count": 1
+          },
+          {
+            "size": "23px/400",
+            "count": 1
+          },
+          {
+            "size": "24px/500",
+            "count": 1
+          },
+          {
+            "size": "64px/500",
+            "count": 1
+          }
+        ],
+        "colors": [
+          {
+            "color": "rgb(37, 60, 54)",
+            "count": 6,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "body > main.login-shell > div.login-brand > span.monogram",
+              "body > main.login-shell > div.login-brand > span",
+              "body > main.login-shell > div.login-copy > h1"
+            ],
+            "token": "ink"
+          },
+          {
+            "color": "rgb(96, 108, 101)",
+            "count": 5,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "body > main.login-shell > div.login-copy > p.eyebrow",
+              "body > main.login-shell > div.login-copy > p",
+              "body > main.login-shell > form.login-form > p.eyebrow"
+            ],
+            "token": "muted"
+          },
+          {
+            "color": "rgb(24, 60, 52)",
+            "count": 5,
+            "props": [
+              "background",
+              "border"
+            ],
+            "examples": [
+              "body > main.login-shell > form.login-form > button.primary",
+              "body > main.login-shell > form.login-form > button.primary",
+              "body > main.login-shell > form.login-form > button.primary"
+            ],
+            "token": "forest"
+          },
+          {
+            "color": "rgb(119, 142, 124)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "body > main.login-shell > div.login-brand > span.monogram",
+              "body > main.login-shell > div.login-brand > span.monogram",
+              "body > main.login-shell > div.login-brand > span.monogram"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(171, 183, 167)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "main.login-shell > form.login-form > label > input",
+              "main.login-shell > form.login-form > label > input",
+              "main.login-shell > form.login-form > label > input"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(255, 254, 250)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main.login-shell > form.login-form > label > input"
+            ],
+            "token": "surface"
+          },
+          {
+            "color": "rgb(255, 254, 246)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "body > main.login-shell > form.login-form > button.primary"
+            ],
+            "token": null
+          }
+        ],
+        "gradients": [
+          {
+            "selector": "html > body > main.login-shell",
+            "label": "LC LAUNCHCASE PRODUCT DEVELOPMENT / AMAZ",
+            "rect": [
+              0,
+              0,
+              1440,
+              900
+            ],
+            "value": "linear-gradient(90deg, rgb(228, 232, 220) 54%, rgb(245, 243, 237) 54%)"
+          }
+        ],
+        "spacingOffGrid": [
+          {
+            "value": "115.2px",
+            "count": 2,
+            "examples": [
+              "html > body > main.login-shell {paddingRight}",
+              "html > body > main.login-shell {paddingLeft}"
+            ]
+          },
+          {
+            "value": "10px",
+            "count": 2,
+            "examples": [
+              "main.login-shell > form.login-form > label > input {paddingTop}",
+              "main.login-shell > form.login-form > label > input {paddingBottom}"
+            ]
+          },
+          {
+            "value": "18px",
+            "count": 2,
+            "examples": [
+              "body > main.login-shell > form.login-form > button.primary {paddingRight}",
+              "body > main.login-shell > form.login-form > button.primary {paddingLeft}"
+            ]
+          },
+          {
+            "value": "19.92px",
+            "count": 1,
+            "examples": [
+              "body > main.login-shell > form.login-form > h2 {marginBottom}"
+            ]
+          }
+        ],
+        "spacingOffGridCount": 7,
+        "radii": [
+          {
+            "value": "4px",
+            "count": 2
+          }
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "state": "default",
+      "screenshots": {
+        "first": "390x844-default.png",
+        "full": "390x844-default-full.png"
+      },
+      "checks": {
+        "console-errors": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "failed-requests": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "horizontal-overflow": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "clipped-text": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "touch-target": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "primary-action": {
+          "level": "ok",
+          "count": 1,
+          "items": [
+            {
+              "selector": "body > main.login-shell > form.login-form > button.primary",
+              "label": "进入工作区 →",
+              "rect": [
+                24,
+                635,
+                342,
+                44
+              ],
+              "fill": "rgb(24, 60, 52)",
+              "contrastWithSurround": 10.9
+            }
+          ],
+          "note": "heuristic: 实心且与周围背景对比 ≥ 3 的按钮；首屏内 1 个"
+        },
+        "focus-visible": {
+          "level": "ok",
+          "count": 0,
+          "items": [],
+          "note": "Tab 走过 2 个焦点"
+        },
+        "focus-hidden-stop": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "a11y-axe": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "font-families": {
+          "level": "ok",
+          "count": 2,
+          "items": [
+            {
+              "family": "Helvetica Neue",
+              "chars": 179,
+              "inTokens": null
+            },
+            {
+              "family": "Georgia",
+              "chars": 13,
+              "inTokens": null
+            }
+          ],
+          "note": "等宽字体不计入"
+        },
+        "off-token-colors": {
+          "level": "warn",
+          "count": 3,
+          "items": [
+            {
+              "color": "rgb(119, 142, 124)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "body > main.login-shell > div.login-brand > span.monogram",
+                "body > main.login-shell > div.login-brand > span.monogram",
+                "body > main.login-shell > div.login-brand > span.monogram"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(171, 183, 167)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "main.login-shell > form.login-form > label > input",
+                "main.login-shell > form.login-form > label > input",
+                "main.login-shell > form.login-form > label > input"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(255, 254, 246)",
+              "count": 1,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "body > main.login-shell > form.login-form > button.primary"
+              ],
+              "token": null
+            }
+          ],
+          "note": "token 来源：page :root，9 个颜色 token"
+        },
+        "spacing-off-grid": {
+          "level": "warn",
+          "count": 5,
+          "items": [
+            {
+              "value": "10px",
+              "count": 2,
+              "examples": [
+                "main.login-shell > form.login-form > label > input {paddingTop}",
+                "main.login-shell > form.login-form > label > input {paddingBottom}"
+              ]
+            },
+            {
+              "value": "18px",
+              "count": 2,
+              "examples": [
+                "body > main.login-shell > form.login-form > button.primary {paddingRight}",
+                "body > main.login-shell > form.login-form > button.primary {paddingLeft}"
+              ]
+            },
+            {
+              "value": "19.92px",
+              "count": 1,
+              "examples": [
+                "body > main.login-shell > form.login-form > h2 {marginBottom}"
+              ]
+            }
+          ],
+          "note": "栅格 4px，≤2px 视为光学微调不计"
+        },
+        "gradients": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        }
+      },
+      "inventory": {
+        "tokenSource": "page :root",
+        "tokenColorCount": 9,
+        "fonts": [
+          {
+            "family": "Helvetica Neue",
+            "chars": 179,
+            "inTokens": null
+          },
+          {
+            "family": "Georgia",
+            "chars": 13,
+            "inTokens": null
+          }
+        ],
+        "fontSizes": [
+          {
+            "size": "10px/700",
+            "count": 2
+          },
+          {
+            "size": "10px/400",
+            "count": 1
+          },
+          {
+            "size": "12px/500",
+            "count": 2
+          },
+          {
+            "size": "12px/400",
+            "count": 1
+          },
+          {
+            "size": "13px/400",
+            "count": 2
+          },
+          {
+            "size": "13px/500",
+            "count": 1
+          },
+          {
+            "size": "20px/400",
+            "count": 1
+          },
+          {
+            "size": "24px/500",
+            "count": 1
+          },
+          {
+            "size": "48px/500",
+            "count": 1
+          }
+        ],
+        "colors": [
+          {
+            "color": "rgb(37, 60, 54)",
+            "count": 6,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "body > main.login-shell > div.login-brand > span.monogram",
+              "body > main.login-shell > div.login-brand > span",
+              "body > main.login-shell > div.login-copy > h1"
+            ],
+            "token": "ink"
+          },
+          {
+            "color": "rgb(96, 108, 101)",
+            "count": 5,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "body > main.login-shell > div.login-copy > p.eyebrow",
+              "body > main.login-shell > div.login-copy > p",
+              "body > main.login-shell > form.login-form > p.eyebrow"
+            ],
+            "token": "muted"
+          },
+          {
+            "color": "rgb(24, 60, 52)",
+            "count": 5,
+            "props": [
+              "background",
+              "border"
+            ],
+            "examples": [
+              "body > main.login-shell > form.login-form > button.primary",
+              "body > main.login-shell > form.login-form > button.primary",
+              "body > main.login-shell > form.login-form > button.primary"
+            ],
+            "token": "forest"
+          },
+          {
+            "color": "rgb(119, 142, 124)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "body > main.login-shell > div.login-brand > span.monogram",
+              "body > main.login-shell > div.login-brand > span.monogram",
+              "body > main.login-shell > div.login-brand > span.monogram"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(171, 183, 167)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "main.login-shell > form.login-form > label > input",
+              "main.login-shell > form.login-form > label > input",
+              "main.login-shell > form.login-form > label > input"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(245, 243, 237)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "html > body > main.login-shell"
+            ],
+            "token": "paper"
+          },
+          {
+            "color": "rgb(217, 221, 211)",
+            "count": 1,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "html > body > main.login-shell > form.login-form"
+            ],
+            "token": "line"
+          },
+          {
+            "color": "rgb(255, 254, 250)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main.login-shell > form.login-form > label > input"
+            ],
+            "token": "surface"
+          },
+          {
+            "color": "rgb(255, 254, 246)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "body > main.login-shell > form.login-form > button.primary"
+            ],
+            "token": null
+          }
+        ],
+        "gradients": [],
+        "spacingOffGrid": [
+          {
+            "value": "10px",
+            "count": 2,
+            "examples": [
+              "main.login-shell > form.login-form > label > input {paddingTop}",
+              "main.login-shell > form.login-form > label > input {paddingBottom}"
+            ]
+          },
+          {
+            "value": "18px",
+            "count": 2,
+            "examples": [
+              "body > main.login-shell > form.login-form > button.primary {paddingRight}",
+              "body > main.login-shell > form.login-form > button.primary {paddingLeft}"
+            ]
+          },
+          {
+            "value": "19.92px",
+            "count": 1,
+            "examples": [
+              "body > main.login-shell > form.login-form > h2 {marginBottom}"
+            ]
+          }
+        ],
+        "spacingOffGridCount": 5,
+        "radii": [
+          {
+            "value": "4px",
+            "count": 2
+          }
+        ]
+      }
+    }
+  ],
+  "counts": {
+    "fail": 0,
+    "warn": 4
+  },
+  "status": "warn"
+}
