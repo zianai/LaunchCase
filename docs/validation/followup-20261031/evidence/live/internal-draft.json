@@ -1,0 +1,342 @@
+{
+  "audience": "internal",
+  "blockers": [
+    "G4: real sample/test confirmation required",
+    "G5: verified product facts, current scoped rules and external image rights required",
+    "Unit economics incomplete; missing costs are not zero",
+    "Mock/concept visuals are internal communication materials only"
+  ],
+  "concept_comparison": [
+    {
+      "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+      "created_at": "2026-10-31T10:05:16.429433+00:00",
+      "data": {
+        "classification": "proposal",
+        "design_intent": "Modular flat-pack panels with replaceable sections and smaller carry units",
+        "differentiators": [
+          "Carry-unit compactness",
+          "Repairable panel modules",
+          "Configurable assembly sequence"
+        ],
+        "evidence_refs": [
+          "5267ac1f-f8e9-4692-9350-d5070defa6de"
+        ],
+        "internal_only": true,
+        "opportunity_id": "f8042803-d0a9-4ec8-971d-c275dae950ed",
+        "risks": [
+          "Additional joints may reduce rigidity",
+          "Shipping savings and assembly tradeoff unverified"
+        ],
+        "schema_version": "1.0.0",
+        "title": "Compact modular panel system",
+        "validation_plan": "Measure packed volume, carry effort and joint performance using actual samples."
+      },
+      "dependency_hash": "c987eada2c0050bd8b5c2f11bd6a3a96a2aa3a1fb2b76fd0cc7ea34a01487188",
+      "id": "a7de32b1-5528-4706-99bf-c3606367e9c3",
+      "kind": "Concept",
+      "sha256": "79bf8bc2ab080198413e57344b55f3febe70b0678ab162ec7c8ed26f30944aaa",
+      "tenant_id": "lc-followup-synthetic-20261031",
+      "version": 2
+    },
+    {
+      "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+      "created_at": "2026-10-31T10:05:16.428812+00:00",
+      "data": {
+        "classification": "proposal",
+        "design_intent": "Keyed panels and captive connectors to reduce alignment steps",
+        "differentiators": [
+          "Assembly-first interface",
+          "Visible orientation marks",
+          "Replaceable connectors"
+        ],
+        "evidence_refs": [
+          "5267ac1f-f8e9-4692-9350-d5070defa6de"
+        ],
+        "internal_only": true,
+        "opportunity_id": "f8042803-d0a9-4ec8-971d-c275dae950ed",
+        "risks": [
+          "Connector retention and pet access are untested",
+          "Tolerance stack and tooling cost unknown"
+        ],
+        "schema_version": "1.0.0",
+        "title": "Guided tool-free assembly",
+        "validation_plan": "Compare assembly errors and time on physical prototypes with target users."
+      },
+      "dependency_hash": "c987eada2c0050bd8b5c2f11bd6a3a96a2aa3a1fb2b76fd0cc7ea34a01487188",
+      "id": "a67dce4e-b077-4101-96c8-4370965f78b8",
+      "kind": "Concept",
+      "sha256": "12462cf6b1973ea45256d99b3c50a985b812463eeec3ab8ef5aaf84d823c14fa",
+      "tenant_id": "lc-followup-synthetic-20261031",
+      "version": 1
+    }
+  ],
+  "cost_model": {
+    "assumed_components": [],
+    "assumptions": [
+      "Imported quote fields are unverified source claims; fees and revenue are not inferred."
+    ],
+    "components": {
+      "advertising_allocated": null,
+      "ex_factory": null,
+      "freight": null,
+      "fulfillment": null,
+      "import_handling": null,
+      "net_sales_revenue_ex_tax": null,
+      "other_variable_costs": null,
+      "referral_fee": null,
+      "returns_allowance": null,
+      "tariff_duty": null,
+      "variable_storage": null
+    },
+    "currency": "USD",
+    "fixed_costs": {},
+    "fixed_costs_excluded_from_unit_contribution": true,
+    "formula": "net_sales_revenue_ex_tax - ex_factory - freight - tariff_duty - import_handling - referral_fee - fulfillment - variable_storage - advertising_allocated - returns_allowance - other_variable_costs",
+    "landed_product_cost": null,
+    "missing": [
+      "net_sales_revenue_ex_tax",
+      "ex_factory",
+      "freight",
+      "tariff_duty",
+      "import_handling",
+      "referral_fee",
+      "fulfillment",
+      "variable_storage",
+      "advertising_allocated",
+      "returns_allowance",
+      "other_variable_costs"
+    ],
+    "profitability_decision": "requires_human_review",
+    "status": "needs_input",
+    "unit": "piece",
+    "unit_contribution": null
+  },
+  "is_synthetic": true,
+  "listing_draft": {
+    "copy": "Internal development proposal. Product facts, dimensions, performance and claims require confirmation.",
+    "headline": "Product concept under investigation",
+    "unsupported_claims_withheld": [
+      "design_direction",
+      "dimensions",
+      "material",
+      "load_rating",
+      "pet_safety",
+      "manufacturing_tolerance"
+    ]
+  },
+  "manifest": {
+    "assets": [],
+    "brief_version": 1,
+    "decisions": [
+      {
+        "hash": "73d10376374ff07774116e324439401e996f5c71c499c0208ec13d66a351876c",
+        "id": "664f2bf4-0871-4171-986b-4f763295a97a",
+        "status": "current"
+      },
+      {
+        "hash": "b8f8370fb37d6d8c21503933017469deb2f94f711a9130222338ca4790c6f3d7",
+        "id": "62e55f1c-301f-43f0-a7ab-556eb179c9b3",
+        "status": "current"
+      },
+      {
+        "hash": "ad4db25305113f37b6e07981fb316f0c5b0f13ef510e127503cc5042d6055a03",
+        "id": "deba940c-45b9-4a7b-9806-f140cf6a8591",
+        "status": "current"
+      }
+    ],
+    "feasibility_hash": "85efb05c3caefc6027b2506065a645737d40a63415f33acdc70bdae3abea4b9f",
+    "feasibility_id": "35d58c05-4a60-4c6e-a43a-9cab7ab000d9",
+    "g1_id": "664f2bf4-0871-4171-986b-4f763295a97a",
+    "g2_id": "62e55f1c-301f-43f0-a7ab-556eb179c9b3",
+    "rule_versions": [],
+    "sample_id": null,
+    "sources": [
+      {
+        "id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+        "is_synthetic": true,
+        "rights": "synthetic_fixture",
+        "sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0"
+      }
+    ],
+    "spec_hash": "baf65597c671a141a50095a345c311f6ea8e919c634a83dfacd3b5059c032a30",
+    "spec_id": "260fd2e4-8ab9-4d47-8b12-c92e169287f0"
+  },
+  "opportunity_memo": {
+    "alternatives": [
+      "Improve instructions for existing products",
+      "Investigate variant mismatch before redesign"
+    ],
+    "assumptions": [
+      "The selected complaint matters to the intended segment"
+    ],
+    "classification": "hypothesis",
+    "counter_evidence_refs": [
+      "49249085-82f8-4307-be46-8f55eacfed64"
+    ],
+    "data_sufficiency_status": "conflicted",
+    "evidence_refs": [
+      "5267ac1f-f8e9-4692-9350-d5070defa6de"
+    ],
+    "falsification_plan": "Interview target users and compare physical prototypes; abandon if the reported friction does not recur.",
+    "insight_id": "334a7d6e-45d4-4bcd-8ce8-c0507e77762c",
+    "problem": "In the synthetic SIM-A compact reviews, one account dated 2026-10-01 says screws did not align and another person was needed (SYNTHETIC-LIVE-voc.csv#row=2); another dated 2026-10-02 says assembly was easy using the pictured sequence (row=3). An illustrative hypothesis is that alignment or instructions affect assembly difficulty, but user technique or unit variation could also explain the difference. The existing SIM-A compact account with easy assembly is an alternative to assuming a redesign is needed. Test with independently verified products and observed assembly sessions; more data is needed.",
+    "sample_limitations": [
+      "All six dated reviews across two product IDs are synthetic; they do not establish real customer experiences, demand or product performance.",
+      "The workflow count minimum is met, but it is not statistical proof. Sampling method and bias are unknown, and category-wide prevalence cannot be inferred.",
+      "Product identities are unverified. The snapshot does not establish Amazon US scope, the target segment, or reliable matching between variants.",
+      "Source locators and fingerprints are present, but rights information and verification that fingerprints are original hashes are not shown.",
+      "No listing prices, realized sales, demand denominators or revenue are available. No opportunity or human gate is approved."
+    ],
+    "target_segment": "Imported sample's target users; unvalidated",
+    "title": "Reduce Conflicting assembly experiences friction"
+  },
+  "prd": {
+    "claims": [
+      {
+        "evidence_refs": [],
+        "name": "design_direction",
+        "schema_version": "1.0.0",
+        "status": "proposed",
+        "unit": null,
+        "value": "Keyed panels and captive connectors to reduce alignment steps"
+      },
+      {
+        "evidence_refs": [],
+        "name": "dimensions",
+        "schema_version": "1.0.0",
+        "status": "unknown",
+        "unit": null,
+        "value": null
+      },
+      {
+        "evidence_refs": [],
+        "name": "material",
+        "schema_version": "1.0.0",
+        "status": "unknown",
+        "unit": null,
+        "value": null
+      },
+      {
+        "evidence_refs": [],
+        "name": "load_rating",
+        "schema_version": "1.0.0",
+        "status": "unknown",
+        "unit": null,
+        "value": null
+      },
+      {
+        "evidence_refs": [],
+        "name": "pet_safety",
+        "schema_version": "1.0.0",
+        "status": "unknown",
+        "unit": null,
+        "value": null
+      },
+      {
+        "evidence_refs": [],
+        "name": "manufacturing_tolerance",
+        "schema_version": "1.0.0",
+        "status": "unknown",
+        "unit": null,
+        "value": null
+      }
+    ],
+    "concept_id": "a67dce4e-b077-4101-96c8-4370965f78b8",
+    "parent_spec_id": null,
+    "reason": "Initial proposed definition; no product performance verified"
+  },
+  "product_truth": null,
+  "publication_action": "unavailable",
+  "publishable": false,
+  "ready_for_sample_validation": true,
+  "real_market_validation": "not_measured",
+  "risk_register": [
+    {
+      "domain": "engineering",
+      "evidence_refs": [],
+      "owner": "product_owner",
+      "question": "Prototype strength, tolerances and assembly must be measured",
+      "status": "needs_review"
+    },
+    {
+      "domain": "supply_chain",
+      "evidence_refs": [],
+      "owner": "product_owner",
+      "question": "Confirm supplier quotation, MOQ, production process and lead time",
+      "status": "needs_review"
+    },
+    {
+      "domain": "compliance",
+      "evidence_refs": [],
+      "owner": "product_owner",
+      "question": "Obtain current official rules and assess product-specific applicability",
+      "status": "needs_review"
+    },
+    {
+      "domain": "returns",
+      "evidence_refs": [],
+      "owner": "product_owner",
+      "question": "Investigate returns causes using actual product data",
+      "status": "needs_review"
+    },
+    {
+      "domain": "marketing",
+      "evidence_refs": [],
+      "owner": "product_owner",
+      "question": "Validate target customer problem and truthful claims",
+      "status": "needs_review"
+    }
+  ],
+  "sample_validation": null,
+  "schema_version": "1.0.0",
+  "skill_hashes": {
+    "launch-preparation": "d4e2f6c8368d5723d8d1b3d951b63d6aab486dec5f79a5619c35335ae24242d5"
+  },
+  "status": "draft",
+  "title": "[SYNTHETIC LIVE API TEST] Compact crate furniture: assembly versus ventilation",
+  "voc_appendix": [
+    {
+      "evidence_id": "5267ac1f-f8e9-4692-9350-d5070defa6de",
+      "is_synthetic": true,
+      "locator": "SYNTHETIC-LIVE-voc.csv#row=2",
+      "quote": "The assembly screws did not align and I needed another person.",
+      "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8"
+    },
+    {
+      "evidence_id": "49249085-82f8-4307-be46-8f55eacfed64",
+      "is_synthetic": true,
+      "locator": "SYNTHETIC-LIVE-voc.csv#row=3",
+      "quote": "Assembly was easy when I followed the pictured sequence.",
+      "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8"
+    },
+    {
+      "evidence_id": "48de2db5-40f6-4947-868c-fc7fee53697c",
+      "is_synthetic": true,
+      "locator": "SYNTHETIC-LIVE-voc.csv#row=4",
+      "quote": "The large version took too much floor space in my apartment.",
+      "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8"
+    },
+    {
+      "evidence_id": "0b66b604-a7fe-4d8e-a59d-3782ad8f44b6",
+      "is_synthetic": true,
+      "locator": "SYNTHETIC-LIVE-voc.csv#row=5",
+      "quote": "The small footprint fit beside my sofa but ventilation seemed limited.",
+      "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8"
+    },
+    {
+      "evidence_id": "7ae3b627-a49f-44d8-8c33-cc2e5efb0f6c",
+      "is_synthetic": true,
+      "locator": "SYNTHETIC-LIVE-voc.csv#row=6",
+      "quote": "The open sides gave good airflow but my dog saw distracting movement.",
+      "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8"
+    },
+    {
+      "evidence_id": "1c697d5b-abdf-4ff7-88a7-db29db99083f",
+      "is_synthetic": true,
+      "locator": "SYNTHETIC-LIVE-voc.csv#row=7",
+      "quote": "The latch felt loose though I did not perform a safety test.",
+      "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8"
+    }
+  ],
+  "watermark": "INTERNAL DRAFT / CONCEPT / NOT LISTING READY"
+}

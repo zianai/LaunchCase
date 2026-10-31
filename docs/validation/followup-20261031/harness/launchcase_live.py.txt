@@ -1,0 +1,185 @@
+"""One fresh user-authorized synthetic LaunchCase run; no retry after ambiguity."""
+import argparse
+import json
+import logging
+import os
+import sqlite3
+import subprocess
+import sys
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
+
+from launchcase.agents.live import LiveBudget, RealAgentRunner
+from launchcase.application.launchpacks import LaunchPackService
+from launchcase.application.pilot import export_pilot
+from launchcase.application.products import ProductService
+from launchcase.application.provenance import insight_provenance
+from launchcase.application.services import Actor, CaseService
+from launchcase.domain.common import digest, uid
+from launchcase.domain.contracts import GateRequest, ProductBrief, SourceImport
+from launchcase.infrastructure.config import Settings
+from launchcase.infrastructure.migrate import migrate
+from launchcase.infrastructure.models import Artifact, Evidence, SourceDocument
+from launchcase.validation import PolicyDenied, ValidationRunPolicy
+from launchcase.workflow.graph import enqueue_run, execute_task
+
+parser = argparse.ArgumentParser()
+parser.add_argument('mode', choices=['prepare', 'execute'])
+parser.add_argument('--root', type=Path, required=True)
+parser.add_argument('--grant-sha')
+parser.add_argument('--key-file', type=Path)
+args = parser.parse_args()
+root = args.root.resolve()
+repo = Path.cwd().resolve()
+sha = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+model, rate, cap = 'gpt-6.1-terra', 0.000005, 2
+budget = LiveBudget(max_turns=3, max_tool_calls=2, max_seconds=45, max_tokens=50000,
+                    max_output_tokens=2500, max_cost_usd=cap)
+
+def put(name, value):
+    target = root / name
+    target.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\n')
+    target.chmod(0o600)
+
+if args.mode == 'prepare':
+    root.mkdir(mode=0o700, parents=True, exist_ok=False)
+    data = root / 'data'
+    settings = Settings(data, f'sqlite:///{data}/launchcase.db', research_mode='live')
+    migrate(settings)
+    svc = CaseService(settings)
+    token, actor = svc.provision('lc-followup-synthetic-20261031', 'SYNTHETIC SOFTWARE TEST reviewer; not human signoff', 'owner', True)
+    (root / '.browser-token').write_text(token)
+    (root / '.browser-token').chmod(0o600)
+    brief = ProductBrief.model_validate_json((repo / 'fixtures/scenarios/pet-furniture-us/synthetic-brief.json').read_text())
+    brief.title = '[SYNTHETIC LIVE API TEST] Compact crate furniture: assembly versus ventilation'
+    case = svc.create_case(actor, brief, uid())
+    text = ('review_id,product_id,variant,review_date,review_text\n'
+            'SIM-001,SIM-A,compact,2026-10-01,The assembly screws did not align and I needed another person.\n'
+            'SIM-002,SIM-A,compact,2026-10-02,Assembly was easy when I followed the pictured sequence.\n'
+            'SIM-003,SIM-A,large,2026-10-03,The large version took too much floor space in my apartment.\n'
+            'SIM-004,SIM-B,compact,2026-10-04,The small footprint fit beside my sofa but ventilation seemed limited.\n'
+            'SIM-005,SIM-B,ventilated,2026-10-05,The open sides gave good airflow but my dog saw distracting movement.\n'
+            'SIM-006,SIM-B,compact,2026-10-06,The latch felt loose though I did not perform a safety test.\n')
+    put('dataset.json', {'classification':'synthetic','source':'locally authored fictional observations','csv':text,
+                         'actual_products':False,'market_share':None,'physical_testing':False})
+    source = svc.import_source(actor, case['id'], SourceImport(filename='SYNTHETIC-LIVE-voc.csv', content=text,
+        source_type='review', rights_status='synthetic_fixture', is_synthetic=True), uid())
+    evidence = sorted(svc.list_scoped(actor, case['id'], Evidence), key=lambda item:item['source_locator'])
+    task = enqueue_run(svc, actor, case['id'], 'research', uid())
+    now = datetime.now(timezone.utc)
+    context = {'run_id':'lc-followup-live-'+uid(),'system':'launchcase','tenant_id':actor.tenant_id,
+        'environment':'live_sandbox','case_id':case['id'],'dataset_id':'LC-FOLLOWUP-SYNTHETIC-20261031',
+        'plan_hash':digest({'code_sha':sha,'task_id':task['id'],'budget':budget.model_dump(),'dataset':digest(text.encode())}),
+        'input_hash':digest(evidence),'rights_hash':digest({'source':source['sha256'],'rights':'synthetic_fixture'}),
+        'provider_config_hash':digest({'model':model,'rate':rate}),'rights_current':True,
+        'data_classification':'synthetic','action':'submit_model','provider':'openai','model':model,'domain':'api.openai.com'}
+    grant = {**{k:v for k,v in context.items() if k not in ('rights_current','data_classification','action','provider','model','domain')},
+        'actor_id':'direct-user-authorization-20261031-followup','actor_origin':'operator',
+        'human_reason':'User explicitly authorized new synthetic real API tests, total USD10; coordinator allocated exclusive LaunchCase USD2 including unknown liabilities; reuse existing CE key. No business writes or genuine approval.',
+        'approved_at_utc':now.isoformat(),'expires_at_utc':(now+timedelta(hours=2)).isoformat(),
+        'revoked_at_utc':None,'allow_external_writes':False,'export_allowed':True,'data_classifications':['synthetic'],
+        'capabilities':{'submit_model':{'provider':'openai','model':model,'domain':'api.openai.com',
+            'max_requests':3,'max_images':0,'max_attempts':1,'max_usd':cap}}}
+    put('context.json',context);put('isolation.json',{**context,'data_root':str(root)});put('grant.json',grant)
+    grant_sha=digest((root/'grant.json').read_bytes())
+    put('manifest.json',{'code_sha':sha,'case_id':case['id'],'actor_id':actor.id,'tenant_id':actor.tenant_id,
+        'task_id':task['id'],'database':str(data/'launchcase.db'),'data_dir':str(data),'grant_sha256':grant_sha,
+        'dataset_sha256':digest((root/'dataset.json').read_bytes()),'budget':budget.model_dump(),
+        'helper_sha256':digest(Path(__file__).read_bytes())})
+    put('action.json',{'action_id':context['run_id'],'status':'authorized','authorization_basis':'Direct current user request and coordinator exclusive USD2 allocation',
+        'target':'https://api.openai.com/v1','environment':'live_sandbox','subject':'git:'+sha,
+        'payload_sha256':context['input_hash'],'grant_sha256':grant_sha,'maximum_usd':cap,
+        'retry_allowed':False,'external_business_writes':False,'human_completion_accepted':False})
+    print(json.dumps({'prepared':True,'code_sha':sha,'grant_sha256':grant_sha,'case_id':case['id'],
+                      'evidence_rows':len(evidence),'max_usd':cap,'paid_calls':0}))
+    svc.engine.dispose()
+    raise SystemExit(0)
+
+manifest=json.loads((root/'manifest.json').read_text())
+if sha != manifest['code_sha'] or args.grant_sha != manifest['grant_sha256']:
+    raise RuntimeError('Frozen code or externally pinned grant mismatch')
+if (root/'reservations.sqlite').exists() or (root/'result.json').exists():
+    raise RuntimeError('Existing attempt: reconcile; never repeat')
+if not args.key_file:
+    raise RuntimeError('Explicit user-approved key path required')
+policy=ValidationRunPolicy(root,'launchcase',args.grant_sha,True)
+context=json.loads((root/'context.json').read_text())
+preflight=policy.preflight(context,cap,True)
+put('preflight.json',preflight)
+if preflight['status'] != 'allowed':
+    raise PolicyDenied('PREFLIGHT_DENIED')
+key=None
+for line in args.key_file.read_text().splitlines():
+    if line.strip().startswith('OPENAI_API_KEY='):
+        key=line.split('=',1)[1].strip().strip('"').strip("'")
+if not key or not key.startswith('sk-'):
+    raise RuntimeError('Authorized key unavailable')
+os.environ['OPENAI_API_KEY']=key
+logging.disable(logging.CRITICAL)
+settings=Settings(Path(manifest['data_dir']),f"sqlite:///{manifest['database']}",research_mode='live')
+svc=CaseService(settings)
+actor=Actor(manifest['actor_id'],manifest['tenant_id'],'owner',True)
+runner=RealAgentRunner(actor.tenant_id,manifest['case_id'],policy=policy,model_name=model,rate=rate,budget=budget)
+action=json.loads((root/'action.json').read_text());action['status']='executing';put('action.json',action)
+try:
+    task=execute_task(svc,actor,manifest['task_id'],research_runner=runner)
+    research=svc.list_scoped(actor,manifest['case_id'],Artifact,kind='Research')[0]
+    insights=svc.list_scoped(actor,manifest['case_id'],Artifact,kind='Insight')
+    proofs=[insight_provenance(svc,actor,item['id']) for item in insights]
+    put('research-result.json',research)
+    put('insights.json',insights)
+    put('provenance.json',proofs)
+    assert research['data']['paid_calls']>0 and research['data']['status']=='tested_live_scoped'
+    assert insights and all(proof['current'] and proof['model_id']==model and proof['citations'] for proof in proofs)
+    assert task['result']['waiting_for']=='G1'
+    product=ProductService(svc)
+    def decide(gate,subject_id,choice):
+        subject=product.gate_subject(actor,manifest['case_id'],gate,subject_id)
+        return product.decide(actor,manifest['case_id'],gate,GateRequest(decision=choice,
+            subject_type={'G1':'opportunity','G2':'concept','G3':'feasibility'}[gate],subject_id=subject_id,
+            expected_subject_hash=subject['subject_hash'],reason='SYNTHETIC SOFTWARE TEST ONLY. Simulated workflow decision; not independent human or product approval.'),uid())
+    opp=svc.list_scoped(actor,manifest['case_id'],Artifact,kind='Opportunity')[0]
+    decide('G1',opp['id'],'accept')
+    concept_task=enqueue_run(svc,actor,manifest['case_id'],'concepts',uid())
+    execute_task(svc,actor,concept_task['id'],research_runner=runner)
+    concept=svc.list_scoped(actor,manifest['case_id'],Artifact,kind='Concept')[0]
+    decide('G2',concept['id'],'select')
+    feasibility_task=enqueue_run(svc,actor,manifest['case_id'],'feasibility',uid())
+    execute_task(svc,actor,feasibility_task['id'],research_runner=runner)
+    feasibility=svc.list_scoped(actor,manifest['case_id'],Artifact,kind='Feasibility')[0]
+    decide('G3',feasibility['id'],'sample_validation')
+    pack_task=enqueue_run(svc,actor,manifest['case_id'],'launch_draft',uid())
+    final=execute_task(svc,actor,pack_task['id'],research_runner=runner)
+    pack_id=final['result']['pack_id']
+    pack=json.loads(LaunchPackService(svc).export(actor,pack_id))
+    put('internal-draft.json',pack)
+    put('pilot-export.json',export_pilot(svc,actor,manifest['case_id']))
+    assert pack['publishable'] is False and pack['is_synthetic'] is True
+    assert final['result']['waiting_for']=='G4' and pack['cost_model']['unit_contribution'] is None
+    put('decisions.json',product.decisions(actor,manifest['case_id']))
+    out={'status':'tested_live_scoped','code_sha':sha,'synthetic':True,'model':model,
+         'model_calls':research['data']['model_calls'],'tool_calls':research['data']['tool_calls'],
+         'tokens':research['data']['tokens'],'cost_estimated_upper_usd':research['data']['cost_estimated_usd'],
+         'cost_actual_usd':None,'actual_bill_status':'not_available','request_receipts':research['data']['request_receipts'],
+         'insight_count':len(insights),'all_provenance_current':True,'case_id':manifest['case_id'],
+         'pack_id':pack_id,'pack_sha256':digest((root/'internal-draft.json').read_bytes()),
+         'waiting_for':'G4','human_review':'not_performed','business_pilot_accepted':False,'publication_authorized':False}
+    action['status']='succeeded';action['observation']='Native SDK output and locatable provenance persisted; synthetic workflow reached blocked G4 internal draft.'
+except BaseException as error:
+    out={'status':'failed_or_unknown','code_sha':sha,'error_class':type(error).__name__,
+         'error_code':getattr(error,'code',None),'request_receipts':runner.last_receipts,
+         'cost_actual_usd':None,'retained_allocation_usd':cap,'retry_allowed':False,'business_pilot_accepted':False}
+    action['status']='unknown' if not runner.last_receipts or any(x['status']=='unknown' for x in runner.last_receipts) else 'failed'
+    action['observation']='No retry. Inspect recorded receipts and ledger before any additional action.'
+finally:
+    ledger=[]
+    if (root/'reservations.sqlite').exists():
+        with sqlite3.connect(root/'reservations.sqlite') as connection:
+            ledger=[dict(zip(['id','status','reserved_microusd','observed_microusd','basis'],row)) for row in connection.execute('SELECT id,status,reserved,observed,basis FROM calls')]
+    put('ledger.json',ledger)
+    put('action.json',action)
+    put('result.json',out)
+    os.environ.pop('OPENAI_API_KEY',None)
+    svc.engine.dispose()
+print(json.dumps(out,ensure_ascii=False))
+raise SystemExit(0 if out['status']=='tested_live_scoped' else 1)

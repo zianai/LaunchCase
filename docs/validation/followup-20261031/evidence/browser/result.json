@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "viewports": [
+    1440,
+    390
+  ],
+  "native_model": "gpt-6.1-terra",
+  "source_provenance": "locatable",
+  "human_review": "pending",
+  "publishable": false,
+  "new_paid_calls": 0,
+  "design_approved": false
+}

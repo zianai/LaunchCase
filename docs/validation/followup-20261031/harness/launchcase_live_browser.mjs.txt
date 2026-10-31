@@ -1,0 +1,36 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
+const repo=process.env.LC_REPO, root=process.env.LC_LIVE_ROOT, out=process.env.LC_BROWSER_OUT;
+const {chromium,expect}=require(path.join(repo,'frontend/node_modules/@playwright/test'));
+const browser=await chromium.launch({headless:true});
+const context=await browser.newContext();
+await context.route('**/*',route=>new URL(route.request().url()).hostname==='127.0.0.1'?route.continue():route.abort());
+const page=await context.newPage();
+const errors=[];page.on('pageerror',e=>errors.push(e.message));
+await page.goto(process.env.LAUNCHCASE_WEB_URL);
+await page.getByLabel('本地身份凭证').fill(fs.readFileSync(path.join(root,'.browser-token'),'utf8'));
+await page.getByRole('button',{name:'进入工作区 →'}).click();
+await page.locator('.case-row').first().click();
+for (const width of [1440,390]) {
+  await page.setViewportSize({width,height:width===390?844:1000});
+  await page.getByRole('tab',{name:'用户反馈研究',exact:true}).click();
+  const detail=page.getByText('核验洞察来源与运行版本',{exact:true}).first();
+  if (!(await page.getByText(/模型：gpt-6.1-terra/).first().isVisible())) await detail.click();
+  await expect(page.getByText(/模型：gpt-6.1-terra/).first()).toBeVisible();
+  await expect(page.getByText('来源定位有效 · 人工判断仍待评审').first()).toBeVisible();
+  await page.screenshot({path:path.join(out,`native-provenance-${width}.png`),fullPage:true});
+  if (!(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))) throw Error('overflow');
+  await page.getByRole('tab',{name:'内部交接资料',exact:true}).click();
+  await expect(page.getByText('不可发布',{exact:true})).toBeVisible();
+  await page.screenshot({path:path.join(out,`native-pack-${width}.png`),fullPage:true});
+}
+await page.addScriptTag({path:require.resolve(path.join(repo,'frontend/node_modules/axe-core/axe.min.js'))});
+const axe=await page.evaluate(async()=>window.axe.run());
+fs.writeFileSync(path.join(out,'accessibility.json'),JSON.stringify(axe.violations,null,2));
+if(axe.violations.some(v=>['critical','serious'].includes(v.impact))) throw Error('serious accessibility finding');
+if(errors.length)throw Error('browser runtime error');
+fs.writeFileSync(path.join(out,'result.json'),JSON.stringify({status:'passed',viewports:[1440,390],native_model:'gpt-6.1-terra',source_provenance:'locatable',human_review:'pending',publishable:false,new_paid_calls:0,design_approved:false},null,2));
+await browser.close();
+console.log('Persisted native SDK insight/source review and blocked internal pack rendered at 1440/390; no new model calls.');

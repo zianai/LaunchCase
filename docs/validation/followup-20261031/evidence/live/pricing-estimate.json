@@ -1,0 +1,19 @@
+{
+  "model": "gpt-6.1-terra",
+  "source": "https://developers.openai.com/api/docs/pricing",
+  "source_verification": "coordinator verified current official standard pricing",
+  "input_tokens": 3594,
+  "output_tokens": 1214,
+  "input_usd_per_million": 1,
+  "output_usd_per_million": 5,
+  "estimated_standard_price_usd": 0.009664,
+  "cached_input_discount_assumed": false,
+  "budget_guard_upper_estimate_usd": 0.024040000000000002,
+  "reserved_liability_usd": 0.1489,
+  "actual_bill_usd": null,
+  "synthetic": true,
+  "estimate_label": "base-rate estimate excluding cache-write and account adjustments; not invoice",
+  "cache_write_tokens": 2747,
+  "cached_tokens": 0,
+  "raw_usage_ref": "retrieved-usage.json"
+}

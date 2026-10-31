@@ -1,0 +1,42 @@
+{
+  "scope": "GET existing synthetic Responses metadata only",
+  "new_model_calls": 0,
+  "reads": [
+    {
+      "response_id": "resp_0dae8bac8930cd0a006ae5bd4b6bc087d2bda59ac43b099be2",
+      "original_request_id": "req_469a87fb1fec45fca40fe98f687cd62e",
+      "retrieval_request_id": "req_c6d14b63a58d4050b3ca367d194720e9",
+      "status": "completed",
+      "raw_usage": {
+        "input_tokens": 844,
+        "input_tokens_details": {
+          "cache_write_tokens": 0,
+          "cached_tokens": 0
+        },
+        "output_tokens": 15,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 859
+      }
+    },
+    {
+      "response_id": "resp_0dae8bac8930cd0a006ae5bd4d7adc87d2b3c5eece0172c72d",
+      "original_request_id": "req_ddbacc112c014f348a1386a064b54842",
+      "retrieval_request_id": "req_c066fdff14994acdb53d1bfc87c7aa33",
+      "status": "completed",
+      "raw_usage": {
+        "input_tokens": 2750,
+        "input_tokens_details": {
+          "cache_write_tokens": 2747,
+          "cached_tokens": 0
+        },
+        "output_tokens": 1199,
+        "output_tokens_details": {
+          "reasoning_tokens": 299
+        },
+        "total_tokens": 3949
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "live_execution_commit": "bf16461759d93c13e9831e191108fa6d76d571a9",
+  "final_code_commit": "a5c24255bc7e6a95a9c2c6641068d2577b1ef00f",
+  "scope": "authorized synthetic real-API engineering only",
+  "G_ENG": "GO_LOCAL_AND_SCOPED_SYNTHETIC_API",
+  "G_BIZ": "HOLD",
+  "G_PROD": "HOLD",
+  "new_model_requests": 2,
+  "new_model_retries": 0,
+  "known_response_metadata_reads": 2,
+  "maximum_authorized_usd": 2,
+  "base_rate_estimate_usd": 0.009664,
+  "base_rate_excludes": "cache-write and account adjustments",
+  "budget_guard_estimate_usd": 0.02404,
+  "reserved_liability_usd": 0.1489,
+  "actual_bill_usd": null,
+  "business_pilot_accepted": false,
+  "human_review_performed": false,
+  "publishable": false,
+  "model_stop_reason": "insufficient_evidence",
+  "workflow_stopped_at": "G4",
+  "tests": {
+    "passed": 135,
+    "skipped": 3,
+    "failed": 0
+  }
+}

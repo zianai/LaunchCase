@@ -1,0 +1,23 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_p7_live.py",
+    "-q"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T10:06:40.533657+00:00",
+  "duration_seconds": 4.233,
+  "exit_code": 0,
+  "source_sha": "bf16461759d93c13e9831e191108fa6d76d571a9",
+  "tracked_diff_sha256": "3fe8ba8a9860bbe9f0398e1d10e9e3b5749827653d2c4cd2e832a1670ae8b109",
+  "dirty_paths": [
+    " M src/launchcase/agents/live.py",
+    " M tests/test_p7_live.py"
+  ],
+  "log_sha256": "5c9258a0de83f38243aa16ddbdf4932629810a56e692fb8852a52f3a6f665024",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

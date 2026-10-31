@@ -1,0 +1,24 @@
+{
+  "system": "launchcase",
+  "configuration": {
+    "provider": "openai",
+    "model": "gpt-6.1-terra",
+    "required_domain": "api.openai.com",
+    "capability_verified_live": false,
+    "environment": "live_sandbox",
+    "data_classification": "synthetic",
+    "action": "submit_model"
+  },
+  "approved_limits": {
+    "max_requests": 3,
+    "max_images": 0,
+    "max_attempts": 1,
+    "max_usd": 2.0
+  },
+  "status": "allowed",
+  "reasons": [],
+  "token_present": true,
+  "external_writes": false,
+  "live_executed": false,
+  "approved_grant_sha256": "a20b1fac92ac96f80d0e90817fe82911f18f5d2edc2f506df61a603a76f171a9"
+}

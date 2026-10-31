@@ -1,0 +1,25 @@
+{
+  "reason": "Completed bounded synthetic test; prevent accidental reuse of this fresh grant",
+  "future_preflight": {
+    "system": "launchcase",
+    "configuration": {
+      "provider": "openai",
+      "model": "gpt-6.1-terra",
+      "required_domain": "api.openai.com",
+      "capability_verified_live": false,
+      "environment": "live_sandbox",
+      "data_classification": "synthetic",
+      "action": "submit_model"
+    },
+    "approved_limits": null,
+    "status": "blocked",
+    "reasons": [
+      "AUTH_REVOKED"
+    ],
+    "token_present": false,
+    "external_writes": false,
+    "live_executed": false,
+    "approved_grant_sha256": "a20b1fac92ac96f80d0e90817fe82911f18f5d2edc2f506df61a603a76f171a9"
+  },
+  "new_model_calls": 0
+}

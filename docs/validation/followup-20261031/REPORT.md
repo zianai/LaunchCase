@@ -1,0 +1,19 @@
+# Authorized synthetic live follow-up — LaunchCase
+
+The native SDK research call succeeded on six freshly authored synthetic VOC rows. Three insights were persisted with exact source-row, excerpt, source/row hashes, variant identity, model, Skill, prompt and input versions. The model preserved contradictory assembly observations, separated different-variant trade-offs, and treated the loose latch report as subjective rather than a safety test. Its stop reason was `insufficient_evidence`; it explicitly denied real demand, market share and physical product conclusions.
+
+The actual live action ran at `bf16461759d93c13e9831e191108fa6d76d571a9`. Final code is `a5c24255bc7e6a95a9c2c6641068d2577b1ef00f`; later commits add raw usage/cache receipt preservation and clear stale receipts before a denied run. Those local metadata changes were not used to claim another paid execution. The prior P8–P10 RC reports remain unchanged.
+
+The user authorized this new synthetic API follow-up and reuse of the existing key, under a total three-system USD 10 limit. The coordinator allocated LaunchCase at most USD 2 including unknown liabilities. A fresh pinned grant bound code, dataset/input, case/tenant and budget; no P7 grant was reused. The key was read only into the isolated process, never written to these artifacts. The existing Agent SDK, LangGraph, TaskManager, Skills and application services were used; no alternate orchestration or fallback model was introduced.
+
+There were 2 model requests, 1 read-only evidence tool call and 4,808 tokens: 3,594 input, 1,214 output. Original request/response IDs are in evidence/live/result.json. The base input/output rate estimate is USD 0.009664, excluding cache-write/account adjustments. Actual billing remains null. Read-only GET retrieval of the two known responses recovered raw usage: 2,747 cache-write input tokens, 0 cached tokens and 299 reasoning output tokens. No extra model generation occurred. The budget guard's all-token conservative estimate is USD 0.02404, and its persisted reservation liability remains USD 0.1489. See pricing-estimate.json and retrieved-usage.json; none is an invoice.
+
+After the live research pause at G1, explicitly synthetic software-test decisions exercised existing G1/G2/G3 and produced an internal draft through the native graph. These were not human business approvals. G4 still blocks for a genuine sample, costs remain unknown, publication is false and independent human review remains pending. Full model outputs, source proofs and the synthetic internal pack are included for inspection; hidden model reasoning is not stored.
+
+Actual browser/API screenshots at 1440 and 390 pixels show the persisted live model name, locatable source, unresolved human review and blocked internal draft. There were no page errors, horizontal overflow or serious/critical accessibility findings. Browser checks ran with stripped API credentials and no new paid calls. Screenshots demonstrate rendering, not human design approval.
+
+The fresh grant was closed after the test with a revocation marker; a subsequent local preflight explicitly returned AUTH_REVOKED without an API call.
+
+Final validation and artifact hashes are in evidence-index.json. The complete credential-stripped pytest suite, including the new raw-cache and denied-receipt tests, is recorded against the final code SHA. Optional PostgreSQL and separately covered CE HTTP tests remain the same explicit three skips. The earlier RC's actual CE HTTP checks and current browser evidence are not counted as genuine business pilots.
+
+The coordinator independently reviewed the executed action and known-response metadata reads; see INDEPENDENT_REVIEW.md. No private product data, genuine human approval, supplier contact, publication, GitHub remote write or production deployment occurred. E3 business acceptance and actual billing remain unresolved.

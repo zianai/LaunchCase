@@ -1,0 +1,265 @@
+{
+  "repo": "launchcase",
+  "actual_live_execution_commit": "bf16461759d93c13e9831e191108fa6d76d571a9",
+  "final_tested_code_commit": "a5c24255bc7e6a95a9c2c6641068d2577b1ef00f",
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q",
+    "exit_code": 0,
+    "passed": 135,
+    "skipped": 3,
+    "browser": "persisted native SDK provenance and internal pack at 1440/390, exit0"
+  },
+  "excluded": [
+    "API key",
+    "browser token",
+    "runtime SQLite databases",
+    "private pinned grant/context records"
+  ],
+  "files": [
+    {
+      "path": "docs/validation/followup-20261031/GO_NO_GO.json",
+      "sha256": "efe0cc564b77b4a2b739336d095090a9c22c2320ea9a3cf03d70a06910828801",
+      "bytes": 860
+    },
+    {
+      "path": "docs/validation/followup-20261031/INDEPENDENT_REVIEW.md",
+      "sha256": "dc08d1ab0f32336e63ff31efb125d045c9f35146d192de7faedf80a6aefd9d7d",
+      "bytes": 1155
+    },
+    {
+      "path": "docs/validation/followup-20261031/REPORT.md",
+      "sha256": "44fd9329b17530b6aaa59f4b5ec86f476b318c27eb9be8be93a507b923e6fc11",
+      "bytes": 3895
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/accessibility.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "bytes": 2
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/api.log",
+      "sha256": "9a9c34cd261ee8ad20484bac13a2533e877b3e996c199bbfd7f8984fb0579049",
+      "bytes": 348
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/native-pack-1440.png",
+      "sha256": "b3ccef223f39a5eb715ec4dad9c132aee0ce2ac6dd6f86b2cf1a82df6bf65bf7",
+      "bytes": 184394
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/native-pack-390.png",
+      "sha256": "d730a9d4bbca29193d4cd8559157241b20a25eb79c13cc418f52be36e9783448",
+      "bytes": 145592
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/native-provenance-1440.png",
+      "sha256": "d37143eb6c2c2d644f5bd9aeb82bc6957fc29ce00abd181235e62a1607a257c2",
+      "bytes": 462340
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/native-provenance-390.png",
+      "sha256": "33709f054f58384089e3836a6c676a0a0b4477585df39ba7bde1b597775f90f9",
+      "bytes": 388788
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/result.json",
+      "sha256": "74b408fb158e585874b5d06043a8b218c1e3edb7edc3e2be72f3edd50aa2d748",
+      "bytes": 239
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser/web.log",
+      "sha256": "e07b449ed586c7be0dc147dfdf1603033cbc0d71a2f0eb8918602ddd53e9b140",
+      "bytes": 156
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser-final-run/output.log",
+      "sha256": "dec15995623a246455ee3e808be1f7cf557520c66211b4a4f18d42c4287d5545",
+      "bytes": 111
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/browser-final-run/result.json",
+      "sha256": "89eef7504d503e5a63d512fe9ea6ad398735050922afafae85e03e6bab7cc014",
+      "bytes": 943
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/final-regression/output.log",
+      "sha256": "7d861c9b51db2330d5bead9f748c464c2dc122bfcf4a84c319ebbdf3c4a589c5",
+      "bytes": 192
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/final-regression/result.json",
+      "sha256": "317e637ac3206db5ec20c68a27773f41321977ac8bc7172eebe21c0d12d9ec3a",
+      "bytes": 661
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-denied-receipt-test/output.log",
+      "sha256": "93c97c10af4fc8b54296201243c032c5e8295479ca6b4adc06019033d6f9e282",
+      "bytes": 98
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-denied-receipt-test/result.json",
+      "sha256": "03355334135d69388f79c7b20145704380388fa6879f930af98faba1ad5145b1",
+      "bytes": 820
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-final-regression/output.log",
+      "sha256": "5fa21728425edfa800343ab88d622d51d78c152ee74a5b64664f6d54ac4f8dd1",
+      "bytes": 192
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-final-regression/result.json",
+      "sha256": "f6800411cec2630aeba57a12d586ace9ed2b90a3d086a37ebf5e67cc470bcd57",
+      "bytes": 661
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-final-usage-regression/output.log",
+      "sha256": "364347db984c232b1b2d930975e3537ec0038f11947b8c90ed118ac561bf8bad",
+      "bytes": 192
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-final-usage-regression/result.json",
+      "sha256": "7ff68905dbafd90f35a3579ac19c29509f91ebdd3c2c15db982b65be7c078f53",
+      "bytes": 661
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-live-browser-run/output.log",
+      "sha256": "dec15995623a246455ee3e808be1f7cf557520c66211b4a4f18d42c4287d5545",
+      "bytes": 111
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-live-browser-run/result.json",
+      "sha256": "758b743a8f7cf32a5f6c04fc463d123a509526a9963bec9f8ed1f55f4eab88c7",
+      "bytes": 890
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-live-offline/output.log",
+      "sha256": "d750c6b5c659a924d0d725e172c3aa31d18a3378e9696a5ccd110b8e346a1587",
+      "bytes": 98
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-live-offline/result.json",
+      "sha256": "34342fba6138a460bfbee34baaf4a7b35e00f931dbe9016edaf2afa9b4fab795",
+      "bytes": 920
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-raw-usage-test/output.log",
+      "sha256": "5c9258a0de83f38243aa16ddbdf4932629810a56e692fb8852a52f3a6f665024",
+      "bytes": 98
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/launchcase-raw-usage-test/result.json",
+      "sha256": "a6d49b8eb166e78fae9d6b9deeb727e1aed3da0d2afc5e3c53eebcce51cddc60",
+      "bytes": 763
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/action.json",
+      "sha256": "9e205ddf8e1b67a0b6525dfc89b6720145a2549361c5c76155ca614d3e8cc5ed",
+      "bytes": 756
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/authorization-closed.json",
+      "sha256": "723182a4fb2d21d2ef41d3774c1579104c17e45801e67112939589a9047bf278",
+      "bytes": 743
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/dataset.json",
+      "sha256": "3d1be26732c3300ab57dcc08aee17cad80f1954761c73105cd7345a2c28f7ea8",
+      "bytes": 827
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/decisions.json",
+      "sha256": "8bf7ba7135685ceccb5a79c503e292b91510fc37255bdcc61e39ce947be4e006",
+      "bytes": 4102
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/execution.log",
+      "sha256": "f4eae895668c68271059ea238bd5285c14da887d6da2443ce9a28c422538b2ab",
+      "bytes": 1335
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/insights.json",
+      "sha256": "e82a01b9319524af94c9a1414c01b11dd2808269d71406f419ead455579c56bd",
+      "bytes": 13023
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/internal-draft.json",
+      "sha256": "ec7d60690c6f551c8c68066c291b32d7999f517599dba7c2e77c2119a20d78e2",
+      "bytes": 12968
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/ledger.json",
+      "sha256": "252ee5cd3869e5fe2e58d9470c2dff32267d21c94c27d6714e528ee30127025d",
+      "bytes": 348
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/pilot-export.json",
+      "sha256": "d1dea1125d4615449f1f444e5e0a0f0fbd9ae05f3ba18403ad38e5c751ca7e15",
+      "bytes": 10114
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/preflight.json",
+      "sha256": "0a6baf928d7d6bef69f8519355e4400cdc1312621bd42695675e10793d8173d5",
+      "bytes": 623
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/pricing-estimate.json",
+      "sha256": "91b9b432ed17e7276d5180b1cd5e63c9dee8fe0742e24937f5bc553d2834f60b",
+      "bytes": 711
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/provenance.json",
+      "sha256": "c943094219410f58c9e227288d17dc237ef36fab708fca88b6c7f565a9f686dc",
+      "bytes": 6543
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/research-result.json",
+      "sha256": "46003d4610660f307be2ba74834d52766ddd4548051d1c935ae2f98ff6045dbd",
+      "bytes": 13252
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/result.json",
+      "sha256": "2a8b9dfe3519bf340428c1681979fac4abe47f959d025c5355b84b646f3beabc",
+      "bytes": 1509
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/retrieved-usage.json",
+      "sha256": "bda53901fcef9bc1fa3939656b231ab89f09e656a32e2a5434c097d2aee265e2",
+      "bytes": 1240
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/usage-retrieval-action.json",
+      "sha256": "e68e4104c3b05349ab7ed67b2baee74db8b6dd4ca66107c45a7bbfad5b060672",
+      "bytes": 802
+    },
+    {
+      "path": "docs/validation/followup-20261031/evidence/live/usage-retrieval.log",
+      "sha256": "0ed566447f0a32a962bc284078c2725ccfa16aa3c2f3b88715d54f0442201abf",
+      "bytes": 60
+    },
+    {
+      "path": "docs/validation/followup-20261031/harness/README.md",
+      "sha256": "44a0a2756337328747dd5b491401b1094a09057183879aeff760efa2628bcb46",
+      "bytes": 357
+    },
+    {
+      "path": "docs/validation/followup-20261031/harness/launchcase_live.py.txt",
+      "sha256": "5ced3bfc611c7a2a89c60bb543267cefe895848b589726e2e8bd9a42dda0803a",
+      "bytes": 12765
+    },
+    {
+      "path": "docs/validation/followup-20261031/harness/launchcase_live_browser.mjs.txt",
+      "sha256": "0167bef6cb79f1babf9217e9e5c4ac94d03b6bf58cba3c81ab892bab9ecde581",
+      "bytes": 2753
+    },
+    {
+      "path": "docs/validation/followup-20261031/harness/launchcase_live_browser.py.txt",
+      "sha256": "1fa20858f960c33169b2648016d4baaf585fb93bee1f2268b4bb41757a419f16",
+      "bytes": 2127
+    },
+    {
+      "path": "docs/validation/followup-20261031/harness/launchcase_retrieve_usage.py.txt",
+      "sha256": "cbc3b273f209d6e17358a36ede4511b4115d011e938e71864f6318e244211aba",
+      "bytes": 1762
+    }
+  ]
+}

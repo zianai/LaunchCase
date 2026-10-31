@@ -1,0 +1,15 @@
+{
+  "action_id": "lc-followup-live-8d8d0f3d-9da4-4f98-83e2-67f82c42e2bf",
+  "status": "succeeded",
+  "authorization_basis": "Direct current user request and coordinator exclusive USD2 allocation",
+  "target": "https://api.openai.com/v1",
+  "environment": "live_sandbox",
+  "subject": "git:bf16461759d93c13e9831e191108fa6d76d571a9",
+  "payload_sha256": "299f6bb3fd6ff3c385f030ac867029369504d4e81388e48e2e021bbec04eb03f",
+  "grant_sha256": "a20b1fac92ac96f80d0e90817fe82911f18f5d2edc2f506df61a603a76f171a9",
+  "maximum_usd": 2,
+  "retry_allowed": false,
+  "external_business_writes": false,
+  "human_completion_accepted": false,
+  "observation": "Native SDK output and locatable provenance persisted; synthetic workflow reached blocked G4 internal draft."
+}

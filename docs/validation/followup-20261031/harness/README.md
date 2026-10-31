@@ -1,0 +1,1 @@
+These are byte-exact source captures of the executed external follow-up harnesses. The .txt suffix keeps evidence captures separate from shipped application modules. The live grant and browser token/runtime databases remain private and are excluded. No harness should be rerun automatically; the recorded execution forbids retry after an ambiguous outcome.

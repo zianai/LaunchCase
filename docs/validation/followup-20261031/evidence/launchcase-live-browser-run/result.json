@@ -1,0 +1,19 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "../../followup-20261031/launchcase_live_browser.py",
+    "/Users/a/workspaces/AForeign Trade/validation-coordinator/followup-20261031/launchcase-live",
+    "/Users/a/workspaces/AForeign Trade/validation-coordinator/followup-20261031/launchcase-live-browser"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T10:05:46.761293+00:00",
+  "duration_seconds": 8.028,
+  "exit_code": 0,
+  "source_sha": "bf16461759d93c13e9831e191108fa6d76d571a9",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dirty_paths": [],
+  "log_sha256": "dec15995623a246455ee3e808be1f7cf557520c66211b4a4f18d42c4287d5545",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

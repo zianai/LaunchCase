@@ -1,0 +1,26 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_p7_live.py",
+    "tests/test_p8_p10.py::test_graph_persists_explicit_native_runner_provenance",
+    "-q"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T10:03:11.071670+00:00",
+  "duration_seconds": 3.476,
+  "exit_code": 0,
+  "source_sha": "0283217f7bd5d1daecca62ea423088cdf6fcfc8c",
+  "tracked_diff_sha256": "9d384170dc5db40c26b27c5bfa87b5e76c661dd3903aed86755b57f44433985c",
+  "dirty_paths": [
+    " M src/launchcase/agents/live.py",
+    " M src/launchcase/workflow/graph.py",
+    " M tests/test_p7_live.py",
+    " M tests/test_p8_p10.py"
+  ],
+  "log_sha256": "d750c6b5c659a924d0d725e172c3aa31d18a3378e9696a5ccd110b8e346a1587",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

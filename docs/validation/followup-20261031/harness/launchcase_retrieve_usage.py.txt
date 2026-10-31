@@ -1,0 +1,26 @@
+"""Read-only retrieval of already-issued synthetic response receipts; no generation."""
+import json,logging,os,sys
+from pathlib import Path
+from openai import OpenAI
+root=Path(sys.argv[1]);key_file=Path(sys.argv[2]);target=root/'retrieved-usage.json'
+if target.exists():raise RuntimeError('Do not repeat a metadata retrieval automatically')
+key=None
+for line in key_file.read_text().splitlines():
+ if line.strip().startswith('OPENAI_API_KEY='):key=line.split('=',1)[1].strip().strip('"').strip("'")
+if not key:raise RuntimeError('authorized key unavailable')
+logging.disable(logging.CRITICAL)
+client=OpenAI(api_key=key,base_url='https://api.openai.com/v1',max_retries=0,timeout=20)
+result=json.loads((root/'result.json').read_text());reads=[]
+for receipt in result['request_receipts']:
+ try:
+  response=client.responses.retrieve(receipt['response_id'])
+  reads.append({'response_id':receipt['response_id'],'original_request_id':receipt['request_id'],
+    'retrieval_request_id':getattr(response,'_request_id',None),'status':response.status,
+    'raw_usage':response.usage.model_dump(mode='json',exclude_unset=True) if response.usage else None})
+ except Exception as error:
+  reads.append({'response_id':receipt['response_id'],'original_request_id':receipt['request_id'],
+    'status':'unavailable','error_class':type(error).__name__,'http_status':getattr(error,'status_code',None),
+    'retrieval_request_id':getattr(error,'request_id',None),'raw_usage':None})
+client.close()
+target.write_text(json.dumps({'scope':'GET existing synthetic Responses metadata only','new_model_calls':0,'reads':reads},indent=2)+'\n');target.chmod(0o600)
+print(json.dumps({'metadata_reads':len(reads),'available':sum(x['raw_usage'] is not None for x in reads),'new_model_calls':0}))

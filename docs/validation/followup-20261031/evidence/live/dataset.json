@@ -1,0 +1,8 @@
+{
+  "classification": "synthetic",
+  "source": "locally authored fictional observations",
+  "csv": "review_id,product_id,variant,review_date,review_text\nSIM-001,SIM-A,compact,2026-10-01,The assembly screws did not align and I needed another person.\nSIM-002,SIM-A,compact,2026-10-02,Assembly was easy when I followed the pictured sequence.\nSIM-003,SIM-A,large,2026-10-03,The large version took too much floor space in my apartment.\nSIM-004,SIM-B,compact,2026-10-04,The small footprint fit beside my sofa but ventilation seemed limited.\nSIM-005,SIM-B,ventilated,2026-10-05,The open sides gave good airflow but my dog saw distracting movement.\nSIM-006,SIM-B,compact,2026-10-06,The latch felt loose though I did not perform a safety test.\n",
+  "actual_products": false,
+  "market_share": null,
+  "physical_testing": false
+}

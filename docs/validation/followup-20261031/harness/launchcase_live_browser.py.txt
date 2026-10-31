@@ -1,0 +1,36 @@
+import json,os,socket,subprocess,sys,time
+from pathlib import Path
+from urllib.request import build_opener,ProxyHandler
+repo=Path.cwd();root=Path(sys.argv[1]).resolve();out=Path(sys.argv[2]).resolve();out.mkdir(parents=True,exist_ok=False)
+manifest=json.loads((root/'manifest.json').read_text())
+def port():
+ with socket.socket() as sock:sock.bind(('127.0.0.1',0));return sock.getsockname()[1]
+def wait(url,p):
+ for _ in range(150):
+  if p.poll() is not None:raise RuntimeError('server exited')
+  try:
+   with build_opener(ProxyHandler({})).open(url,timeout=1) as r:
+    if r.status==200:return
+  except OSError:pass
+  time.sleep(.2)
+ raise RuntimeError('server timeout')
+api_port,web_port=port(),port()
+env={k:v for k,v in os.environ.items() if k in ('PATH','HOME','TMPDIR','PLAYWRIGHT_BROWSERS_PATH')}
+env.update(OPENAI_AGENTS_DISABLE_TRACING='1',OTEL_SDK_DISABLED='true',ALLOW_TEST_LIVE='off',NEXT_TELEMETRY_DISABLED='1',
+ LAUNCHCASE_DATA_DIR=manifest['data_dir'],LAUNCHCASE_DATABASE_URL='sqlite:///'+manifest['database'],LAUNCHCASE_RESEARCH_MODE='live',
+ LAUNCHCASE_CREATIVE_ENGINE_MODE='mock',LAUNCHCASE_API_URL=f'http://127.0.0.1:{api_port}',LAUNCHCASE_WEB_URL=f'http://127.0.0.1:{web_port}',
+ LC_REPO=str(repo),LC_LIVE_ROOT=str(root),LC_BROWSER_OUT=str(out))
+processes=[]
+try:
+ with (out/'api.log').open('w') as apilog,(out/'web.log').open('w') as weblog:
+  processes.append(subprocess.Popen([sys.executable,'-m','uvicorn','launchcase.api:app','--host','127.0.0.1','--port',str(api_port),'--no-access-log'],env=env,stdout=apilog,stderr=subprocess.STDOUT))
+  wait(env['LAUNCHCASE_API_URL']+'/health',processes[-1])
+  processes.append(subprocess.Popen(['node','node_modules/next/dist/bin/next','start','--hostname','127.0.0.1','--port',str(web_port)],cwd=repo/'frontend',env=env,stdout=weblog,stderr=subprocess.STDOUT))
+  wait(env['LAUNCHCASE_WEB_URL'],processes[-1])
+  result=subprocess.run(['node',str(Path(__file__).with_suffix('.mjs'))],env=env)
+  raise SystemExit(result.returncode)
+finally:
+ for p in reversed(processes):
+  p.terminate()
+  try:p.wait(timeout=10)
+  except subprocess.TimeoutExpired:p.kill();p.wait()

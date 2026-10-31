@@ -1,0 +1,18 @@
+{
+  "action_id": "lc-followup-retrieve-known-response-usage-20261031",
+  "status": "succeeded",
+  "authorization_basis": "Current user-authorized real API testing and coordinator request to preserve raw usage metadata",
+  "environment": "live_sandbox",
+  "target": "https://api.openai.com/v1/responses/{known_response_id}",
+  "method": "GET",
+  "response_ids": [
+    "resp_0dae8bac8930cd0a006ae5bd4b6bc087d2bda59ac43b099be2",
+    "resp_0dae8bac8930cd0a006ae5bd4d7adc87d2b3c5eece0172c72d"
+  ],
+  "new_model_calls": 0,
+  "external_business_writes": false,
+  "retry_allowed": false,
+  "observation_ref": "retrieved-usage.json",
+  "subject": "sha256:cbc3b273f209d6e17358a36ede4511b4115d011e938e71864f6318e244211aba",
+  "payload_sha256": "dc63c8e97c69ffee67acf5a737ec20bd7c91a7b9d4ee4f69b05224d0f267b709"
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "gate": "G1",
+    "decision": "accept",
+    "subject_id": "f8042803-d0a9-4ec8-971d-c275dae950ed",
+    "subject_type": "opportunity",
+    "subject_hash": "73d10376374ff07774116e324439401e996f5c71c499c0208ec13d66a351876c",
+    "dependencies": {
+      "source": {
+        "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+        "brief_version": 1,
+        "sources": [
+          {
+            "id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "rights": "synthetic_fixture"
+          }
+        ]
+      },
+      "artifact_id": "f8042803-d0a9-4ec8-971d-c275dae950ed",
+      "artifact_hash": "e8c5ded36100253a66811a8bcd0105c958076e4df98d4df4134e04e38d785f57"
+    },
+    "actor_id": "570659c9-2027-4710-94f8-2319ca03c93c",
+    "role": "owner",
+    "reason": "SYNTHETIC SOFTWARE TEST ONLY. Simulated workflow decision; not independent human or product approval.",
+    "is_synthetic": true,
+    "id": "664f2bf4-0871-4171-986b-4f763295a97a",
+    "tenant_id": "lc-followup-synthetic-20261031",
+    "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+    "created_at": "2026-10-31T10:05:16.374742+00:00",
+    "status": "current"
+  },
+  {
+    "gate": "G2",
+    "decision": "select",
+    "subject_id": "a67dce4e-b077-4101-96c8-4370965f78b8",
+    "subject_type": "concept",
+    "subject_hash": "b8f8370fb37d6d8c21503933017469deb2f94f711a9130222338ca4790c6f3d7",
+    "dependencies": {
+      "source": {
+        "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+        "brief_version": 1,
+        "sources": [
+          {
+            "id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "rights": "synthetic_fixture"
+          }
+        ]
+      },
+      "artifact_id": "a67dce4e-b077-4101-96c8-4370965f78b8",
+      "artifact_hash": "12462cf6b1973ea45256d99b3c50a985b812463eeec3ab8ef5aaf84d823c14fa",
+      "g1_id": "664f2bf4-0871-4171-986b-4f763295a97a",
+      "spec_id": "260fd2e4-8ab9-4d47-8b12-c92e169287f0",
+      "spec_hash": "baf65597c671a141a50095a345c311f6ea8e919c634a83dfacd3b5059c032a30"
+    },
+    "actor_id": "570659c9-2027-4710-94f8-2319ca03c93c",
+    "role": "owner",
+    "reason": "SYNTHETIC SOFTWARE TEST ONLY. Simulated workflow decision; not independent human or product approval.",
+    "is_synthetic": true,
+    "id": "62e55f1c-301f-43f0-a7ab-556eb179c9b3",
+    "tenant_id": "lc-followup-synthetic-20261031",
+    "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+    "created_at": "2026-10-31T10:05:16.435912+00:00",
+    "status": "current"
+  },
+  {
+    "gate": "G3",
+    "decision": "sample_validation",
+    "subject_id": "35d58c05-4a60-4c6e-a43a-9cab7ab000d9",
+    "subject_type": "feasibility",
+    "subject_hash": "ad4db25305113f37b6e07981fb316f0c5b0f13ef510e127503cc5042d6055a03",
+    "dependencies": {
+      "source": {
+        "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+        "brief_version": 1,
+        "sources": [
+          {
+            "id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "rights": "synthetic_fixture"
+          }
+        ]
+      },
+      "artifact_id": "35d58c05-4a60-4c6e-a43a-9cab7ab000d9",
+      "artifact_hash": "85efb05c3caefc6027b2506065a645737d40a63415f33acdc70bdae3abea4b9f",
+      "g2_hash": "b8f8370fb37d6d8c21503933017469deb2f94f711a9130222338ca4790c6f3d7",
+      "g2_id": "62e55f1c-301f-43f0-a7ab-556eb179c9b3",
+      "valid_cost_sources": {},
+      "invalid_cost_sources": []
+    },
+    "actor_id": "570659c9-2027-4710-94f8-2319ca03c93c",
+    "role": "owner",
+    "reason": "SYNTHETIC SOFTWARE TEST ONLY. Simulated workflow decision; not independent human or product approval.",
+    "is_synthetic": true,
+    "id": "deba940c-45b9-4a7b-9806-f140cf6a8591",
+    "tenant_id": "lc-followup-synthetic-20261031",
+    "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+    "created_at": "2026-10-31T10:05:16.474169+00:00",
+    "status": "current"
+  }
+]

@@ -1,0 +1,19 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T10:08:23.154508+00:00",
+  "duration_seconds": 37.019,
+  "exit_code": 0,
+  "source_sha": "a5c24255bc7e6a95a9c2c6641068d2577b1ef00f",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dirty_paths": [],
+  "log_sha256": "7d861c9b51db2330d5bead9f748c464c2dc122bfcf4a84c319ebbdf3c4a589c5",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

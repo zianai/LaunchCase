@@ -1,0 +1,23 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_p7_live.py::test_denied_later_run_does_not_report_previous_receipts",
+    "-q"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T10:08:13.478166+00:00",
+  "duration_seconds": 6.771,
+  "exit_code": 0,
+  "source_sha": "282507cdd950baa2854ab86ef5d4bc4fe21be813",
+  "tracked_diff_sha256": "9157aefa3dd028487e723dd37f5d1de4fe2efea39535efee795e00e3311ccafb",
+  "dirty_paths": [
+    " M src/launchcase/agents/live.py",
+    " M tests/test_p7_live.py"
+  ],
+  "log_sha256": "93c97c10af4fc8b54296201243c032c5e8295479ca6b4adc06019033d6f9e282",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

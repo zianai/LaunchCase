@@ -1,0 +1,210 @@
+[
+  {
+    "kind": "Insight",
+    "version": 1,
+    "sha256": "aca024b7f2a0b791b6a94b04c8433c4a4bef32163cb627761644466174c81df5",
+    "data": {
+      "schema_version": "1.0.0",
+      "name": "Conflicting assembly experiences",
+      "supporting_evidence_refs": [
+        "5267ac1f-f8e9-4692-9350-d5070defa6de"
+      ],
+      "contradicting_evidence_refs": [
+        "49249085-82f8-4307-be46-8f55eacfed64"
+      ],
+      "interpretation": "In the synthetic SIM-A compact reviews, one account dated 2026-10-01 says screws did not align and another person was needed (SYNTHETIC-LIVE-voc.csv#row=2); another dated 2026-10-02 says assembly was easy using the pictured sequence (row=3). An illustrative hypothesis is that alignment or instructions affect assembly difficulty, but user technique or unit variation could also explain the difference. The existing SIM-A compact account with easy assembly is an alternative to assuming a redesign is needed. Test with independently verified products and observed assembly sessions; more data is needed.",
+      "confidence_class": "conflicted",
+      "provenance": {
+        "citations": [
+          {
+            "evidence_id": "5267ac1f-f8e9-4692-9350-d5070defa6de",
+            "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "source_sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "row_sha256": "ab79283b6db6b0fcedb9421cda07465cd6b96dffcd161d96a72172c3eaaa222e",
+            "source_locator": "SYNTHETIC-LIVE-voc.csv#row=2",
+            "excerpt": "The assembly screws did not align and I needed another person.",
+            "rights_status": "synthetic_fixture",
+            "is_synthetic": true,
+            "product_identity": "SIM-A",
+            "variant": "compact",
+            "observed_at": "2026-10-01T00:00:00+00:00"
+          },
+          {
+            "evidence_id": "49249085-82f8-4307-be46-8f55eacfed64",
+            "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "source_sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "row_sha256": "bae9733aa80dca011358554e235a4dcb0f626b5cc5fb18897359f3f7cd51ae9a",
+            "source_locator": "SYNTHETIC-LIVE-voc.csv#row=3",
+            "excerpt": "Assembly was easy when I followed the pictured sequence.",
+            "rights_status": "synthetic_fixture",
+            "is_synthetic": true,
+            "product_identity": "SIM-A",
+            "variant": "compact",
+            "observed_at": "2026-10-02T00:00:00+00:00"
+          }
+        ],
+        "input_hash": "299f6bb3fd6ff3c385f030ac867029369504d4e81388e48e2e021bbec04eb03f",
+        "prompt_hash": "76387375f6c61ca121187a24981c8b9ef95ae0eae161c4e30d9fb7d0b176fb81",
+        "model_id": "gpt-6.1-terra",
+        "skill_versions": {
+          "market-research": "e7dc9a46f0f5e08ca973a672546d47041185a246157025baa62113c6679767f2",
+          "voc-analysis": "b8be0d827150de9fee07a27540e62e15b57ef6b7fcab92cac702c13aeaf7a0c0",
+          "opportunity-discovery": "7295b6e4af94faa9129e10e7dd2d3582e7d3f3f14616c4bcd5358b7339e96793"
+        },
+        "provider": "openai_agents",
+        "run_status": "tested_live_scoped"
+      },
+      "classification": "inferred",
+      "sample_limitations": [
+        "All six dated reviews across two product IDs are synthetic; they do not establish real customer experiences, demand or product performance.",
+        "The workflow count minimum is met, but it is not statistical proof. Sampling method and bias are unknown, and category-wide prevalence cannot be inferred.",
+        "Product identities are unverified. The snapshot does not establish Amazon US scope, the target segment, or reliable matching between variants.",
+        "Source locators and fingerprints are present, but rights information and verification that fingerprints are original hashes are not shown.",
+        "No listing prices, realized sales, demand denominators or revenue are available. No opportunity or human gate is approved."
+      ]
+    },
+    "dependency_hash": "7dafb8c986ac1b57ea6ca0e425afd0c11e9900b0c2c47a27d613f8afadbdc5fd",
+    "id": "334a7d6e-45d4-4bcd-8ce8-c0507e77762c",
+    "tenant_id": "lc-followup-synthetic-20261031",
+    "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+    "created_at": "2026-10-31T10:05:16.326167+00:00"
+  },
+  {
+    "kind": "Insight",
+    "version": 2,
+    "sha256": "30b41009173a76948cc690155f4fd26baa1ebc3b14a5269465d95b7422b2d46f",
+    "data": {
+      "schema_version": "1.0.0",
+      "name": "Footprint and ventilation trade-offs",
+      "supporting_evidence_refs": [
+        "48de2db5-40f6-4947-868c-fc7fee53697c",
+        "0b66b604-a7fe-4d8e-a59d-3782ad8f44b6",
+        "7ae3b627-a49f-44d8-8c33-cc2e5efb0f6c"
+      ],
+      "contradicting_evidence_refs": [],
+      "interpretation": "A synthetic SIM-A large review dated 2026-10-03 reports excessive floor-space use (row=4). A SIM-B compact review dated 2026-10-04 reports a good fit beside a sofa but apparently limited ventilation (row=5); a SIM-B ventilated review dated 2026-10-05 reports good airflow but distracting visible movement (row=6). These are different products or variants, not direct contradictions. An illustrative hypothesis is that a compact design balancing airflow and visual screening may be useful, assuming these concerns coexist for real users. Room layout, placement or animal behavior could instead explain them. The existing SIM-B ventilated fixture is an alternative for airflow, with its reported distraction trade-off. Test measured airflow, fit and user response against verified existing products; more data is needed.",
+      "confidence_class": "limited",
+      "provenance": {
+        "citations": [
+          {
+            "evidence_id": "48de2db5-40f6-4947-868c-fc7fee53697c",
+            "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "source_sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "row_sha256": "8493ada2fe4b4c843da0cbc3562eba197db122d803c241a32a7e8bda54780a15",
+            "source_locator": "SYNTHETIC-LIVE-voc.csv#row=4",
+            "excerpt": "The large version took too much floor space in my apartment.",
+            "rights_status": "synthetic_fixture",
+            "is_synthetic": true,
+            "product_identity": "SIM-A",
+            "variant": "large",
+            "observed_at": "2026-10-03T00:00:00+00:00"
+          },
+          {
+            "evidence_id": "0b66b604-a7fe-4d8e-a59d-3782ad8f44b6",
+            "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "source_sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "row_sha256": "a3f0ec1b3c5540a9fdb63141d5e6f324224d3a9da985e79a6bd8e952187c0360",
+            "source_locator": "SYNTHETIC-LIVE-voc.csv#row=5",
+            "excerpt": "The small footprint fit beside my sofa but ventilation seemed limited.",
+            "rights_status": "synthetic_fixture",
+            "is_synthetic": true,
+            "product_identity": "SIM-B",
+            "variant": "compact",
+            "observed_at": "2026-10-04T00:00:00+00:00"
+          },
+          {
+            "evidence_id": "7ae3b627-a49f-44d8-8c33-cc2e5efb0f6c",
+            "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "source_sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "row_sha256": "3cc0fc2f5b3fedfe1e53c0cb73a90ad6aa58e13a444255ef7b84fc176a97bdf9",
+            "source_locator": "SYNTHETIC-LIVE-voc.csv#row=6",
+            "excerpt": "The open sides gave good airflow but my dog saw distracting movement.",
+            "rights_status": "synthetic_fixture",
+            "is_synthetic": true,
+            "product_identity": "SIM-B",
+            "variant": "ventilated",
+            "observed_at": "2026-10-05T00:00:00+00:00"
+          }
+        ],
+        "input_hash": "299f6bb3fd6ff3c385f030ac867029369504d4e81388e48e2e021bbec04eb03f",
+        "prompt_hash": "76387375f6c61ca121187a24981c8b9ef95ae0eae161c4e30d9fb7d0b176fb81",
+        "model_id": "gpt-6.1-terra",
+        "skill_versions": {
+          "market-research": "e7dc9a46f0f5e08ca973a672546d47041185a246157025baa62113c6679767f2",
+          "voc-analysis": "b8be0d827150de9fee07a27540e62e15b57ef6b7fcab92cac702c13aeaf7a0c0",
+          "opportunity-discovery": "7295b6e4af94faa9129e10e7dd2d3582e7d3f3f14616c4bcd5358b7339e96793"
+        },
+        "provider": "openai_agents",
+        "run_status": "tested_live_scoped"
+      },
+      "classification": "inferred",
+      "sample_limitations": [
+        "All six dated reviews across two product IDs are synthetic; they do not establish real customer experiences, demand or product performance.",
+        "The workflow count minimum is met, but it is not statistical proof. Sampling method and bias are unknown, and category-wide prevalence cannot be inferred.",
+        "Product identities are unverified. The snapshot does not establish Amazon US scope, the target segment, or reliable matching between variants.",
+        "Source locators and fingerprints are present, but rights information and verification that fingerprints are original hashes are not shown.",
+        "No listing prices, realized sales, demand denominators or revenue are available. No opportunity or human gate is approved."
+      ]
+    },
+    "dependency_hash": "7dafb8c986ac1b57ea6ca0e425afd0c11e9900b0c2c47a27d613f8afadbdc5fd",
+    "id": "45f377b4-3f0c-45ab-a49e-74af4c3bd953",
+    "tenant_id": "lc-followup-synthetic-20261031",
+    "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+    "created_at": "2026-10-31T10:05:16.327628+00:00"
+  },
+  {
+    "kind": "Insight",
+    "version": 3,
+    "sha256": "48c209699c4edb09c60fa80d09547c96a21d15a1738bafc9ddbe5a38dbfb74c2",
+    "data": {
+      "schema_version": "1.0.0",
+      "name": "Subjective latch concern",
+      "supporting_evidence_refs": [
+        "1c697d5b-abdf-4ff7-88a7-db29db99083f"
+      ],
+      "contradicting_evidence_refs": [],
+      "interpretation": "A synthetic SIM-B compact review dated 2026-10-06 says the latch felt loose but explicitly reports no safety test (SYNTHETIC-LIVE-voc.csv#row=7). This is a subjective quality observation, not evidence of a safety failure. Perception or unit variation are alternative explanations. Any latch-improvement hypothesis requires verified products, inspection and appropriate testing; more data is needed.",
+      "confidence_class": "limited",
+      "provenance": {
+        "citations": [
+          {
+            "evidence_id": "1c697d5b-abdf-4ff7-88a7-db29db99083f",
+            "source_id": "766dbdcc-2c07-4845-817c-36d16374fed8",
+            "source_sha256": "e1165e71d1c4ca9dfdc3a075b0d3d4e2a2fbf90fd0db71eaf6d0d96ba20a39f0",
+            "row_sha256": "2f09f91c680f5e8fca91c223084bae32308948cd945d8b495e4465c3ade1a623",
+            "source_locator": "SYNTHETIC-LIVE-voc.csv#row=7",
+            "excerpt": "The latch felt loose though I did not perform a safety test.",
+            "rights_status": "synthetic_fixture",
+            "is_synthetic": true,
+            "product_identity": "SIM-B",
+            "variant": "compact",
+            "observed_at": "2026-10-06T00:00:00+00:00"
+          }
+        ],
+        "input_hash": "299f6bb3fd6ff3c385f030ac867029369504d4e81388e48e2e021bbec04eb03f",
+        "prompt_hash": "76387375f6c61ca121187a24981c8b9ef95ae0eae161c4e30d9fb7d0b176fb81",
+        "model_id": "gpt-6.1-terra",
+        "skill_versions": {
+          "market-research": "e7dc9a46f0f5e08ca973a672546d47041185a246157025baa62113c6679767f2",
+          "voc-analysis": "b8be0d827150de9fee07a27540e62e15b57ef6b7fcab92cac702c13aeaf7a0c0",
+          "opportunity-discovery": "7295b6e4af94faa9129e10e7dd2d3582e7d3f3f14616c4bcd5358b7339e96793"
+        },
+        "provider": "openai_agents",
+        "run_status": "tested_live_scoped"
+      },
+      "classification": "inferred",
+      "sample_limitations": [
+        "All six dated reviews across two product IDs are synthetic; they do not establish real customer experiences, demand or product performance.",
+        "The workflow count minimum is met, but it is not statistical proof. Sampling method and bias are unknown, and category-wide prevalence cannot be inferred.",
+        "Product identities are unverified. The snapshot does not establish Amazon US scope, the target segment, or reliable matching between variants.",
+        "Source locators and fingerprints are present, but rights information and verification that fingerprints are original hashes are not shown.",
+        "No listing prices, realized sales, demand denominators or revenue are available. No opportunity or human gate is approved."
+      ]
+    },
+    "dependency_hash": "7dafb8c986ac1b57ea6ca0e425afd0c11e9900b0c2c47a27d613f8afadbdc5fd",
+    "id": "3f912f1d-db67-4225-81fa-9cf3cd7272b8",
+    "tenant_id": "lc-followup-synthetic-20261031",
+    "case_id": "3cd80829-298f-4558-a00e-2a8151e29763",
+    "created_at": "2026-10-31T10:05:16.328035+00:00"
+  }
+]
