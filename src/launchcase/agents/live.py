@@ -24,8 +24,12 @@ class LiveBudget(Contract):
 
 
 class RealAgentRunner:
-    def __init__(self, tenant_id, case_id, *, policy=None, model=None, model_name=None, rate=None):
+    def __init__(
+        self, tenant_id, case_id, *, policy=None, model=None, model_name=None, rate=None, budget=None
+    ):
         self.tenant_id, self.case_id = tenant_id, case_id
+        self.budget = budget
+        self.last_receipts = []
         self.policy = policy or ValidationRunPolicy.from_env("launchcase")
         self.model, self.model_name = model, model_name or os.getenv("LAUNCHCASE_MODEL", "")
         self.rate = (
@@ -33,7 +37,7 @@ class RealAgentRunner:
         )
 
     def run(self, evidence, budget=None):
-        return asyncio.run(self.arun(evidence, budget or LiveBudget()))
+        return asyncio.run(self.arun(evidence, budget or self.budget or LiveBudget()))
 
     async def arun(self, evidence, budget):
         if isinstance(budget, AgentBudget):
@@ -55,6 +59,8 @@ class RealAgentRunner:
             raise PolicyDenied("DATA_SCOPE_DENIED")
         self.policy.validate(request, budget.max_cost_usd)
         hashes, instructions = skill_snapshot(["market-research", "voc-analysis", "opportunity-discovery"])
+        self.last_receipts = []
+        receipts = self.last_receipts
         client = None
         base = self.model
         if base is None:
@@ -95,10 +101,32 @@ class RealAgentRunner:
                 reserved += ceiling
                 try:
                     response = await base.get_response(*args, **kwargs)
-                except BaseException:
+                except BaseException as error:
+                    receipts.append(
+                        {
+                            "call_id": call_id,
+                            "request_id": getattr(error, "request_id", None),
+                            "status": "unknown",
+                            "upper_usd": ceiling,
+                            "cost_actual_usd": None,
+                        }
+                    )
                     policy.settle(call_id)
                     raise
                 count = getattr(response.usage, "total_tokens", None)
+                receipts.append(
+                    {
+                        "call_id": call_id,
+                        "request_id": response.request_id,
+                        "response_id": response.response_id,
+                        "status": "response_received",
+                        "input_tokens": response.usage.input_tokens,
+                        "output_tokens": response.usage.output_tokens,
+                        "total_tokens": count,
+                        "upper_usd": ceiling,
+                        "cost_actual_usd": None,
+                    }
+                )
                 if count is None:
                     policy.settle(call_id)
                     raise PolicyDenied("USAGE_UNKNOWN")
@@ -164,6 +192,7 @@ class RealAgentRunner:
                 "model_calls": calls,
                 "tool_calls": tool_calls,
                 "tokens": tokens,
+                "request_receipts": receipts,
                 "cost_actual_usd": None,
                 "cost_estimated_usd": estimated,
                 "cost_basis": "estimated",

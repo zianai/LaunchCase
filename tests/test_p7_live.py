@@ -59,6 +59,10 @@ def test_real_runner_uses_sdk_with_frozen_read_only_tools(policy):
     assert result["paid_calls"] == 0 and result["status"] == "tested_offline"
     assert result["output"]["category_prevalence"] is None
     assert result["cost_actual_usd"] is None
+    assert len(result["request_receipts"]) == 2
+    assert all(
+        item["total_tokens"] >= 0 and item["cost_actual_usd"] is None for item in result["request_receipts"]
+    )
 
 
 def test_real_runner_cannot_call_on_missing_or_changed_authority(policy):

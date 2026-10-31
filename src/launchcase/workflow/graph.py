@@ -21,8 +21,8 @@ class State(TypedDict, total=False):
     pack_id: str
 
 
-def build_graph(service, actor, checkpointer):
-    research = ResearchService(service)
+def build_graph(service, actor, checkpointer, research_runner=None):
+    research = ResearchService(service, research_runner)
     graph = StateGraph(State)
 
     def validate(state):
@@ -178,14 +178,14 @@ def enqueue_run(service, actor, case_id, kind, key):
     return TaskManager(service).enqueue(actor, case_id, "research", snapshot, key)
 
 
-def execute_task(service, actor, task_id):
+def execute_task(service, actor, task_id, *, research_runner=None):
     manager = TaskManager(service)
     task = manager.claim(actor, task_id, uid())
     if not task:
         return manager.get(actor, task_id)
     try:
         with SqliteSaver.from_conn_string(str(service.settings.data_dir / "checkpoints.db")) as saver:
-            graph = build_graph(service, actor, saver)
+            graph = build_graph(service, actor, saver, research_runner)
             from launchcase.domain.common import digest
 
             source_hash = digest(ResearchService(service).snapshot(actor, task["case_id"]))

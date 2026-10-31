@@ -421,3 +421,21 @@ def test_pilot_manifest_limit_never_silently_hides_real_source(setup, case):
     assert response.status_code == 409
     assert response.json()["error"]["code"] == "PILOT_EXPORT_LIMIT"
     assert "source_manifest" not in response.json()
+
+
+def test_graph_persists_explicit_native_runner_provenance(setup, case, imported):
+    svc, actor, _, _ = setup
+
+    class ExplicitRunner:
+        calls = 0
+
+        def run(self, evidence):
+            self.calls += 1
+            return FakeSDKRunner().run(evidence)
+
+    runner = ExplicitRunner()
+    task = enqueue_run(svc, actor, case["id"], "research", uid())
+    result = execute_task(svc, actor, task["id"], research_runner=runner)
+    assert result["status"] == "succeeded" and runner.calls == 1
+    assert result["result"]["waiting_for"] == "G1"
+    assert svc.list_scoped(actor, case["id"], Artifact, kind="Insight")[0]["data"]["provenance"]
