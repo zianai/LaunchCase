@@ -1,0 +1,11 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "-c",
+    "import launchcase.api"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P0/20261031T032341031882.log"
+}

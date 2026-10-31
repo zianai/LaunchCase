@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchcase.local/contracts/supplier-cost-source.schema.json",
+  "title": "LaunchCase Supplier Cost Source v1 (fixture model)",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "supplier_name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "product_concept": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "currency": {
+      "pattern": "^[A-Z]{3}$",
+      "type": "string"
+    },
+    "unit": {
+      "enum": [
+        "piece",
+        "set"
+      ]
+    },
+    "unit_ex_factory_cost": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "minimum_order_quantity": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "freight_per_piece": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "tariff_per_piece": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "fulfillment_per_piece": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "advertising_per_piece": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "returns_allowance_per_piece": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "one_time_tooling_cost": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "source_status": {
+      "enum": [
+        "quote",
+        "historical",
+        "assumption",
+        "missing"
+      ]
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "source_locator": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "is_synthetic": {
+      "type": "boolean"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  },
+  "required": [
+    "schema_version",
+    "supplier_name",
+    "product_concept",
+    "currency",
+    "unit",
+    "unit_ex_factory_cost",
+    "minimum_order_quantity",
+    "freight_per_piece",
+    "tariff_per_piece",
+    "fulfillment_per_piece",
+    "advertising_per_piece",
+    "returns_allowance_per_piece",
+    "one_time_tooling_cost",
+    "source_status",
+    "collected_at",
+    "expires_at",
+    "source_locator",
+    "is_synthetic"
+  ],
+  "additionalProperties": false
+}

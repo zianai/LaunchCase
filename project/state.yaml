@@ -1,0 +1,7 @@
+schema_version: 3
+protocol_version: "3.0"
+project_id: LAUNCHCASE_V1
+project_name: LaunchCase
+status: active
+active_task: LC-001-v1
+updated: "2026-10-30"

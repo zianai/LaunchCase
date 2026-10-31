@@ -1,0 +1,17 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.launchcase/
+*.db
+*.db-*
+.env
+*.key
+node_modules/
+.next/
+dist/
+*.egg-info/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.DS_Store

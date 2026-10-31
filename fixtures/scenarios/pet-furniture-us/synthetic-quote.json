@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "supplier_name": "[SYNTHETIC] Demo Supplier A",
+  "product_concept": "tool-free assembly crate furniture",
+  "currency": "USD",
+  "unit": "piece",
+  "unit_ex_factory_cost": null,
+  "minimum_order_quantity": null,
+  "freight_per_piece": null,
+  "tariff_per_piece": null,
+  "fulfillment_per_piece": null,
+  "advertising_per_piece": null,
+  "returns_allowance_per_piece": null,
+  "one_time_tooling_cost": null,
+  "source_status": "missing",
+  "collected_at": "2026-10-30T00:00:00Z",
+  "expires_at": null,
+  "source_locator": "synthetic-quote.json",
+  "is_synthetic": true,
+  "notes": "Intentionally missing costs to verify null-aware feasibility and G3 needs_input. Never interpret null as 0 or as a supplier quotation."
+}

@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0.0",
+  "title": "[SYNTHETIC] US Pet Furniture: Easier Assembly",
+  "mode": "differentiation",
+  "target_market": "US",
+  "marketplace": "amazon_us",
+  "category": "pet furniture and dog crate furniture",
+  "target_segment": "Adults comparing furniture-style indoor dog crates",
+  "problem_statement": "Investigate whether lower assembly friction, compact shipping or modular panels could differentiate a new concept. This is a research hypothesis, not a proven market problem.",
+  "goals": [
+    "Find evidence-backed review themes without inventing prevalence",
+    "Compare at least two differentiated product concepts",
+    "Develop a proposed ProductSpec and risks",
+    "Create a labeled internal concept visual using Mock CreativeEngine",
+    "Produce an internal-only draft LaunchPack and identify sample verification gaps"
+  ],
+  "constraints": {
+    "budget_usd": null,
+    "target_retail_price_usd": null,
+    "target_landed_cost_usd": null,
+    "must_preserve": ["No unverified safety, load rating or size claims"],
+    "must_not_claim": ["certified", "tested for pet safety", "production ready"]
+  },
+  "data_policy": {
+    "data_origin": "synthetic_demo_only",
+    "rights_status": "synthetic_fixture",
+    "allowed_external_use": false,
+    "is_synthetic": true
+  }
+}

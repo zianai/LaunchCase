@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchcase.local/contracts/visual-task-request.schema.json",
+  "title": "LaunchCase VisualTask Request v1 (LaunchCase-owned contract, not CreativeEngine API)",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "product_case_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "concept_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "product_spec_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "visual_intent": {
+      "enum": [
+        "concept_exploration",
+        "cmf_variations",
+        "listing_draft",
+        "marketing_concept"
+      ]
+    },
+    "workflow": {
+      "enum": [
+        "product-concept",
+        "ecommerce-listing",
+        "marketing-creative"
+      ]
+    },
+    "delivery_target": {
+      "enum": [
+        "internal_review",
+        "listing",
+        "marketing"
+      ]
+    },
+    "requirements": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 12000
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 32
+    },
+    "aspect_ratio": {
+      "enum": [
+        "1:1",
+        "4:3",
+        "3:4",
+        "16:9",
+        "9:16"
+      ]
+    },
+    "variants": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 64
+    },
+    "reference_source_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 32
+    },
+    "allowed_changes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 32
+    },
+    "forbidden_claims": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 50
+    },
+    "provider": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "budget_usd": {
+      "type": "number",
+      "minimum": 0
+    },
+    "authorize_paid": {
+      "type": "boolean"
+    },
+    "requires_human_plan_approval": {
+      "const": true
+    },
+    "requires_human_asset_review": {
+      "const": true
+    },
+    "audience": {
+      "enum": [
+        "internal",
+        "external"
+      ]
+    },
+    "is_synthetic": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema_version",
+    "product_case_id",
+    "concept_id",
+    "product_spec_version",
+    "visual_intent",
+    "workflow",
+    "delivery_target",
+    "requirements",
+    "scenes",
+    "aspect_ratio",
+    "variants",
+    "reference_source_ids",
+    "allowed_changes",
+    "forbidden_claims",
+    "provider",
+    "budget_usd",
+    "authorize_paid",
+    "requires_human_plan_approval",
+    "requires_human_asset_review",
+    "audience",
+    "is_synthetic"
+  ],
+  "additionalProperties": false
+}

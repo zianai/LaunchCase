@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchcase.local/contracts/product-brief.schema.json",
+  "title": "LaunchCase ProductBrief v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "mode": {
+      "enum": [
+        "existing_optimization",
+        "differentiation",
+        "zero_to_one"
+      ]
+    },
+    "target_market": {
+      "enum": [
+        "US"
+      ]
+    },
+    "marketplace": {
+      "enum": [
+        "amazon_us"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "target_segment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "problem_statement": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "goals": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 25
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "budget_usd": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "target_retail_price_usd": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "target_landed_cost_usd": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "must_preserve": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "maxItems": 50
+        },
+        "must_not_claim": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "maxItems": 50
+        }
+      },
+      "required": [
+        "budget_usd",
+        "target_retail_price_usd",
+        "target_landed_cost_usd",
+        "must_preserve",
+        "must_not_claim"
+      ],
+      "additionalProperties": false
+    },
+    "data_policy": {
+      "type": "object",
+      "properties": {
+        "data_origin": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "rights_status": {
+          "enum": [
+            "synthetic_fixture",
+            "user_licensed",
+            "approved_public",
+            "unknown"
+          ]
+        },
+        "allowed_external_use": {
+          "type": "boolean"
+        },
+        "is_synthetic": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "data_origin",
+        "rights_status",
+        "allowed_external_use",
+        "is_synthetic"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "title",
+    "mode",
+    "target_market",
+    "marketplace",
+    "category",
+    "target_segment",
+    "problem_statement",
+    "goals",
+    "constraints",
+    "data_policy"
+  ],
+  "additionalProperties": false
+}

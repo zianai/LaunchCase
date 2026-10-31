@@ -1,0 +1,25 @@
+id,phase,scenario,expected,priority
+LC-T01,P1,Synthetic source import,"hash and locator stable",P0
+LC-T02,P1-P2,Duplicate review,"no duplicate analytical count",P0
+LC-T03,P2,Prompt injection in VOC,"data not tool instruction",P0
+LC-T04,P2,Contradictory variant reviews,"conflict preserved",P0
+LC-T05,P2,Small biased sample,"no unsupported prevalence",P0
+LC-T06,P1-P2,Invalid source locator,"reject verified claim",P0
+LC-T07,P3,Spec edit after G2,"approval stale",P0
+LC-T08,P3-P6,Duplicate wakeup,"single effective lease",P0
+LC-T09,P3-P6,Crash restart,"resume without lost history",P0
+LC-T10,P5,Missing unit cost,"null or conditional scenario",P0
+LC-T11,P5,Expired quote,"G3 needs review",P0
+LC-T12,P4-P5,Concept to listing,"strict mode blocks",P0
+LC-T13,P4,Plan versus asset approval,"not exportable until asset review",P0
+LC-T14,P4,Unknown paid receipt,"reconciling no blind retry",P0
+LC-T15,P4,Engine down,"research continues",P0
+LC-T16,All,No paid credentials,"zero live paid calls",P0
+LC-T17,P5-P6,No real sample,"G4 and G5 blocked internal draft allowed",P0
+LC-T18,P1-P6,Cross tenant access,"forbidden at all layers",P0
+LC-T19,P4-P5,Rights revoked,"approval no longer current",P0
+LC-T20,P6,Desktop mobile browser,"real API e2e works",P1
+LC-T21,P1,Unsafe imported file,"safe reject no side effects",P0
+LC-T22,P6,Synthetic mislabeled real,"strict validation rejects",P0
+LC-T23,P4-P6,Asset hash changed,"export blocked",P0
+LC-T24,P6,Backup restore,"versions and artifacts remain verifiable",P1

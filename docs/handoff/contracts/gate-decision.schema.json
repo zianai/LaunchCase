@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchcase.local/contracts/gate-decision.schema.json",
+  "title": "LaunchCase Gate Decision Input v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "decision": {
+      "enum": [
+        "accept",
+        "research_more",
+        "reject",
+        "select",
+        "revise",
+        "sample_validation",
+        "hold",
+        "verify_sample",
+        "rework",
+        "internal_handoff",
+        "needs_changes"
+      ]
+    },
+    "subject_type": {
+      "enum": [
+        "opportunity",
+        "concept",
+        "feasibility",
+        "sample",
+        "launch_pack"
+      ]
+    },
+    "subject_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "expected_subject_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reason": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    }
+  },
+  "required": [
+    "schema_version",
+    "decision",
+    "subject_type",
+    "subject_id",
+    "expected_subject_hash",
+    "reason"
+  ],
+  "additionalProperties": false
+}

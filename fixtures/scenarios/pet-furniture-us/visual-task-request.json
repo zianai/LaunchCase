@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0.0",
+  "product_case_id": "pc-demo-001",
+  "concept_id": "concept-demo-001",
+  "product_spec_version": "spec-demo-001",
+  "visual_intent": "concept_exploration",
+  "workflow": "product-concept",
+  "delivery_target": "internal_review",
+  "requirements": "Generate three clearly labeled conceptual directions for a furniture-style indoor pet crate. Do not represent the concepts as manufactured, tested, certified, dimensionally correct or purchasable products.",
+  "scenes": ["Studio"],
+  "aspect_ratio": "1:1",
+  "variants": 3,
+  "reference_source_ids": [],
+  "allowed_changes": [],
+  "forbidden_claims": ["certified", "load-rated", "production ready"],
+  "provider": "mock",
+  "budget_usd": 0,
+  "authorize_paid": false,
+  "requires_human_plan_approval": true,
+  "requires_human_asset_review": true,
+  "audience": "internal",
+  "is_synthetic": true
+}

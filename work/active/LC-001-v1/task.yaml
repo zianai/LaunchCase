@@ -1,0 +1,16 @@
+schema_version: 3
+protocol_version: "3.0"
+id: LC-001-v1
+status: executing
+goal: Implement and verify the complete offline LaunchCase V1 evidence-to-internal-draft workflow
+scope: [src/, frontend/, migrations/, skills/, tests/, docs/, ops/, scripts/]
+non_goals: [Paid models, publishing, supplier contact, modifying TradeCase or CreativeEngine]
+acceptance: [P0 through P6 in sequence, Real offline test evidence, Local phase commits, Strict gates and tenant isolation]
+risk: low
+risk_reasons: [local-reversible]
+protected_paths: [docs/handoff/]
+context_refs: [docs/handoff/IMPLEMENTATION_SPEC.md, docs/handoff/PHASE_PLAN.md, docs/handoff/CONTRACTS_AND_SCENARIOS.md]
+decision_refs: [docs/ADR/001-boundaries.md]
+evidence_refs: [docs/BASELINE_AUDIT.md]
+implementation_started: true
+updated: "2026-10-30"

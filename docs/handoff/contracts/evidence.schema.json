@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchcase.local/contracts/evidence.schema.json",
+  "title": "LaunchCase Evidence v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "product_case_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "source_locator": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "quoted_text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 5000
+    },
+    "source_type": {
+      "enum": [
+        "review_import",
+        "competitor_import",
+        "supplier_quote",
+        "catalog",
+        "research_file",
+        "official_policy",
+        "user_attestation"
+      ]
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assertion_class": {
+      "enum": [
+        "observed",
+        "inferred",
+        "hypothesis",
+        "user_attested",
+        "verified"
+      ]
+    },
+    "rights_status": {
+      "enum": [
+        "synthetic_fixture",
+        "user_licensed",
+        "approved_public",
+        "unknown",
+        "revoked"
+      ]
+    },
+    "is_synthetic": {
+      "type": "boolean"
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "quality_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "tenant_id",
+    "product_case_id",
+    "source_id",
+    "source_locator",
+    "quoted_text",
+    "source_type",
+    "captured_at",
+    "assertion_class",
+    "rights_status",
+    "is_synthetic",
+    "source_sha256",
+    "quality_notes"
+  ],
+  "additionalProperties": false
+}

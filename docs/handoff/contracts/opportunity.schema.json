@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://launchcase.local/contracts/opportunity.schema.json",
+  "title": "LaunchCase Opportunity v1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "product_case_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "problem": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1200
+    },
+    "target_segment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "proposed_value": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1500
+    },
+    "supporting_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 200
+    },
+    "contradicting_evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 200
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 100
+    },
+    "falsification_plan": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2500
+    },
+    "data_sufficiency": {
+      "enum": [
+        "sufficient_for_draft",
+        "needs_more_data",
+        "conflicted",
+        "unusable"
+      ]
+    },
+    "sample_limitations": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "approval_status": {
+      "enum": [
+        "unreviewed",
+        "accepted",
+        "rejected",
+        "stale"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "product_case_id",
+    "version",
+    "problem",
+    "target_segment",
+    "proposed_value",
+    "supporting_evidence_refs",
+    "contradicting_evidence_refs",
+    "assumptions",
+    "falsification_plan",
+    "data_sufficiency",
+    "sample_limitations",
+    "approval_status"
+  ],
+  "additionalProperties": false
+}

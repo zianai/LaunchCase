@@ -1,0 +1,5 @@
+product_id,brand,variant,list_price_usd,material_claim,assembly_type,source_kind,is_synthetic
+C-01,Fictional Brand A,Oak,,engineered wood (unverified),screw assembly (synthetic),synthetic_fixture,true
+C-02,Fictional Brand B,Black,,unspecified (unverified),unverified,synthetic_fixture,true
+C-03,Fictional Brand C,Oak,,unverified,unverified,synthetic_fixture,true
+C-04,Fictional Brand D,Walnut,,unverified,unverified,synthetic_fixture,true
