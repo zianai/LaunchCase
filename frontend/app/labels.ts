@@ -216,3 +216,42 @@ export const dateTime = (value: unknown) => {
     ? String(value ?? "—")
     : parsed.toLocaleString("zh-CN");
 };
+
+const issueLabels: [RegExp, string][] = [
+  [/^Fixed offline fixture/, "固定的离线测试图片，没有检查画面内容"],
+  [
+    /vision reviewer|semantic product fidelity/,
+    "产品外观尚未自动核验，请人工确认",
+  ],
+  [/For Review label/, "概念图：请确认画面上有“概念 / 待审核”标识"],
+];
+/** Only an explicit pass reads as passed; missing or unknown results stay visible. */
+export function qaResult(qa: any) {
+  const status = String(qa?.status ?? "").toLowerCase();
+  const issues: any[] = Array.isArray(qa?.issues) ? qa.issues : [];
+  const checks: any[] = Array.isArray(qa?.checks) ? qa.checks : [];
+  const blocking = (value: unknown) =>
+    ["block", "blocked", "fail", "failed"].includes(
+      String(value ?? "").toLowerCase(),
+    );
+  const notes = issues
+    .map((issue) => String(issue?.description ?? issue?.message ?? ""))
+    .filter(Boolean)
+    .map(
+      (note) =>
+        issueLabels.find(([pattern]) => pattern.test(note))?.[1] || note,
+    );
+  if (
+    blocking(status) ||
+    issues.some((issue) => blocking(issue?.severity)) ||
+    checks.some((check) => blocking(check?.status))
+  )
+    return { label: "阻止使用", detail: notes.join(" · ") };
+  if (["pass", "passed"].includes(status) && !notes.length)
+    return { label: "检查通过", detail: "没有自动发现问题，仍需人工核对。" };
+  if (notes.length) return { label: "有待确认项", detail: notes.join(" · ") };
+  return {
+    label: "检查信息不完整",
+    detail: "没有返回具体检查项，请人工核对。",
+  };
+}

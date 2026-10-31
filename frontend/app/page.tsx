@@ -10,6 +10,7 @@ import {
   gateName,
   gateSteps,
   ownerLabel,
+  qaResult,
   riskDomainLabel,
   riskQuestionLabel,
   rightsLabel,
@@ -1558,17 +1559,10 @@ export default function Workbench() {
                               <Badge>模拟图 · 概念</Badge>
                               <p>
                                 自动检查：
-                                {asset.qa.status === "warn"
-                                  ? "有待确认项"
-                                  : asset.qa.status === "block"
-                                    ? "阻止使用"
-                                    : "检查通过"}
+                                {qaResult(asset.qa).label}
                               </p>
                               <p className="hint">
-                                {asset.qa.issues
-                                  ?.map((issue: any) => issue.description)
-                                  .join(" · ") ||
-                                  "没有自动发现问题，仍需人工核对。"}
+                                {qaResult(asset.qa).detail}
                               </p>
                               <p className="hint">
                                 {asset.identity === "mock"
