@@ -1,0 +1,23 @@
+{
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "name": "release-lc-check",
+  "repository": "launchcase",
+  "cwd": "/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase",
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q"
+  ],
+  "exit_code": 0,
+  "started_at_utc": "2026-10-31T07:46:58.266704+00:00",
+  "elapsed_seconds": 25.041,
+  "head": "6ec11f4d072e13c4f02ae9bc6d7929a8c985811b",
+  "log_sha256": "4ba14b38ff854576c8b1f6df91ba7a42c5632978e5867123384a9e8d68eb58cf",
+  "environment": "E0/E1",
+  "data_classification": "synthetic",
+  "public_network": "OS denied",
+  "credentials": "not inherited",
+  "external_writes": 0,
+  "paid_spend_usd": "0"
+}

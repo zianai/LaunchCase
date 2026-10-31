@@ -1,0 +1,170 @@
+EXEC [".venv/bin/ruff", "check", "."]
+All checks passed!
+EXEC [".venv/bin/ruff", "format", "--check", "."]
+121 files already formatted
+EXEC ["/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python", "ops/verify_migrations.py"]
+No new upgrade operations detected.
+No new upgrade operations detected.
+Five revisions upgraded, no metadata drift, downgraded to base, re-upgraded.
+EXEC ["/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python", "ops/verify_infrastructure.py"]
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_infrastructure.py::test_postgresql_migration_concurrent_idempotency_lease_and_arq
+  /Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/lib/python3.12/site-packages/arq/worker.py:877: DeprecationWarning: Call to deprecated close. (Use aclose() instead) -- Deprecated since version 5.0.1.
+    await self.pool.close(close_connection_pool=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 1.28s
+{"scope": "isolated PostgreSQL/Redis/ARQ", "exit_code": 0, "containers": ["launchcase-p6-pg-5ad7e902", "launchcase-p6-redis-5ad7e902"]}
+EXEC ["npm", "--prefix", "frontend", "run", "typecheck"]
+
+> launchcase-workbench@0.1.0 typecheck
+> tsc --noEmit
+
+EXEC ["npm", "--prefix", "frontend", "run", "build"]
+
+> launchcase-workbench@0.1.0 build
+> NEXT_TELEMETRY_DISABLED=1 next build
+
+▲ Next.js 16.4.3 (Turbopack)
+✓ Running next.config.ts took 306ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 599ms
+  Running TypeScript ...
+  Finished TypeScript in 2.3s ...
+  Collecting page data using 6 workers ...
+  Generating static pages using 6 workers (0/4) ...
+  Generating static pages using 6 workers (1/4) 
+  Generating static pages using 6 workers (2/4) 
+  Generating static pages using 6 workers (3/4) 
+✓ Generating static pages using 6 workers (4/4) in 457ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+└ ƒ /api/session
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+EXEC ["/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python", "../../scripts/browser.py", "launchcase"]
+{"migrated": true}
+
+Running 4 tests using 1 worker
+
+  ✓  1 tests/labels.spec.ts:4:5 › QA reads as passed only on an explicit pass with nothing outstanding (7ms)
+  ✓  2 tests/workbench.spec.ts:15:7 › real API full internal workflow 1440px (7.4s)
+  ✓  3 tests/workbench.spec.ts:15:7 › real API full internal workflow 390px (7.6s)
+  ✓  4 tests/workbench.spec.ts:196:5 › server proxy rejects missing session and cross-origin writes (40ms)
+
+  4 passed (16.5s)
+{"test_scope": "actual browser + loopback API + isolated SQLite", "synthetic": true, "exit_code": 0, "screenshots": "/Users/a/workspaces/AForeign Trade/p7-validation/runs/release-lc-supplemental/data/browser-launchcase/screenshots", "paid_calls": 0}
+EXEC ["/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python", "../../scripts/browser.py", "launchcase-handoff"]
+{"migrated": true}
+Disposable G4/G5 contract fixture created; no real business validation.
+
+Running 1 test using 1 worker
+
+  ✓  1 tests/handoff.spec.ts:22:5 › G4 and G5 forms, exact approvals, receipt and responsive states (5.5s)
+
+  1 passed (6.6s)
+{"test_scope": "actual browser + loopback API + isolated SQLite", "synthetic": true, "exit_code": 0, "screenshots": "/Users/a/workspaces/AForeign Trade/p7-validation/runs/release-lc-supplemental/data/browser-launchcase-handoff/screenshots", "paid_calls": 0}
+EXEC ["uv", "build", "--offline"]
+Building source distribution...
+Building wheel from source distribution...
+Successfully built dist/launchcase-0.1.0.tar.gz
+Successfully built dist/launchcase-0.1.0-py3-none-any.whl
+EXEC ["/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python", "ops/verify_install.py"]
+Using CPython 3.12.13 interpreter at: /Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python
+Creating virtual environment at: venv
+Using Python 3.12.13 environment at: venv
+Resolved 76 packages in 48ms
+Prepared 1 package in 14ms
+Installed 76 packages in 160ms
+ + aiosqlite==0.22.1
+ + alembic==1.20.1
+ + annotated-doc==0.0.5
+ + annotated-types==0.8.0
+ + anyio==4.15.1
+ + arq==0.28.0
+ + attrs==26.1.0
+ + certifi==2026.10.23
+ + cffi==2.1.1
+ + charset-normalizer==3.5.2
+ + click==8.5.0
+ + cryptography==50.0.2
+ + distro==1.9.0
+ + fastapi==0.162.0
+ + griffelib==2.4.1
+ + h11==0.16.0
+ + hiredis==3.5.0
+ + httpcore==1.0.9
+ + httpcore2==2.16.0
+ + httpx==0.28.1
+ + httpx2==2.16.0
+ + idna==3.20
+ + jiter==0.18.0
+ + jsonpatch==1.38
+ + jsonpointer==3.6
+ + jsonschema==4.26.0
+ + jsonschema-specifications==2025.9.1
+ + langchain-core==1.7.3
+ + langchain-protocol==0.0.20
+ + langgraph==1.2.18
+ + langgraph-checkpoint==4.3.1
+ + langgraph-checkpoint-sqlite==3.1.2
+ + langgraph-prebuilt==1.1.1
+ + langgraph-sdk==0.4.11
+ + langsmith==0.14.16
+ + launchcase==0.1.0 (from file:///Users/a/workspaces/AForeign%20Trade/p7-validation/worktrees/launchcase/dist/launchcase-0.1.0-py3-none-any.whl)
+ + mako==1.4.3
+ + markupsafe==3.0.4
+ + mcp==2.3.0
+ + mcp-types==2.3.0
+ + openai==3.42.0
+ + openai-agents==0.24.0
+ + opentelemetry-api==1.45.2
+ + orjson==3.13.0
+ + ormsgpack==1.13.0
+ + packaging==26.3
+ + pillow==13.0.0
+ + psycopg==3.3.6
+ + psycopg-binary==3.3.6
+ + psycopg-pool==3.3.3
+ + pycparser==3.12
+ + pydantic==2.14.1
+ + pydantic-core==2.50.1
+ + pyjwt==2.15.1
+ + python-multipart==0.0.32
+ + pyyaml==6.0.3
+ + redis==5.3.1
+ + referencing==0.37.0
+ + requests==2.34.2
+ + requests-toolbelt==1.0.0
+ + rpds-py==2026.9.1
+ + sniffio==1.3.1
+ + sqlalchemy==2.1.6
+ + sqlite-vec==0.1.9
+ + sse-starlette==3.6.0
+ + starlette==1.10.0
+ + tenacity==9.2.1
+ + truststore==0.10.5
+ + typing-extensions==4.16.0
+ + typing-inspection==0.4.4
+ + urllib3==2.8.0
+ + uuid-utils==0.19.0
+ + uvicorn==0.54.0
+ + websockets==16.1.1
+ + xxhash==4.0.2
+ + zstandard==0.25.0
+{"status": "ok", "paid_enabled": false, "external_actions": false, "versions": {"launchcase": "0.1.0", "fastapi": "0.162.0", "pydantic": "2.14.1", "sqlalchemy": "2.1.6", "langgraph": "1.2.18", "openai-agents": "0.24.0"}}
+{"schema_version": "1.0.0", "case_id": "aea3a517-9583-4ce5-8c62-8272d2a0fb2a", "pack_id": "a39f6008-ad7c-4e9f-af57-e6e0b5c5a7ad", "actor_id": "59218a1f-a198-4502-abf9-5472dfd3fd2c", "tenant_id": "synthetic-demo", "is_synthetic": true, "scope": "tested_offline", "waiting_for": "G4", "publishable": false, "files": {"internal-draft.json": "b62755aa58c5c24d38438fea3331c00696d887373e2e0022a6e0fa353ab0add3", "internal-draft.md": "7e2f27847b23b16b1c963579ced82a2ee3b1d09da63431a9c72a3c8f1abf5d3c", "internal-draft.zip": "cd01d7a52fbfc0e1875ec616c83454c7a7fa42eabf32b300c4fc522736915826"}, "counts": {"sources": 3, "evidence": 28, "concepts": 2, "opportunities": 4}, "paid_calls": 0, "paid_calls_basis": "only local deterministic SDK Model and protocol fake instantiated"}
+{"valid": true, "strict": true, "case_id": "aea3a517-9583-4ce5-8c62-8272d2a0fb2a", "scope": "tested_offline", "waiting_for": "G4", "publishable": false}
+Clean wheel resources/migrations/Skills/Mock raster and no-paid-services journey verified outside repo.
+EXEC ["/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python", "../../scripts/preflight.py", "launchcase"]
+{"native_command": ["/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python", "-m", "launchcase.validation", "--system", "launchcase", "--request", "docs/validation/p7/request.synthetic.json", "--upper-usd", "0.01"], "native_exit_code": 2, "result": {"system": "launchcase", "configuration": {"provider": "openai", "model": "redacted_or_unselected", "required_domain": "api.openai.com", "capability_verified_live": false, "environment": "live_sandbox", "data_classification": "synthetic", "action": "submit_model"}, "approved_limits": null, "status": "blocked", "reasons": ["AUTH_REQUIRED"], "token_present": false, "external_writes": false, "live_executed": false, "approved_grant_sha256": ""}}
+PASS 11 supplementary commands on fixed implementation commit

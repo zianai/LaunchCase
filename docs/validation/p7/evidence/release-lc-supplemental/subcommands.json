@@ -1,0 +1,92 @@
+[
+  {
+    "command": [
+      ".venv/bin/ruff",
+      "check",
+      "."
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      ".venv/bin/ruff",
+      "format",
+      "--check",
+      "."
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python",
+      "ops/verify_migrations.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python",
+      "ops/verify_infrastructure.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "typecheck"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "npm",
+      "--prefix",
+      "frontend",
+      "run",
+      "build"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python",
+      "../../scripts/browser.py",
+      "launchcase"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python",
+      "../../scripts/browser.py",
+      "launchcase-handoff"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "uv",
+      "build",
+      "--offline"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python",
+      "ops/verify_install.py"
+    ],
+    "exit_code": 0
+  },
+  {
+    "command": [
+      "/Users/a/workspaces/AForeign Trade/p7-validation/worktrees/launchcase/.venv/bin/python",
+      "../../scripts/preflight.py",
+      "launchcase"
+    ],
+    "exit_code": 0
+  }
+]
