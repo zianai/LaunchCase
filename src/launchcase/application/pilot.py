@@ -1,6 +1,9 @@
 """Read-only evaluation export; no evaluator can mint business approval."""
 
+from sqlalchemy import select
+
 from launchcase.application.provenance import insight_provenance
+from launchcase.application.services import row_dict
 from launchcase.domain.common import DomainError, digest
 from launchcase.infrastructure.models import Artifact, SourceDocument
 from launchcase.validation import PolicyDenied, ValidationRunPolicy
@@ -8,7 +11,22 @@ from launchcase.validation import PolicyDenied, ValidationRunPolicy
 
 def export_pilot(service, actor, case_id, policy=None):
     case = service.get_case(actor, case_id)
-    sources = service.list_scoped(actor, case_id, SourceDocument, limit=5000)
+    with service.sessions() as session:
+        sources = [
+            row_dict(source)
+            for source in session.scalars(
+                select(SourceDocument)
+                .where(SourceDocument.tenant_id == actor.tenant_id, SourceDocument.case_id == case_id)
+                .order_by(SourceDocument.created_at, SourceDocument.id)
+                .limit(5001)
+            )
+        ]
+    if len(sources) > 5000:
+        raise DomainError(
+            "PILOT_EXPORT_LIMIT",
+            "Pilot export requires a complete manifest; split the dataset before review",
+            409,
+        )
     scope = {
         "case_id": case_id,
         "revision": case["revision"],
@@ -28,6 +46,8 @@ def export_pilot(service, actor, case_id, policy=None):
                 "rights_hash": digest(scope["sources"]),
                 "rights_current": bool(sources) and all(s["rights_status"] == "authorized" for s in sources),
             }
+            if request.get("data_classification") == "synthetic":
+                raise PolicyDenied("DATA_CLASSIFICATION_MISMATCH")
             policy.validate(request, 0)
         except (PolicyDenied, OSError) as exc:
             raise DomainError(

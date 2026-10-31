@@ -377,3 +377,47 @@ def test_voc_dedup_preserves_independent_ids_dates_and_variant_conflicts(setup, 
     research = svc.list_scoped(actor, case["id"], Artifact, kind="Research")[0]
     assert research["data"]["output"]["category_prevalence"] is None
     assert research["data"]["sufficiency"]["status"] == "needs_more_data"
+
+
+def test_real_pilot_export_cannot_borrow_synthetic_grant_context(real_mode):  # noqa: F811
+    from launchcase.application.pilot import export_pilot
+
+    svc, actor, case, _, _ = real_mode
+
+    class SyntheticContext:
+        def context(self):
+            return {"data_classification": "synthetic"}
+
+        def validate(self, request, upper):
+            raise AssertionError("Synthetic context must be rejected before grant validation/export")
+
+    with pytest.raises(DomainError) as denied:
+        export_pilot(svc, actor, case["id"], SyntheticContext())
+    assert denied.value.code == "BLOCKED_EXTERNAL"
+
+
+def test_pilot_manifest_limit_never_silently_hides_real_source(setup, case):
+    from launchcase.domain.common import digest
+    from launchcase.infrastructure.models import SourceDocument
+
+    svc, actor, _, client = setup
+    with svc.write() as session:
+        session.add_all(
+            [
+                SourceDocument(
+                    tenant_id=actor.tenant_id,
+                    case_id=case["id"],
+                    filename=f"TEST-ONLY-{index}.txt",
+                    sha256=digest(str(index).encode()),
+                    source_type="spec",
+                    rights_status="synthetic_fixture" if index < 5000 else "authorized",
+                    is_synthetic=index < 5000,
+                    metadata_json={},
+                )
+                for index in range(5001)
+            ]
+        )
+    response = client.get(f"/api/v1/product-cases/{case['id']}/pilot-export")
+    assert response.status_code == 409
+    assert response.json()["error"]["code"] == "PILOT_EXPORT_LIMIT"
+    assert "source_manifest" not in response.json()

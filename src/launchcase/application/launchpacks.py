@@ -47,6 +47,8 @@ class LaunchPackService:
         ):
             if asset.review.get("decision") != "approved":
                 continue
+            if asset.identity == "real_product" and asset.review.get("is_synthetic") is not False:
+                continue
             task = self.service.get_row(s, VisualTask, actor, asset.visual_task_id)
             try:
                 visual_service.current(s, actor, task)

@@ -40,6 +40,14 @@ class VisualService:
 
     def current(self, s, actor, task):
         if (
+            task.request.get("intent") == "listing"
+            and task.plan_review.get("decision") == "approved"
+            and task.plan_review.get("is_synthetic") is not False
+        ):
+            raise DomainError(
+                "SYNTHETIC_REVIEW", "Genuine SKU plan requires a non-synthetic human review", 409
+            )
+        if (
             task.dependency_hash != self.task_dependency(s, actor, task)
             or task.configuration_hash != self.configuration_hash()
         ):
@@ -135,6 +143,10 @@ class VisualService:
 
         def run(s):
             task = self.service.get_row(s, VisualTask, actor, task_id)
+            if task.request.get("intent") == "listing" and actor.synthetic:
+                raise DomainError(
+                    "SYNTHETIC_REVIEW", "Synthetic reviewer cannot approve a genuine SKU plan", 403
+                )
             self.current(s, actor, task)
             if request.expected_subject_hash != task.plan_hash or task.state != "awaiting_plan_review":
                 raise DomainError("STALE_SUBJECT", "Plan hash/state changed", 409)
@@ -281,6 +293,12 @@ class VisualService:
         def run(s):
             asset = self.service.get_row(s, VisualAsset, actor, asset_id)
             task = self.service.get_row(s, VisualTask, actor, asset.visual_task_id)
+            if actor.synthetic and (
+                task.request.get("intent") == "listing" or asset.identity == "real_product"
+            ):
+                raise DomainError(
+                    "SYNTHETIC_REVIEW", "Synthetic reviewer cannot approve a genuine SKU asset", 403
+                )
             self.current(s, actor, task)
             self.service.objects.get(asset.sha256)
             subject_hash = digest(

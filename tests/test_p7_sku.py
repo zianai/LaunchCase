@@ -189,7 +189,7 @@ def test_sku_rights_revocation_invalidates_dependency(sku):
             SkuVisualService(svc).snapshot(s, actor, case["id"], request.model_dump())
 
 
-def test_actual_http_strict_sku_and_review(sku):
+def test_actual_http_strict_sku_and_review(sku, monkeypatch):
     if os.getenv("LAUNCHCASE_TEST_ENGINE_HTTP") != "1":
         pytest.skip("Requires isolated actual Node HTTP Engine")
     svc, actor, case, _, _, _, _, _ = sku
@@ -205,6 +205,19 @@ def test_actual_http_strict_sku_and_review(sku):
     assert task["plan"]["plan"]["strategy"] in {"compose", "reuse"}
     assert task["plan"]["plan"]["fidelity"] == "strict"
     assert task["plan"]["plan"]["source"]["system"] == "launchcase"
+    _, synthetic_reviewer = svc.provision(actor.tenant_id, "TEST ONLY synthetic reviewer", "reviewer", True)
+    with pytest.raises(DomainError, match="Synthetic reviewer"):
+        api.approve(
+            synthetic_reviewer,
+            task["id"],
+            ReviewRequest(
+                expected_subject_hash=task["plan_hash"],
+                decision="approved",
+                reason="TEST ONLY cannot promote approval",
+            ),
+            uid(),
+        )
+    assert api.get(actor, task["id"])["plan_review"] == {}
     api.approve(
         actor,
         task["id"],
@@ -227,6 +240,21 @@ def test_actual_http_strict_sku_and_review(sku):
     asset = api.asset(actor, current["assets"][0]["id"])
     assert asset["identity"] == "real_product" and asset["review"] == {}
     assert digest(api.asset(actor, asset["id"], True)) == asset["sha256"]
+    with monkeypatch.context() as patch:
+        patch.setattr(api.client, "review", lambda *args: pytest.fail("Synthetic reviewer reached CE"))
+        with pytest.raises(DomainError, match="Synthetic reviewer"):
+            api.review(
+                synthetic_reviewer,
+                asset["id"],
+                ReviewRequest(
+                    expected_subject_hash=asset["subject_hash"],
+                    decision="approved",
+                    reason="TEST ONLY cannot promote approval",
+                ),
+                uid(),
+            )
+    assert api.asset(actor, asset["id"])["review"] == {}
+    assert api.get(actor, task["id"])["state"] == "awaiting_asset_review"
     api.review(
         actor,
         asset["id"],
