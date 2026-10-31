@@ -1,6 +1,6 @@
 schema_version: 3
 protocol_version: "3.0"
-id: LC-001-v1
+id: T-001-launchcase-v1
 status: executing
 goal: Implement and verify the complete offline LaunchCase V1 evidence-to-internal-draft workflow
 scope: [src/, frontend/, migrations/, skills/, tests/, docs/, ops/, scripts/]

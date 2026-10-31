@@ -20,3 +20,5 @@ Local API identities are hashed bearer tokens with tenant and role; browser uses
 server proxy and an HttpOnly session. No caller-controlled tenant/reviewer headers are trusted.
 SQLite is the executable default. PostgreSQL uses the same models, with separate deployment
 checks before any production claim. Frontend implementation follows after P5; P0 has no shell.
+
+Actual continuity checker requires T-NNN-slug task IDs. The handoff-suggested LC-001-v1 failed validation; use T-001-launchcase-v1 and keep LC-Pn IDs for specification traceability.

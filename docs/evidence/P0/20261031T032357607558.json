@@ -1,0 +1,9 @@
+{
+  "command": [
+    "python3",
+    "/Users/a/.agents/skills/managing-vibe-project-memory/scripts/check_project_memory.py",
+    "."
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P0/20261031T032357607558.log"
+}
