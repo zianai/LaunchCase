@@ -1,0 +1,18 @@
+{
+  "scope": "actual browser/API synthetic E1; human design approval absent",
+  "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+  "images": [
+    {
+      "path": "docs/validation/p8-p10/evidence/rc-ui-stack/browser/provenance-desktop.png",
+      "sha256": "f162dfc0af34d6e6865874ea0c2bd654a4b8baf25b5f04550e2673b8d5e3b5e5"
+    },
+    {
+      "path": "docs/validation/p8-p10/evidence/rc-ui-stack/browser/sku-1440.png",
+      "sha256": "5c4cb7f59e2e5193a77717204e62087060fbd6e97611ba42e03aaf035b92c1f3"
+    },
+    {
+      "path": "docs/validation/p8-p10/evidence/rc-ui-stack/browser/sku-390.png",
+      "sha256": "6ca908fb669a49ea3c41167656f1d7600bf4a69bf0d302b9d094e8b837affe18"
+    }
+  ]
+}
