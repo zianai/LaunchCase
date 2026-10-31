@@ -1,0 +1,9 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/test_infrastructure.py::test_postgresql_migration_concurrent_idempotency_lease_and_arq
+  /Users/a/workspaces/AForeign Trade/LaunchCase/.venv/lib/python3.12/site-packages/arq/worker.py:877: DeprecationWarning: Call to deprecated close. (Use aclose() instead) -- Deprecated since version 5.0.1.
+    await self.pool.close(close_connection_pool=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 1.26s
+{"scope": "isolated PostgreSQL/Redis/ARQ", "exit_code": 0, "containers": ["launchcase-p6-pg-fdd61345", "launchcase-p6-redis-fdd61345"]}

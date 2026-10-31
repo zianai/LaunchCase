@@ -1,0 +1,10 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "python",
+    "ops/verify_install.py"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044552742699.log"
+}

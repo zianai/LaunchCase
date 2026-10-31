@@ -1,0 +1,153 @@
+{
+  "tested_commit": "4d8f9003cdf1baeaa054f25fcae3191562af3cf3",
+  "scope": "synthetic offline + isolated local HTTP Mock",
+  "backend_passed": 52,
+  "backend_skipped": 1,
+  "separate_postgres_redis_passed": 1,
+  "browser_passed": 3,
+  "commands": [
+    {
+      "command": [
+        "uv",
+        "run",
+        "pytest",
+        "-q"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044517826190.log"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "python",
+        "ops/verify_infrastructure.py"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044526199195.log"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "test:e2e",
+        "--prefix",
+        "frontend"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044526749505.log"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "python",
+        "ops/verify_migrations.py"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044544287043.log"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "launchcase",
+        "demo",
+        "--fixture",
+        "fixtures/scenarios/pet-furniture-us",
+        "--out",
+        ".launchcase/acceptance-20261031"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044544780852.log"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "ruff",
+        "check",
+        "."
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044546229652.log"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "typecheck",
+        "--prefix",
+        "frontend"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044546522876.log"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "launchcase",
+        "validate",
+        "--case",
+        ".launchcase/acceptance-20261031",
+        "--strict"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044547438172.log"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build",
+        "--prefix",
+        "frontend"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044547738989.log"
+    },
+    {
+      "command": [
+        "uv",
+        "run",
+        "python",
+        "ops/verify_install.py"
+      ],
+      "exit_code": 0,
+      "log": "docs/evidence/ACCEPTANCE-20261031/20261031T044552742699.log"
+    }
+  ],
+  "demo": {
+    "schema_version": "1.0.0",
+    "case_id": "15c38b0a-677a-4793-929b-a3e84facaac7",
+    "pack_id": "7c3b3dbd-df89-4af6-a494-13e0085f6320",
+    "actor_id": "44d48c28-b0ca-4e80-a747-0c58738d08ef",
+    "tenant_id": "synthetic-demo",
+    "is_synthetic": true,
+    "scope": "tested_offline",
+    "waiting_for": "G4",
+    "publishable": false,
+    "files": {
+      "internal-draft.json": "a3a5d29427884c42d1e3df9fa2275673a23ffccc7434cc9192deb2911fd862ed",
+      "internal-draft.md": "1414e4805b5e398dd4b982b020066d80ad6dc904a7ad95fe2970fa0d480efbaf",
+      "internal-draft.zip": "96d175b3e9274174a23566c474e89c1c9478ec00cb7032e564fdbdf5a9f2109f"
+    },
+    "counts": {
+      "sources": 3,
+      "evidence": 28,
+      "concepts": 2,
+      "opportunities": 4
+    },
+    "paid_calls": 0,
+    "paid_calls_basis": "only local deterministic SDK Model and protocol fake instantiated"
+  },
+  "screenshots": {
+    "docs/evidence/ACCEPTANCE-20261031/browser/overview-1440.png": "140e5bfa1914f47bd3d985afee1ee6c7842089299266c3c93a040f0716bcc000",
+    "docs/evidence/ACCEPTANCE-20261031/browser/overview-390.png": "2c6be14a5a798d85fac61bd71192e8c697b947b86594dec97f6106e8383f783c",
+    "docs/evidence/ACCEPTANCE-20261031/browser/pack-1440.png": "0a12a6064e888e24e38f0f25eaab6a9864248578d9383a40e89e5ebcf08b6884",
+    "docs/evidence/ACCEPTANCE-20261031/browser/pack-390.png": "aefbcdd5519bf1f96bb48961641d97b8f9d3e77c0a09e804fefa1f3d525ce3c6",
+    "docs/evidence/ACCEPTANCE-20261031/browser/visual-1440.png": "1e9a55d865a8a56a14754d6d248371f7ab39e98a32607e45f6cab6e684bb6f48",
+    "docs/evidence/ACCEPTANCE-20261031/browser/visual-390.png": "0d463c4ec51a2c6cf68cb4b57fe96b654a6a730d618a260f8750ce001e08abbf"
+  }
+}

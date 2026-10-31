@@ -1,0 +1,14 @@
+
+> launchcase-workbench@0.1.0 test:e2e
+> playwright test
+
+
+Running 3 tests using 1 worker
+
+(node:90421) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/workbench.spec.ts:12:7 › real API full internal workflow 1440px (10.4s)
+  ✓  2 tests/workbench.spec.ts:12:7 › real API full internal workflow 390px (5.0s)
+  ✓  3 tests/workbench.spec.ts:188:5 › server proxy rejects missing session and cross-origin writes (21ms)
+
+  3 passed (16.7s)
