@@ -10,7 +10,7 @@ from launchcase.infrastructure.tasks import TaskManager
 class ResearchService:
     def __init__(self, service, runner=None):
         self.service = service
-        self.runner = runner or FakeSDKRunner()
+        self.runner = runner
 
     def snapshot(self, actor, case_id):
         with self.service.sessions() as s:
@@ -65,7 +65,12 @@ class ResearchService:
                     .order_by(Evidence.source_locator)
                 )
             ]
-        result = self.runner.run(evidence)
+        runner = self.runner
+        if runner is None and self.service.settings.research_mode == "live":
+            from launchcase.agents.live import RealAgentRunner
+
+            runner = RealAgentRunner(actor.tenant_id, task["case_id"])
+        result = (runner or FakeSDKRunner()).run(evidence)
         reviews = [e for e in evidence if e["data"]["source_type"] == "review"]
         products = {e["data"]["product_identity"] for e in reviews} - {"unresolved"}
         dated = all(e["data"]["observed_at"] for e in reviews)

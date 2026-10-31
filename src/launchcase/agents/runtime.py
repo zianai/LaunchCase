@@ -33,7 +33,7 @@ class Theme(Contract):
 class ResearchOutput(Contract):
     themes: list[Theme]
     sample_limitations: list[str]
-    stop_reason: Literal["completed_offline", "insufficient_evidence"]
+    stop_reason: Literal["completed_offline", "completed_scoped", "insufficient_evidence"]
     category_prevalence: None = None
 
 

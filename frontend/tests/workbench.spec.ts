@@ -3,7 +3,7 @@ import { readFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 const root = path.resolve(__dirname, "../..");
 const fixture = path.join(root, "fixtures/scenarios/pet-furniture-us");
-const screenshotDir = path.join(
+const screenshotDir = path.resolve(
   root,
   process.env.LAUNCHCASE_SCREENSHOT_DIR || "docs/evidence/browser",
 );

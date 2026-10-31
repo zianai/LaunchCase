@@ -18,7 +18,7 @@ try:
         ("redis", "redis:7.4.6-alpine", 6379),
     ]:
         name = f"launchcase-p6-{kind}-{suffix}"
-        cmd = ["docker", "run", "--rm", "-d", "--name", name, "-p", f"127.0.0.1::{inside}"]
+        cmd = ["docker", "run", "--pull=never", "--rm", "-d", "--name", name, "-p", f"127.0.0.1::{inside}"]
         if kind == "pg":
             cmd += ["-e", "POSTGRES_PASSWORD=launchcase-test-only", "-e", "POSTGRES_DB=launchcase"]
         cmd += [image]
@@ -52,7 +52,7 @@ try:
         LAUNCHCASE_TEST_POSTGRES=f"postgresql+psycopg://postgres:launchcase-test-only@127.0.0.1:{ports['pg']}/launchcase",
         LAUNCHCASE_TEST_REDIS_PORT=ports["redis"],
     )
-    result = subprocess.run(["uv", "run", "pytest", "-q", "tests/test_infrastructure.py"], env=env)
+    result = subprocess.run([sys.executable, "-m", "pytest", "-q", "tests/test_infrastructure.py"], env=env)
     print(
         json.dumps(
             {"scope": "isolated PostgreSQL/Redis/ARQ", "exit_code": result.returncode, "containers": names}

@@ -19,6 +19,7 @@ from launchcase.domain.contracts import (
     RightsChange,
     RuleAttestation,
     SampleAttestation,
+    SkuImageImport,
     SourceImport,
     SpecRevision,
     VisualRequest,
@@ -102,6 +103,18 @@ def create_app(settings=None):
     @app.post("/api/v1/product-cases/{case_id}/sources/import")
     def source_import(case_id: str, body: SourceImport, actor=Depends(identity), request_key=Depends(key)):
         return service.import_source(actor, case_id, body, request_key)
+
+    @app.post("/api/v1/product-cases/{case_id}/sku-images")
+    def sku_image(case_id: str, body: SkuImageImport, actor=Depends(identity), request_key=Depends(key)):
+        from launchcase.application.sku_visuals import SkuVisualService
+
+        return SkuVisualService(service).upload(actor, case_id, body, request_key)
+
+    @app.post("/api/v1/sku-images/{source_id}/review")
+    def sku_review(source_id: str, body: ReviewRequest, actor=Depends(identity), request_key=Depends(key)):
+        from launchcase.application.sku_visuals import SkuVisualService
+
+        return SkuVisualService(service).review(actor, source_id, body, request_key)
 
     @app.get("/api/v1/sources/{source_id}")
     def source(source_id: str, actor=Depends(identity)):

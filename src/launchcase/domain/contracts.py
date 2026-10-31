@@ -37,7 +37,7 @@ class ProductBrief(Contract):
 class SourceImport(Contract):
     filename: str = Field(min_length=1, max_length=180, pattern=r"^[^/\\\x00]+\.(csv|json|txt|md)$")
     content: str = Field(min_length=1, max_length=1048576)
-    source_type: Literal["review", "competitor", "spec", "quote", "sample", "rule"]
+    source_type: Literal["review", "competitor", "spec", "quote", "sample", "rule", "rights"]
     rights_status: Literal["synthetic_fixture", "authorized", "unknown", "revoked"]
     is_synthetic: bool
     source_url: str | None = Field(default=None, max_length=2000)
@@ -95,7 +95,13 @@ class VisualRequest(Contract):
     requirements: str = Field(min_length=5, max_length=5000)
     variants: int = Field(default=1, ge=1, le=3)
     budget_usd: Literal[0] = 0
-    source_asset_ids: list[str] = Field(default_factory=list, max_length=0)
+    source_asset_ids: list[str] = Field(default_factory=list, max_length=8)
+    truth_snapshot_id: str | None = None
+    platform_rule_id: str | None = None
+    logo_asset_id: str | None = None
+    allowed_changes: list[Literal["background", "layout", "canvas", "format", "authorized_logo"]] = Field(
+        default_factory=list, max_length=5
+    )
 
 
 class ReviewRequest(Contract):
@@ -166,3 +172,20 @@ class HandoffPreparation(Contract):
     risk_acceptance: str = Field(min_length=20, max_length=5000)
     excluded_claims: str = Field(min_length=10, max_length=3000)
     internal_assets_only: Literal[True]
+
+
+class RightsProof(Contract):
+    source_id: str
+    exact_excerpt: str = Field(min_length=20, max_length=3000)
+    expires_at_utc: str
+    external_allowed: Literal[True]
+
+
+class SkuImageImport(Contract):
+    sku: str = Field(min_length=1, max_length=160, pattern=r"^[A-Za-z0-9_.:-]+$")
+    filename: str = Field(pattern=r"^[^/\\\x00]+\.(png|jpg|jpeg|webp)$", max_length=180)
+    data_base64: str = Field(min_length=4, max_length=1400000)
+    original_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    kind: Literal["product_photo", "cutout", "logo"]
+    is_synthetic: bool
+    rights: RightsProof

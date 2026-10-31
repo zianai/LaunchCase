@@ -1,0 +1,7 @@
+# P7 validation boundary
+
+Current direct user instruction permits local reversible zero-cost implementation across all three repositories. It supersedes older single-repository scope restrictions only for these isolated worktrees. Original protected and uncommitted files remain untouched. Evidence first; methods remain Skills, permission/identity/idempotency remain deterministic backend responsibilities, SDK owns bounded inference and LangGraph owns business sequencing. No fourth product, shared business database, external publication or real approval is introduced. Fake never upgrades to live; generated assets never upgrade to product facts. Gates bind exact source, rights, plan, configuration and bytes.
+
+P7 live grants are installed by a local OS operator and pinned by an out-of-band SHA in service configuration. No API or model tool can mint them. This is an OS-admin trust boundary, not protection against a compromised filesystem administrator. No grant has been installed for this run. Synthetic test identities never represent human pilot approval.
+
+LaunchCase docs/handoff/** remains protected. New SKU intake is a backend/API capability; existing UI approval language is unchanged. Pillow adds bounded image decoding; no raw uploaded image belongs in a public repository.

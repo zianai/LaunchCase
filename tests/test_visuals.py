@@ -189,7 +189,7 @@ def test_real_local_http_mock_contract(setup, case, concepts):
     settings = replace(
         svc.settings,
         creative_mode="http",
-        creative_url="http://127.0.0.1:4311",
+        creative_url=os.getenv("LAUNCHCASE_TEST_ENGINE_URL", "http://127.0.0.1:4311"),
         creative_token="launchcase-isolated-test-token",
     )
     service = VisualService(CaseService(settings))

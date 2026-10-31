@@ -2,6 +2,7 @@ from sqlalchemy import select
 
 from launchcase.application.products import ProductService
 from launchcase.application.services import row_dict
+from launchcase.application.sku_visuals import SkuVisualService
 from launchcase.domain.common import DomainError, digest, now
 from launchcase.infrastructure.models import VisualAsset, VisualTask
 from launchcase.integrations.creative import UnknownReceipt, provider
@@ -32,9 +33,14 @@ class VisualService:
             raise DomainError("GATE_BLOCKED", "Current G2 selection of this concept required", 409)
         return gate.subject_hash
 
+    def task_dependency(self, s, actor, task):
+        if task.request.get("intent") == "listing":
+            return digest(SkuVisualService(self.service).snapshot(s, actor, task.case_id, task.request))
+        return self.dependency(s, actor, task.case_id, task.concept_id)
+
     def current(self, s, actor, task):
         if (
-            task.dependency_hash != self.dependency(s, actor, task.case_id, task.concept_id)
+            task.dependency_hash != self.task_dependency(s, actor, task)
             or task.configuration_hash != self.configuration_hash()
         ):
             raise DomainError("STALE_VISUAL", "Spec, rights, selection or Engine configuration changed", 409)
@@ -59,12 +65,22 @@ class VisualService:
             return data
 
     def create(self, actor, case_id, request, key):
-        if request.intent == "listing":
+        if request.intent == "listing" and (
+            not request.source_asset_ids or not request.truth_snapshot_id or not request.platform_rule_id
+        ):
             raise DomainError("LISTING_BLOCKED", "Concept/Mock imagery cannot represent a verified SKU", 409)
+        if request.intent != "listing" and (
+            request.source_asset_ids or request.truth_snapshot_id or request.logo_asset_id
+        ):
+            raise DomainError("CONCEPT_SOURCE_BLOCKED", "Concept path cannot import SKU evidence", 409)
 
         def run(s):
             self.service.case_row(s, actor, case_id, True)
-            dep = self.dependency(s, actor, case_id, request.concept_id)
+            dep = (
+                digest(SkuVisualService(self.service).snapshot(s, actor, case_id, request.model_dump()))
+                if request.intent == "listing"
+                else self.dependency(s, actor, case_id, request.concept_id)
+            )
             task = VisualTask(
                 tenant_id=actor.tenant_id,
                 case_id=case_id,
@@ -91,7 +107,11 @@ class VisualService:
             if task.plan:
                 return row_dict(task)
             try:
-                plan = self.client.plan(task.id, task.request)
+                wire = dict(task.request)
+                if wire.get("intent") == "listing":
+                    sku = SkuVisualService(self.service)
+                    wire["sku_snapshot"] = sku.wire(sku.snapshot(s, actor, task.case_id, task.request))
+                plan = self.client.plan(task.id, wire)
                 task.plan, task.plan_hash = (
                     plan,
                     digest(
@@ -214,7 +234,13 @@ class VisualService:
                 return row_dict(task)
             assets = self.client.assets(batch)
             for asset in assets:
-                if asset.get("identity") not in {"mock", "concept"} or asset.get("provider") != "mock":
+                strict = task.request.get("intent") == "listing"
+                permitted = (
+                    (asset.get("identity") == "real_product" and asset.get("provider") == "deterministic")
+                    if strict
+                    else (asset.get("identity") in {"mock", "concept"} and asset.get("provider") == "mock")
+                )
+                if not permitted:
                     raise DomainError("ENGINE_IDENTITY", "Unexpected product identity/provider", 409)
                 data = self.client.content(asset["id"])
                 if digest(data) != asset["sha256"] or not data.startswith(b"\x89PNG\r\n\x1a\n"):

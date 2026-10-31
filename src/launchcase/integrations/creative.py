@@ -89,6 +89,8 @@ class CreativeEngineClient:
             raise DomainError("ENGINE_SKILL", "product-concept Skill unavailable", 409)
 
     def plan(self, external_id, request):
+        if request.get("intent") == "listing":
+            return self.plan_sku(external_id, request)
         self.verify()
         project = self.request("POST", "projects", {"name": f"LaunchCase internal {external_id}"})
         brief = self.request(
@@ -113,6 +115,107 @@ class CreativeEngineClient:
         if plan.get("strategy") == "blocked" or plan.get("blocked_reasons") or plan.get("provider") != "mock":
             raise DomainError("ENGINE_PLAN_BLOCKED", "Engine plan blocked or non-Mock provider", 409)
         return {"project_id": project["id"], "brief_id": brief["id"], "plan_id": plan["id"], "plan": plan}
+
+    def plan_sku(self, external_id, request):
+        self.verify()
+        snapshot = request.get("sku_snapshot")
+        if not snapshot:
+            raise DomainError("SKU_CONTEXT_REQUIRED", "Business-validated original SKU context required", 409)
+        project = self.request("POST", "projects", {"name": f"LaunchCase internal SKU {external_id}"})
+        mapping = {}
+        for source in snapshot["images"] + snapshot["documents"]:
+            if source["id"] in mapping:
+                continue
+            asset = self.request(
+                "POST",
+                "assets/import",
+                {
+                    "project_id": project["id"],
+                    "filename": source["filename"],
+                    "data_base64": source["data_base64"],
+                    "kind": source["metadata_json"]["kind"]
+                    if source["source_type"] == "image"
+                    else "document",
+                    "authorized": source["rights_status"] == "authorized",
+                    "verified": not source["is_synthetic"],
+                    "sensitive_data_cleared": True,
+                    "source_version": source["sha256"],
+                },
+            )
+            if asset.get("sha256") != source["sha256"] or asset.get("identity") != "source":
+                raise DomainError("SOURCE_MAPPING", "Engine source import identity/hash mismatch", 409)
+            mapping[source["id"]] = remote_id(asset["id"])
+        facts = snapshot["truth"]["data"]["facts"]
+        truth = self.request(
+            "POST",
+            "truth-snapshots",
+            {
+                "project_id": project["id"],
+                "product_id": snapshot["sku"],
+                "version": snapshot["truth"]["sha256"],
+                "facts": [
+                    {
+                        "name": f["name"],
+                        "value": f["value"],
+                        "source_asset_id": mapping[f["source_id"]],
+                        "source_version": f["source_sha256"],
+                        "evidence_status": "verified",
+                        "confirmed_at": snapshot["truth"]["data"]["confirmed_at"],
+                        "external_allowed": f["external_allowed"],
+                    }
+                    for f in facts
+                ],
+            },
+        )
+        payload = {
+            "project_id": project["id"],
+            "source": {"system": "launchcase", "external_id": external_id},
+            "workflow": "ecommerce-listing",
+            "provider": "mock",
+            "budget_usd": 0,
+            "intent": "strict-original-sku",
+            "requirements": request["requirements"],
+            "product": {
+                "product_id": snapshot["sku"],
+                "stage": "existing_sku",
+                "truth_snapshot_id": truth["id"],
+            },
+            "reference_asset_ids": [
+                mapping[x["id"]] for x in snapshot["images"] if x["metadata_json"]["kind"] != "logo"
+            ],
+            "fidelity": "strict",
+            "delivery_target": "listing",
+            "delivery_rule_id": "custom-square",
+            "allowed_changes": request["allowed_changes"],
+            "forbidden_changes": ["product_structure", "material", "dimensions", "features"],
+            "variants": request["variants"],
+            "claims": [{"name": f["name"], "value": f["value"]} for f in facts],
+        }
+        if request.get("logo_asset_id"):
+            payload["authorized_logo_asset_id"] = mapping[request["logo_asset_id"]]
+        brief = self.request("POST", "briefs", payload)
+        plan = self.request("POST", f"briefs/{remote_id(brief['id'])}/plan")
+        if (
+            plan.get("strategy") not in {"reuse", "compose"}
+            or plan.get("fidelity") != "strict"
+            or plan.get("blocked_reasons")
+            or plan.get("provider") != "mock"
+            or plan.get("product") != payload["product"]
+            or plan.get("claims") != payload["claims"]
+        ):
+            raise DomainError(
+                "ENGINE_PLAN_BLOCKED", "Strict SKU contract refused unsafe or changed plan", 409
+            )
+        return {
+            "project_id": project["id"],
+            "brief_id": brief["id"],
+            "plan_id": plan["id"],
+            "plan": plan,
+            "source_mapping": mapping,
+            "business_truth_sha256": snapshot["truth"]["sha256"],
+            "business_rule_bindings": snapshot["rules"],
+            "publication_authorized": False,
+        }
 
     def submit(self, plan, key):
         self.verify()
@@ -198,6 +301,10 @@ class MockClient:
         return json.loads(row[0])
 
     def plan(self, external_id, request):
+        if request.get("intent") == "listing":
+            raise DomainError(
+                "SKU_HTTP_REQUIRED", "Strict SKU requires the actual isolated Engine compositor", 409
+            )
         key = f"plan-{external_id}"
         data = {
             "project_id": f"project-{external_id}",

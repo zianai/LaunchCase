@@ -14,7 +14,7 @@ const refs = JSON.parse(
     "utf8",
   ),
 );
-const output = path.join(
+const output = path.resolve(
   root,
   process.env.LAUNCHCASE_SCREENSHOT_DIR || "docs/evidence/g4-g5",
 );
