@@ -1,6 +1,17 @@
 "use client";
 import { useState } from "react";
+import { dateTime } from "./labels";
 type Item = { id: string; [key: string]: any };
+type FactRow = { name: string; value: string; excerpt: string };
+const emptyFact: FactRow = { name: "", value: "", excerpt: "" };
+function factProblem(fact: FactRow) {
+  if (fact.name.trim().length < 2) return "事实名称至少 2 个字";
+  if (!fact.value.trim()) return "请填写实测值和单位";
+  if (fact.excerpt.trim().length < 5) return "原文摘录至少 5 个字";
+  if (!fact.excerpt.includes(fact.value.trim()))
+    return "原文摘录必须包含这个实测值";
+  return "";
+}
 type Props = {
   current: Item;
   data: Record<string, Item[]>;
@@ -22,9 +33,8 @@ export default function HandoffWorkspace({
   const [sampleSource, setSampleSource] = useState("");
   const [sampleId, setSampleId] = useState("");
   const [method, setMethod] = useState("");
-  const [name, setName] = useState("");
-  const [value, setValue] = useState("");
-  const [excerpt, setExcerpt] = useState("");
+  const [facts, setFacts] = useState<FactRow[]>([{ ...emptyFact }]);
+  const [checked, setChecked] = useState(false);
   const [tested, setTested] = useState("");
   const [person, setPerson] = useState("");
   const [limitations, setLimitations] = useState("");
@@ -36,6 +46,7 @@ export default function HandoffWorkspace({
   const [applicability, setApplicability] = useState("");
   const [selectedRules, setSelectedRules] = useState<string[]>([]);
   const [packId, setPackId] = useState("");
+  const [handoffPerson, setHandoffPerson] = useState("");
   const [risks, setRisks] = useState("");
   const [excluded, setExcluded] = useState("");
   const [internal, setInternal] = useState(false);
@@ -61,6 +72,16 @@ export default function HandoffWorkspace({
   const approved = (g: string) =>
     gate(g)?.status === "current" &&
     gate(g)?.decision === (g === "G4" ? "verify_sample" : "internal_handoff");
+  const updateFact = (index: number, patch: Partial<FactRow>) =>
+    setFacts((rows) =>
+      rows.map((row, i) => (i === index ? { ...row, ...patch } : row)),
+    );
+  const latestFirst = (kind: string) =>
+    [...items(kind)].sort((a, b) => b.version - a.version);
+  const samples = latestFirst("samples");
+  const preparations = latestFirst("handoff-preparations");
+  const isCurrent = (record: Item, all: Item[], subject?: string) =>
+    record.id === all[0]?.id || record.id === subject;
   const statusLabel = (g: string) =>
     !gate(g)
       ? "尚未审核"
@@ -68,7 +89,7 @@ export default function HandoffWorkspace({
         ? "资料或版本已变化，请重新审核"
         : approved(g)
           ? g === "G4"
-            ? "样品事实已确认（仅限记录范围）"
+            ? "本次样品记录已确认（仅限记录范围）"
             : "内部交接已批准（未发布）"
           : "暂缓或待补充材料";
   const save = (endpoint: string, body: unknown) =>
@@ -76,53 +97,138 @@ export default function HandoffWorkspace({
       await api(`${root}/${endpoint}`, body);
       await reload();
     });
+  const sampleCard = (s: Item) => (
+    <article key={s.id}>
+      <h4>样品记录第 {s.version} 版</h4>
+      {items("truth")
+        .filter((t) => t.id === s.data.truth_id)
+        .map((t) => (
+          <div key={t.id}>
+            <p>
+              负责人：{t.data.responsible_person} · 测试时间：
+              {dateTime(t.data.confirmed_at)}
+            </p>
+            <p>限制与未测项：{t.data.limitations}</p>
+          </div>
+        ))}
+      <p>
+        样品 {s.data.sample_identifier} · {s.data.test_method}
+      </p>
+      {s.data.facts.map((f: any, i: number) => (
+        <p key={i}>
+          {f.name}: {f.value}
+          <br />
+          <q>{f.exact_excerpt}</q>
+          <br />
+          <a
+            href={`/api/sources/${f.source_id}/content`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            查看原始记录 ↗
+          </a>
+        </p>
+      ))}
+      <button
+        className="secondary"
+        disabled={busy}
+        onClick={() => review("G4", s)}
+      >
+        {approved("G4") && gate("G4")?.subject_id === s.id
+          ? "重新审核样品记录（将替代当前决定）"
+          : "审核样品记录"}
+      </button>
+    </article>
+  );
+  const preparationCard = (h: Item) => (
+    <article key={h.id}>
+      <h4>
+        交接材料第 {h.version} 版 · {h.data.responsible_person}
+      </h4>
+      <p>{h.data.risk_acceptance}</p>
+      <p>{h.data.excluded_claims}</p>
+      <button
+        className="secondary"
+        disabled={busy}
+        onClick={() => {
+          const p = items("launch-packs").find((p) => p.id === h.data.pack_id);
+          if (p) review("G5", p);
+        }}
+      >
+        {approved("G5") && gate("G5")?.subject_id === h.data.pack_id
+          ? "重新审核内部交接（将替代当前决定）"
+          : "审核内部交接"}
+      </button>
+    </article>
+  );
   return (
     <>
-      <p className="eyebrow">G4 / SAMPLE → G5 / INTERNAL HANDOFF</p>
+      <p className="eyebrow">样品验证 → 内部交接</p>
       <h2>把实测事实与交接责任放在一起。</h2>
       <p role="status">
         {approved("G5")
-          ? "本轮内部交接已完成。下一步：查看批准回执或下载交接包。"
+          ? "本轮内部交接已完成。可以下载交接包或查看批准回执。"
           : approved("G4")
-            ? "样品事实已确认。下一步：复核规则并准备 G5 交接材料。"
-            : "下一步：录入样品事实，并由负责人审核 G4。"}
+            ? "本次样品记录已确认。下一步：复核规则并准备内部交接材料。"
+            : "下一步：录入样品记录，并由负责人审核。"}
       </p>
+      {approved("G5") && (
+        <div className="handoff-summary">
+          <a
+            className="download primary-link"
+            href={`/api/launch-packs/${gate("G5")?.subject_id}/handoff-export`}
+          >
+            下载完整内部交接包 ZIP ↗
+          </a>
+          <a
+            className="download"
+            href={`/api/launch-packs/${gate("G5")?.subject_id}/handoff-receipt`}
+          >
+            查看内部交接批准回执 ↗
+          </a>
+          <button
+            className="text-button"
+            disabled={busy}
+            onClick={() => save("runs/handoff", {})}
+          >
+            同步已批准的交接流程
+          </button>
+        </div>
+      )}
       <nav className="actions" aria-label="交接步骤">
-        <a href="#g4-sample">1 样品事实</a>
+        <a href="#g4-sample">1 样品记录</a>
         <a href="#handoff-rules">2 规则复核</a>
-        <a href="#g5-handoff">3 内部交接与回执</a>
+        <a href="#g5-handoff">3 内部交接</a>
       </nav>
       <p className="review-warning">
         {current.is_synthetic
-          ? "合成案例不可确认真实样品或通过业务交接。请另建真实 Case。"
+          ? "合成测试项目不能确认真实样品，也不能通过业务交接。请另建真实项目。"
           : "公开网页可用于研究和规则核对，不能证明本 SKU 的实测性能。"}{" "}
         交接批准不授权发布。
       </p>
       <div className="paper handoff-section" id="g4-sample">
-        <h3>1 · 样品事实录入</h3>
+        <h3>1 · 样品记录</h3>
         <p>
-          先在「证据来源」导入有权使用的真实样品记录。每条事实绑定当前
-          Spec、样品编号、方法和原文。多条事实请在 JSON
-          导入中一次提交完整测试范围。
+          先在「证据来源」导入有权使用的真实样品记录。一次可以录入多条实测事实，每条都要能在原文中找到。
         </p>
         <details open={!items("samples").length}>
           <summary>录入新的样品记录</summary>
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              setChecked(true);
+              if (facts.some(factProblem)) return;
               save("sample-attestations", {
                 expected_spec_hash: spec?.sha256,
                 sample_identifier: sampleId,
                 test_method: method,
-                facts: [
-                  {
-                    name,
-                    value,
-                    source_id: sampleSource,
-                    exact_excerpt: excerpt,
-                    external_allowed: false,
-                  },
-                ],
+                facts: facts.map((fact) => ({
+                  name: fact.name.trim(),
+                  value: fact.value.trim(),
+                  source_id: sampleSource,
+                  exact_excerpt: fact.excerpt,
+                  external_allowed: false,
+                })),
                 tested_at: new Date(tested).toISOString(),
                 responsible_person: person,
                 limitations,
@@ -162,34 +268,85 @@ export default function HandoffWorkspace({
                   onChange={(e) => setMethod(e.target.value)}
                 />
               </label>
-              <div className="cost-inputs">
-                <label>
-                  事实名称
-                  <input
-                    required
-                    minLength={2}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </label>
-                <label>
-                  实测值（含单位）
-                  <input
-                    required
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                  />
-                </label>
-              </div>
-              <label>
-                原文摘录（须包含实测值）
-                <textarea
-                  required
-                  minLength={5}
-                  value={excerpt}
-                  onChange={(e) => setExcerpt(e.target.value)}
-                />
-              </label>
+              <table className="fact-table">
+                <caption className="sr-only">实测事实</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">事实名称</th>
+                    <th scope="col">实测值（含单位）</th>
+                    <th scope="col">原文摘录（须包含实测值）</th>
+                    <th scope="col">
+                      <span className="sr-only">操作</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {facts.map((fact, i) => {
+                    const problem = checked ? factProblem(fact) : "";
+                    return (
+                      <tr key={i}>
+                        <td>
+                          <input
+                            aria-label={`第 ${i + 1} 条事实名称`}
+                            value={fact.name}
+                            placeholder="例如：外包装宽度"
+                            onChange={(e) =>
+                              updateFact(i, { name: e.target.value })
+                            }
+                          />
+                        </td>
+                        <td>
+                          <input
+                            aria-label={`第 ${i + 1} 条实测值`}
+                            value={fact.value}
+                            placeholder="例如：40 cm"
+                            onChange={(e) =>
+                              updateFact(i, { value: e.target.value })
+                            }
+                          />
+                        </td>
+                        <td>
+                          <textarea
+                            aria-label={`第 ${i + 1} 条原文摘录`}
+                            rows={2}
+                            value={fact.excerpt}
+                            onChange={(e) =>
+                              updateFact(i, { excerpt: e.target.value })
+                            }
+                          />
+                          {problem && (
+                            <span className="row-error" role="alert">
+                              {problem}
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="text-button"
+                            disabled={facts.length === 1}
+                            aria-label={`删除第 ${i + 1} 条事实`}
+                            onClick={() =>
+                              setFacts((rows) =>
+                                rows.filter((_, index) => index !== i),
+                              )
+                            }
+                          >
+                            删除
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <button
+                type="button"
+                className="secondary"
+                onClick={() => setFacts((rows) => [...rows, { ...emptyFact }])}
+              >
+                ＋ 增加一条事实
+              </button>
               <label>
                 测试时间
                 <input
@@ -217,16 +374,20 @@ export default function HandoffWorkspace({
                   onChange={(e) => setLimitations(e.target.value)}
                 />
               </label>
-              <p className="hash">当前 Spec {spec?.sha256 || "先完成 G2"}</p>
-              <button className="primary">保存样品事实，待 G4 审核</button>
+              {!spec && <p className="hint">请先选定产品方案。</p>}
+              <details className="tech-details">
+                <summary>技术信息</summary>
+                <p className="hash">当前规格校验值 {spec?.sha256 || "—"}</p>
+              </details>
+              <button className="primary">保存样品记录，等待审核</button>
             </fieldset>
           </form>
         </details>
         <details>
-          <summary>导入完整样品确认 JSON（多条事实）</summary>
-          <p>
-            JSON 必须包含当前
-            expected_spec_hash、sample_identifier、test_method、facts、tested_at、responsible_person、limitations；这是事实录入，仍需单独审核。
+          <summary>高级：从 JSON 文件导入</summary>
+          <p className="hint">
+            供系统批量导入使用，日常录入请用上面的表格。文件须包含
+            expected_spec_hash、sample_identifier、test_method、facts、tested_at、responsible_person、limitations；导入后仍需单独审核。
           </p>
           <input
             aria-label="导入样品确认 JSON"
@@ -247,54 +408,20 @@ export default function HandoffWorkspace({
             }}
           />
         </details>
-        {items("samples").map((s) => (
-          <article key={s.id}>
-            <h4>样品记录 v{s.version}</h4>
-            {items("truth")
-              .filter((t) => t.id === s.data.truth_id)
-              .map((t) => (
-                <div key={t.id}>
-                  <p>
-                    负责人：{t.data.responsible_person} · 测试时间：
-                    {t.data.confirmed_at}
-                  </p>
-                  <p>限制与未测项：{t.data.limitations}</p>
-                </div>
-              ))}
-            <p>
-              样品 {s.data.sample_identifier} · {s.data.test_method}
-            </p>
-            {s.data.facts.map((f: any, i: number) => (
-              <p key={i}>
-                {f.name}: {f.value}
-                <br />
-                <q>{f.exact_excerpt}</q>
-                <br />
-                <a
-                  href={`/api/sources/${f.source_id}/content`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  查看原始记录 ↗
-                </a>
-              </p>
-            ))}
-            <button
-              className="secondary"
-              disabled={busy}
-              onClick={() => review("G4", s)}
-            >
-              {approved("G4") && gate("G4")?.subject_id === s.id
-                ? "重新审核 G4（将替代当前决定）"
-                : "审核 G4 样品事实"}
-            </button>
-          </article>
-        ))}
-        <p>
-          G4：
-          {statusLabel("G4")} · 记录{" "}
-          {gate("G4")?.subject_id?.slice(0, 8) || "—"}
-        </p>
+        {samples
+          .filter((s) => isCurrent(s, samples, gate("G4")?.subject_id))
+          .map((s) => sampleCard(s))}
+        {samples.some(
+          (s) => !isCurrent(s, samples, gate("G4")?.subject_id),
+        ) && (
+          <details className="older-records">
+            <summary>较早的样品记录</summary>
+            {samples
+              .filter((s) => !isCurrent(s, samples, gate("G4")?.subject_id))
+              .map((s) => sampleCard(s))}
+          </details>
+        )}
+        <p>样品验证：{statusLabel("G4")}</p>
       </div>
       <div className="paper handoff-section">
         <h3 id="handoff-rules">2 · 规则适用性复核</h3>
@@ -386,10 +513,9 @@ export default function HandoffWorkspace({
         </details>
       </div>
       <div className="paper handoff-section">
-        <h3 id="g5-handoff">3 · G5 内部业务交接</h3>
+        <h3 id="g5-handoff">3 · 内部交接</h3>
         <p>
-          先完成 G4，再生成新
-          LaunchPack。逐项记录成本缺口、风险责任和排除的声明；素材继续限内部使用。准备材料不会自动批准。
+          样品记录确认后，先生成新的内部交接资料，再逐项记录成本缺口、风险责任和排除的声明。素材继续限内部使用，准备材料不会自动批准。
         </p>
         <details open={!items("handoff-preparations").length}>
           <summary>准备新的交接材料</summary>
@@ -402,7 +528,7 @@ export default function HandoffWorkspace({
                   (p) => p.id === packId,
                 )?.sha256,
                 rule_ids: selectedRules,
-                responsible_person: person,
+                responsible_person: handoffPerson,
                 risk_acceptance: risks,
                 excluded_claims: excluded,
                 internal_assets_only: internal,
@@ -417,10 +543,10 @@ export default function HandoffWorkspace({
                   value={packId}
                   onChange={(e) => setPackId(e.target.value)}
                 >
-                  <option value="">选择 G4 后生成的包</option>
+                  <option value="">选择样品确认后生成的版本</option>
                   {items("launch-packs").map((p) => (
                     <option key={p.id} value={p.id}>
-                      v{p.version} · {p.id.slice(0, 8)}
+                      第 {p.version} 版 · {dateTime(p.created_at)}
                     </option>
                   ))}
                 </select>
@@ -440,7 +566,7 @@ export default function HandoffWorkspace({
                     }
                   />
                   {r.data.revision} · {r.data.authority_url} · 复核截止{" "}
-                  {r.data.review_due_at}
+                  {dateTime(r.data.review_due_at)}
                 </label>
               ))}
               <label>
@@ -448,8 +574,8 @@ export default function HandoffWorkspace({
                 <input
                   required
                   minLength={2}
-                  value={person}
-                  onChange={(e) => setPerson(e.target.value)}
+                  value={handoffPerson}
+                  onChange={(e) => setHandoffPerson(e.target.value)}
                 />
               </label>
               <label>
@@ -477,72 +603,26 @@ export default function HandoffWorkspace({
                   checked={internal}
                   onChange={(e) => setInternal(e.target.checked)}
                 />
-                本次仅内部交接；Mock 素材不具有外部使用权，不批准发布
+                本次仅内部交接；模拟素材不具有外部使用权，不批准发布
               </label>
               <button className="primary" disabled={!selectedRules.length}>
-                保存交接材料，待 G5 审核
+                保存交接材料，等待审核
               </button>
             </fieldset>
           </form>
         </details>
-        {items("handoff-preparations").map((h) => (
-          <article key={h.id}>
-            <h4>
-              交接材料 v{h.version} · {h.data.responsible_person}
-            </h4>
-            <p>{h.data.risk_acceptance}</p>
-            <p>{h.data.excluded_claims}</p>
-            <button
-              className="secondary"
-              disabled={busy}
-              onClick={() => {
-                const p = items("launch-packs").find(
-                  (p) => p.id === h.data.pack_id,
-                );
-                if (p) review("G5", p);
-              }}
-            >
-              {approved("G5") && gate("G5")?.subject_id === h.data.pack_id
-                ? "重新审核 G5（将替代当前决定）"
-                : "审核 G5 内部交接"}
-            </button>
-          </article>
-        ))}
-        <p>
-          G5：
-          {statusLabel("G5")} · 交接包{" "}
-          {gate("G5")?.subject_id?.slice(0, 8) || "—"}
-        </p>
-        {gate("G5")?.status === "current" &&
-          gate("G5")?.decision === "internal_handoff" && (
-            <button
-              className="secondary"
-              disabled={busy}
-              onClick={() => save("runs/handoff", {})}
-            >
-              同步已批准的交接流程
-            </button>
-          )}
-        {gate("G5")?.status === "current" &&
-          gate("G5")?.decision === "internal_handoff" && (
-            <p>
-              <a
-                className="download"
-                href={`/api/launch-packs/${gate("G5")?.subject_id}/handoff-export`}
-              >
-                下载完整内部交接包 ZIP ↗
-              </a>
-            </p>
-          )}
-        {gate("G5")?.status === "current" &&
-          gate("G5")?.decision === "internal_handoff" && (
-            <a
-              className="download"
-              href={`/api/launch-packs/${gate("G5")?.subject_id}/handoff-receipt`}
-            >
-              查看内部交接批准回执 ↗
-            </a>
-          )}
+        {preparations
+          .filter((h) => isCurrent(h, preparations))
+          .map(preparationCard)}
+        {preparations.length > 1 && (
+          <details className="older-records">
+            <summary>较早的交接材料</summary>
+            {preparations
+              .filter((h) => !isCurrent(h, preparations))
+              .map(preparationCard)}
+          </details>
+        )}
+        <p>内部交接：{statusLabel("G5")}</p>
       </div>
     </>
   );

@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 90000,
   workers: 1,
   use: {
-    baseURL: "http://127.0.0.1:3310",
+    baseURL: process.env.LAUNCHCASE_WEB_URL || "http://127.0.0.1:3310",
     headless: true,
     trace: "retain-on-failure",
   },

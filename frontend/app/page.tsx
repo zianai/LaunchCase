@@ -1,5 +1,26 @@
 "use client";
 import HandoffWorkspace from "./handoff";
+import {
+  activityLabel,
+  blockerLabel,
+  confidenceLabel,
+  dateTime,
+  economicsLabel,
+  errorLabel,
+  gateName,
+  gateSteps,
+  ownerLabel,
+  riskDomainLabel,
+  riskQuestionLabel,
+  rightsLabel,
+  sourceTypeLabel,
+  specFieldLabel,
+  stageLabel,
+  sufficiencyLabel,
+  tabGroups,
+  visualStateLabel,
+  waitingLabel,
+} from "./labels";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type Item = { id: string; [key: string]: any };
@@ -10,18 +31,6 @@ type Review = {
   options: { value: string; label: string }[];
   subject?: { subject_type: string; subject_id: string };
 };
-const tabs = [
-  "总览",
-  "证据来源",
-  "VOC 研究",
-  "机会",
-  "概念与 Spec",
-  "可行性",
-  "视觉资产",
-  "样品与交接",
-  "LaunchPack",
-  "活动",
-];
 const kinds = [
   "sources",
   "evidence",
@@ -40,16 +49,6 @@ const kinds = [
   "rules",
   "handoff-preparations",
 ];
-const stages: Record<string, string> = {
-  collecting_sources: "收集证据",
-  opportunity_review: "G1 · 机会审核",
-  concepting: "开发概念",
-  concept_review: "G2 · 概念审核",
-  feasibility_review: "G3 · 可行性审核",
-  awaiting_sample_validation: "G4 · 等待样品验证",
-  ready_for_internal_handoff: "内部草稿已形成",
-  launch_draft: "准备内部草稿",
-};
 const costNames: Record<string, string> = {
   net_sales_revenue_ex_tax: "不含税销售收入",
   ex_factory: "出厂成本",
@@ -116,6 +115,20 @@ function Empty({ children }: { children: React.ReactNode }) {
       <span aria-hidden="true">↳</span>
       <p>{children}</p>
     </div>
+  );
+}
+function TechDetails({
+  label = "技术信息",
+  children,
+}: {
+  label?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <details className="tech-details">
+      <summary>{label}</summary>
+      {children}
+    </details>
   );
 }
 function Meta({ label, value }: { label: string; value: React.ReactNode }) {
@@ -266,11 +279,11 @@ export default function Workbench() {
         await new Promise((r) => setTimeout(r, 250));
       }
       if (result.status === "failed")
-        throw Error(`任务失败：${result.error_code}`);
+        throw Error(`任务失败：${errorLabel(result.error_code)}`);
       await load(current.id);
       setNotice(
         result.status === "succeeded"
-          ? `已完成，等待 ${result.result.waiting_for}`
+          ? `已完成。${waitingLabel(result.result.waiting_for)}`
           : "任务已保存，可稍后刷新继续查看",
       );
     });
@@ -285,40 +298,98 @@ export default function Workbench() {
           : activeGate("G5")
             ? "DONE"
             : "G5";
-  const gateLabels: Record<string, string> = {
-    G1: "机会选择与证据复核",
-    G2: "概念与规格审核",
-    G3: "可行性与样品调查",
-    G4: "等待真实样品验证",
-    G5: "内部业务交接待审核",
-    DONE: "内部业务交接已批准（未发布）",
-  };
-  const nextAction = () => {
+  const handoffDone = currentGate === "DONE";
+  const approvedPack = handoffDone
+    ? items("launch-packs").find((p) => p.id === activeGate("G5")?.subject_id)
+    : undefined;
+  const sampleLimits = items("truth")
+    .filter((t) => t.data.limitations)
+    .at(-1)?.data.limitations;
+  const unverifiedSpecs: string[] =
+    approvedPack?.data.listing_draft?.unsupported_claims_withheld || [];
+  // The stage bar, primary action and remaining items all come from here.
+  const stage = (): {
+    step: string;
+    detail: string;
+    label?: string;
+    action?: () => void;
+  } => {
+    const hasPack = items("launch-packs").length > 0;
     if (!items("sources").length)
-      return { label: "导入原始证据 →", action: () => setTab("证据来源") };
-    if (!items("research").length)
-      return { label: "运行证据研究 →", action: () => run("research") };
-    if (!activeGate("G1"))
-      return { label: "审核产品机会 →", action: () => setTab("机会") };
-    if (!activeGate("G2"))
       return {
-        label: items("concepts").length ? "比较并审核概念 →" : "开发概念方向 →",
-        action: () =>
-          items("concepts").length ? setTab("概念与 Spec") : run("concepts"),
+        step: "研究需求",
+        detail: "先导入有权使用的客户评价、竞品或产品资料。",
+        label: "导入原始资料 →",
+        action: () => setTab("证据来源"),
       };
-    if (!items("feasibility").length)
-      return { label: "计算可行性 →", action: () => run("feasibility") };
-    if (!activeGate("G3"))
+    if (!items("research").length)
       return {
-        label: "审核可行性与样品调查 →",
-        action: () => setTab("可行性"),
+        step: "研究需求",
+        detail: "资料已导入，下一步分析用户反馈。",
+        label: "开始研究用户反馈 →",
+        action: () => run("research"),
+      };
+    if (!activeGate("G1"))
+      return {
+        step: gateName("G1"),
+        detail: "比较研究得出的产品机会，选定一个继续。",
+        label: "审核产品机会 →",
+        action: () => setTab("产品机会"),
+      };
+    if (!activeGate("G2"))
+      return items("concepts").length
+        ? {
+            step: gateName("G2"),
+            detail: "比较产品方案和规格，选定一个继续。",
+            label: "比较并选择方案 →",
+            action: () => setTab("产品方案与规格"),
+          }
+        : {
+            step: gateName("G2"),
+            detail: "机会已选定，下一步形成产品方案。",
+            label: "生成产品方案 →",
+            action: () => run("concepts"),
+          };
+    if (!activeGate("G3"))
+      return items("feasibility").length
+        ? {
+            step: gateName("G3"),
+            detail: "核对已知和缺失的成本，决定是否进行样品验证。",
+            label: "审核成本与样品验证 →",
+            action: () => setTab("成本与风险"),
+          }
+        : {
+            step: gateName("G3"),
+            detail: "方案已选定，下一步核算成本与风险。",
+            label: "核算成本 →",
+            action: () => run("feasibility"),
+          };
+    if (!activeGate("G4"))
+      return hasPack
+        ? {
+            step: gateName("G4"),
+            detail: "内部草稿已形成，但真实样品尚未验证。",
+            label: "录入样品记录 →",
+            action: () => setTab("样品与交接"),
+          }
+        : {
+            step: gateName("G4"),
+            detail: "可以先整理内部交接资料，真实样品验证仍需完成。",
+            label: "准备内部交接资料 →",
+            action: () => setTab("内部交接资料"),
+          };
+    if (!activeGate("G5"))
+      return {
+        step: gateName("G5"),
+        detail: "本次样品记录已确认。接下来复核规则并提交内部交接审核。",
+        label: "准备内部交接 →",
+        action: () => setTab("样品与交接"),
       };
     return {
-      label: items("launch-packs").length
-        ? "查看真实样品验证待办 →"
-        : "准备内部草稿 →",
-      action: () =>
-        setTab(items("launch-packs").length ? "样品与交接" : "LaunchPack"),
+      step: "本轮内部交接已完成（未发布）",
+      detail: current?.is_synthetic
+        ? "这是测试数据，不能用于真实业务；交接批准也不代表可以发布。"
+        : "交接批准不代表可以发布；对外使用前仍需单独确认。",
     };
   };
   const gateReview = (gate: string, subject: Item) =>
@@ -336,7 +407,7 @@ export default function Workbench() {
             ]
           : gate === "G2"
             ? [
-                { value: "select", label: "选择这个概念" },
+                { value: "select", label: "选择这个方案" },
                 { value: "revise", label: "修改后重审" },
                 { value: "reject", label: "否决" },
               ]
@@ -358,12 +429,12 @@ export default function Workbench() {
                     },
                   ]
                 : [
-                    { value: "sample_validation", label: "仅授权样品调查" },
-                    { value: "revise", label: "补充可行性数据" },
+                    { value: "sample_validation", label: "同意进行样品验证" },
+                    { value: "revise", label: "补充成本数据" },
                     { value: "hold", label: "暂缓" },
                   ];
       setReview({
-        title: `${gate} · ${subject.data.title || (gate === "G4" ? "样品事实与限制" : "可行性决策")}`,
+        title: `${gateName(gate)} · ${subject.data.title || (gate === "G4" ? "样品事实与限制" : gate === "G3" ? "成本与样品验证" : "内部交接资料")}`,
         endpoint: `product-cases/${current.id}/gates/${gate}/decision`,
         hash: info.subject_hash,
         options,
@@ -388,7 +459,9 @@ export default function Workbench() {
     act(async () => {
       const info = asset ? await api(`visual-assets/${asset.id}`) : task;
       setReview({
-        title: asset ? "独立审核图片资产" : "审核概念计划 · 零预算 Mock",
+        title: asset
+          ? "审核概念图片"
+          : "审核概念图片计划（模拟制作，不产生费用）",
         endpoint: asset
           ? `visual-assets/${asset.id}/review`
           : `visual-tasks/${task.id}/approve-plan`,
@@ -424,7 +497,7 @@ export default function Workbench() {
     current &&
     act(async () => {
       await load(current.id);
-      setNotice("已读取当前数据库版本");
+      setNotice("已刷新为最新数据");
     });
   const closeDialog = () => {
     setReview(null);
@@ -453,7 +526,7 @@ export default function Workbench() {
         is_synthetic: synthetic,
       });
       await load(current.id);
-      setNotice("已保存原文、哈希与逐行证据引用");
+      setNotice("原文已保存，并建立了逐行引用");
     });
   const login = () =>
     act(async () => {
@@ -464,7 +537,7 @@ export default function Workbench() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: submittedToken }),
       });
-      if (!r.ok) throw Error("身份凭证无效，请使用本地 CLI 创建的凭证");
+      if (!r.ok) throw Error("身份凭证无效，请向工作区管理员确认");
       setToken("");
       await loadCases();
       setCapabilities(await api("capabilities"));
@@ -475,10 +548,10 @@ export default function Workbench() {
       <main className="login-shell">
         <div className="login-brand">
           <span className="monogram">LC</span>
-          <span>LAUNCHCASE</span>
+          <span>LaunchCase</span>
         </div>
         <div className="login-copy">
-          <p className="eyebrow">PRODUCT DEVELOPMENT / AMAZON US</p>
+          <p className="eyebrow">产品开发 · 亚马逊美国站</p>
           <h1>
             让产品决策
             <br />
@@ -495,7 +568,7 @@ export default function Workbench() {
             login();
           }}
         >
-          <p className="eyebrow">LOCAL WORKSPACE</p>
+          <p className="eyebrow">本地工作区</p>
           <h2>进入工作台</h2>
           <label>
             本地身份凭证
@@ -508,8 +581,7 @@ export default function Workbench() {
             />
           </label>
           <p className="hint">
-            使用工作区管理员通过 CLI
-            创建的身份凭证。凭证保存在仅服务器可读的会话中。
+            使用工作区管理员发放的身份凭证。凭证不会保存在浏览器页面中。
           </p>
           <button className="primary" disabled={busy}>
             进入工作区 →
@@ -541,18 +613,16 @@ export default function Workbench() {
         >
           <span className="monogram">LC</span>
           <span>
-            LaunchCase<small>PRODUCT DEVELOPMENT</small>
+            LaunchCase<small>产品开发工作台</small>
           </span>
         </button>
-        <div className="workspace-label">
-          独立产品工作区 <span>V1</span>
-        </div>
+        <div className="workspace-label">产品工作区</div>
         <nav aria-label="主导航">
           {[
-            ["cases", "◫", "产品 Cases"],
+            ["cases", "◫", "产品项目"],
             ["inbox", "◷", "审核收件箱"],
             ["sources", "≡", "来源与知识"],
-            ["assets", "▧", "视觉资产"],
+            ["assets", "▧", "概念图片"],
             ["settings", "⚙", "能力与设置"],
           ].map(([id, icon, label]) => (
             <button
@@ -562,7 +632,7 @@ export default function Workbench() {
                 setScreen(id);
                 if (id === "cases" || id === "inbox") setCurrent(null);
                 if (id === "sources") setTab("证据来源");
-                if (id === "assets") setTab("视觉资产");
+                if (id === "assets") setTab("概念图片");
               }}
             >
               <span aria-hidden="true">{icon}</span>
@@ -575,7 +645,7 @@ export default function Workbench() {
         </nav>
         <small className="scroll-hint">左右滑动，查看更多入口 →</small>
         <div className="sidebar-note">
-          <span className="dot" /> OFFLINE FIRST
+          <span className="dot" /> 默认离线
           <p>
             先核实，再决策。
             <br />
@@ -598,11 +668,11 @@ export default function Workbench() {
       <main id="main" className="main">
         <header className="topline">
           <span>
-            工作台 <i>/</i> {current ? "产品 Case" : "案例库"}
+            工作台 <i>/</i> {current ? current.title : "产品项目"}
           </span>
           <div>
             <span className="online-dot" /> 本地连接{" "}
-            <span className="top-separator">|</span> Amazon US · 差异化开发
+            <span className="top-separator">|</span> 亚马逊美国站 · 差异化开发
           </div>
         </header>
         {error && (
@@ -622,28 +692,28 @@ export default function Workbench() {
           <>
             <div className="page-heading">
               <div>
-                <p className="eyebrow">CAPABILITIES & BOUNDARIES</p>
+                <p className="eyebrow">能力与设置</p>
                 <h1>清楚知道，做到哪一步。</h1>
               </div>
             </div>
             <div className="paper">
-              <h2>V1 当前能力</h2>
+              <h2>当前能力</h2>
               <dl className="definition">
                 <dt>业务模式</dt>
-                <dd>Amazon US · 差异化消费品开发</dd>
+                <dd>亚马逊美国站 · 差异化消费品开发</dd>
                 <dt>研究运行</dt>
-                <dd>Agents SDK + 本地 Fake Model；不代表真实模型质量</dd>
-                <dt>视觉执行</dt>
-                <dd>CreativeEngine Mock · 内部概念素材</dd>
+                <dd>本地模拟模型；结果不代表真实模型质量</dd>
+                <dt>图片制作</dt>
+                <dd>模拟制作 · 仅内部概念素材</dd>
                 <dt>付费模型</dt>
                 <dd>{capabilities?.paid_models ? "启用" : "关闭"}</dd>
                 <dt>对外发布</dt>
                 <dd>不可用</dd>
-                <dt>G4 / G5</dt>
+                <dt>样品验证与内部交接</dt>
                 <dd>真实样品、事实、规则和授权需要独立确认</dd>
-                <dt>视觉设计</dt>
-                <dd>Agent 暂定版本，等待用户确认</dd>
-                <dt>扩展模式 A / C</dt>
+                <dt>界面设计</dt>
+                <dd>暂定版本，等待业务确认</dd>
+                <dt>其他开发模式</dt>
                 <dd>尚未实现</dd>
               </dl>
             </div>
@@ -652,11 +722,13 @@ export default function Workbench() {
           <>
             <div className="page-heading">
               <div>
-                <p className="eyebrow">EVIDENCE → DECISION → INTERNAL DRAFT</p>
+                <p className="eyebrow">
+                  研究需求 → 选择方案 → 核算 → 验证样品 → 内部交接
+                </p>
                 <h1>
                   {screen === "inbox"
                     ? "等待你的判断。"
-                    : "产品开发，从一份 Case 开始。"}
+                    : "产品开发，从一个项目开始。"}
                 </h1>
                 <p className="subtitle">
                   把原始证据、产品假设和人工决策放在同一条可追溯的链路上。
@@ -669,13 +741,13 @@ export default function Workbench() {
                   setNewCase(true);
                 }}
               >
-                ＋ 创建产品 Case
+                ＋ 创建产品项目
               </button>
             </div>
             <div className="portfolio-line">
               <span>
                 {cases.length.toString().padStart(2, "0")}{" "}
-                <small>产品 Cases</small>
+                <small>个产品项目</small>
               </span>
               <p>
                 所有成果默认为内部草稿，
@@ -704,13 +776,13 @@ export default function Workbench() {
                       <span>
                         <strong>{c.title}</strong>
                         <em>
-                          {c.is_synthetic ? "合成测试案例" : "用户导入数据"} ·
-                          Brief v{c.brief_version}
+                          {c.is_synthetic ? "合成测试项目" : "用户导入数据"} ·
+                          需求第 {c.brief_version} 版
                         </em>
                       </span>
                     </span>
                     <span>
-                      <Badge tone="amber">{stages[c.stage] || c.stage}</Badge>
+                      <Badge tone="amber">{stageLabel(c.stage)}</Badge>
                     </span>
                     <span className="date">
                       {new Date(c.updated_at).toLocaleDateString("zh-CN")} ↗
@@ -719,8 +791,7 @@ export default function Workbench() {
                 ))}
               {!cases.length && (
                 <Empty>
-                  创建第一份
-                  Case，定义目标人群与待验证的问题，然后导入有权使用的原始资料。
+                  创建第一个项目，写清目标人群与待验证的问题，然后导入有权使用的原始资料。
                 </Empty>
               )}
             </div>
@@ -729,22 +800,18 @@ export default function Workbench() {
           <>
             <div className="case-heading">
               <div>
-                <p className="eyebrow">
-                  PRODUCT CASE <span>/{current.id.slice(0, 8)}</span>
-                </p>
+                <p className="eyebrow">产品项目</p>
                 <h1>{current.title}</h1>
                 <div className="heading-badges">
-                  <Badge tone="amber">
-                    {currentGate} · {gateLabels[currentGate]}
-                  </Badge>
                   {items("launch-packs").length > 0 && (
                     <Badge>
-                      内部草稿 v{items("launch-packs").at(-1)!.version}
+                      内部交接资料第 {items("launch-packs").at(-1)!.version} 版
                     </Badge>
                   )}
                   {current.is_synthetic && <Badge>合成数据 / 功能测试</Badge>}
                   <span className="revision">
-                    Brief v{current.brief_version} · 修订 {current.revision}
+                    需求第 {current.brief_version} 版 · 第 {current.revision}{" "}
+                    次修订
                   </span>
                 </div>
               </div>
@@ -752,57 +819,93 @@ export default function Workbench() {
                 ↻ 刷新
               </button>
             </div>
-            <div className="case-tabs" role="tablist" aria-label="Case 内容">
-              {tabs.map((t) => (
-                <button
-                  key={t}
-                  role="tab"
-                  aria-selected={tab === t}
-                  className={tab === t ? "selected" : ""}
-                  onClick={() => {
-                    setTab(t);
-                    setScreen("cases");
-                  }}
+            <div className={handoffDone ? "next-step done" : "next-step"}>
+              <div>
+                <p className="eyebrow">
+                  {handoffDone ? "当前结果" : "当前阶段"}
+                  {!handoffDone && <span> · {currentGate}</span>}
+                </p>
+                <h2>{stage().step}</h2>
+                <p>{stage().detail}</p>
+                {handoffDone && (
+                  <ul className="remaining">
+                    {sampleLimits && <li>本次样品未覆盖：{sampleLimits}</li>}
+                    {unverifiedSpecs.length > 0 && (
+                      <li>
+                        对外仍不能声明：
+                        {[...new Set(unverifiedSpecs.map(specFieldLabel))].join(
+                          "、",
+                        )}
+                      </li>
+                    )}
+                  </ul>
+                )}
+              </div>
+              <div className="actions">
+                {handoffDone ? (
+                  <>
+                    <a
+                      className="download primary-link"
+                      href={`/api/launch-packs/${activeGate("G5")?.subject_id}/handoff-export`}
+                    >
+                      下载内部交接包 ↗
+                    </a>
+                    <a
+                      className="text-button"
+                      href={`/api/launch-packs/${activeGate("G5")?.subject_id}/handoff-receipt`}
+                    >
+                      查看批准回执 ↗
+                    </a>
+                  </>
+                ) : (
+                  <button
+                    className="primary"
+                    disabled={busy}
+                    onClick={stage().action}
+                  >
+                    {stage().label}
+                  </button>
+                )}
+              </div>
+            </div>
+            <div className="case-tabs" role="tablist" aria-label="项目内容">
+              {tabGroups.map((group) => (
+                <div
+                  className="tab-group"
+                  role="presentation"
+                  key={group.tabs[0]}
                 >
-                  {t}
-                </button>
+                  {group.label && (
+                    <span className="tab-group-label" aria-hidden="true">
+                      {group.label}
+                    </span>
+                  )}
+                  <div role="presentation">
+                    {group.tabs.map((t) => (
+                      <button
+                        key={t}
+                        role="tab"
+                        aria-selected={tab === t}
+                        className={tab === t ? "selected" : ""}
+                        onClick={() => {
+                          setTab(t);
+                          setScreen("cases");
+                        }}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
-            <small className="scroll-hint">左右滑动切换 Case 工作区 →</small>
+            <small className="scroll-hint">左右滑动查看更多内容 →</small>
             <section role="tabpanel" aria-label={tab} className="tab-content">
               {tab === "总览" && (
                 <>
-                  <div className="next-step">
-                    <div>
-                      <p className="eyebrow">CURRENT DECISION GATE</p>
-                      <h2>
-                        当前 {currentGate} · {gateLabels[currentGate]}
-                      </h2>
-                      <p>
-                        {items("launch-packs").length
-                          ? "内部草稿已形成；真实产品验证仍需完成。"
-                          : "每个决定绑定当前证据与规格版本。"}
-                      </p>
-                    </div>{" "}
-                    <div className="actions">
-                      <button
-                        className="primary"
-                        disabled={busy}
-                        onClick={nextAction().action}
-                      >
-                        {nextAction().label}
-                      </button>
-                      <button
-                        className="text-button"
-                        onClick={() => setTab("证据来源")}
-                      >
-                        查看 {items("evidence").length} 条证据 ↗
-                      </button>
-                    </div>
-                  </div>
                   <div className="overview-grid">
                     <div className="paper brief-paper">
-                      <p className="eyebrow">THE QUESTION</p>
+                      <p className="eyebrow">项目需求</p>
                       <h2>我们在验证什么？</h2>
                       <p className="lead">{current.brief.problem_statement}</p>
                       <div className="brief-details">
@@ -811,18 +914,12 @@ export default function Workbench() {
                           value={current.brief.target_segment}
                         />
                         <Meta label="产品类别" value={current.brief.category} />
-                        <Meta label="目标市场" value="Amazon · United States" />
+                        <Meta label="目标市场" value="亚马逊美国站" />
                       </div>
                     </div>
                     <div className="gate-rail">
-                      <p className="eyebrow">HUMAN DECISION GATES</p>
-                      {[
-                        ["G1", "机会选择"],
-                        ["G2", "概念与规格"],
-                        ["G3", "可行性 / 样品调查"],
-                        ["G4", "真实样品验证"],
-                        ["G5", "内部业务交接审核"],
-                      ].map(([gate, label]) => (
+                      <p className="eyebrow">人工决定进度</p>
+                      {gateSteps.map(({ gate, name, done, waiting }, index) => (
                         <div className="gate-step" key={gate}>
                           <b
                             className={
@@ -833,31 +930,33 @@ export default function Workbench() {
                                   : ""
                             }
                           >
-                            {gate}
+                            {index + 1}
                           </b>
                           <div>
-                            <strong>{label}</strong>
+                            <strong>{name}</strong>
                             <p>
                               {activeGate(gate)
-                                ? `${activeGate(gate)?.is_synthetic ? "合成测试决定 · " : ""}${activeGate(gate)?.decision}`
-                                : gate === "G4"
-                                  ? "等待真实样品与测试"
-                                  : gate === "G5"
-                                    ? "事实 / 规则 / 权利尚待核实"
-                                    : "待人工决策"}
+                                ? `${activeGate(gate)?.is_synthetic ? "合成测试决定 · " : ""}${done}`
+                                : waiting}
                             </p>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
+                  <button
+                    className="text-button"
+                    onClick={() => setTab("证据来源")}
+                  >
+                    查看 {items("evidence").length} 条原始依据 ↗
+                  </button>
                   <div className="boundary-note">
                     <span>!</span>
                     <div>
                       <strong>可形成内部草稿，不能据此宣称产品可上市。</strong>
                       <p>
-                        AI 推断、概念图和合成审批均不构成真实产品事实。G4 / G5
-                        的验证责任始终保留。
+                        AI
+                        推断、概念图和测试审批都不是真实产品事实，样品验证和内部交接的责任始终保留。
                       </p>
                     </div>
                   </div>
@@ -867,12 +966,12 @@ export default function Workbench() {
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">IMMUTABLE ORIGINALS</p>
+                      <p className="eyebrow">原始资料</p>
                       <h2>原文是起点。</h2>
                     </div>
                     <span className="hint">
                       {items("sources").length} 个来源 ·{" "}
-                      {items("evidence").length} 条去重观察
+                      {items("evidence").length} 条去重后的观察
                     </span>
                   </div>
                   <div className="import-panel">
@@ -882,7 +981,7 @@ export default function Workbench() {
                         value={sourceType}
                         onChange={(e) => setSourceType(e.target.value)}
                       >
-                        <option value="review">客户评价 / VOC</option>
+                        <option value="review">客户评价</option>
                         <option value="competitor">竞品资料</option>
                         <option value="quote">供应商成本</option>
                         <option value="spec">产品资料</option>
@@ -939,18 +1038,22 @@ export default function Workbench() {
                         <summary>
                           <strong>{s.filename}</strong>
                           <Badge>
-                            {s.is_synthetic ? "SYNTHETIC" : s.rights_status}
+                            {s.is_synthetic
+                              ? "合成测试"
+                              : rightsLabel(s.rights_status)}
                           </Badge>
-                          <span>{s.source_type}</span>
+                          <span>{sourceTypeLabel(s.source_type)}</span>
                         </summary>
-                        <p className="hash">SHA256 {s.sha256}</p>
                         <a
                           href={`/api/sources/${s.id}/content`}
                           target="_blank"
                           rel="noreferrer"
                         >
-                          打开不可变原文 ↗
+                          打开原文 ↗
                         </a>
+                        <TechDetails>
+                          <p className="hash">原文校验值 {s.sha256}</p>
+                        </TechDetails>
                       </details>
                     ))}
                   </div>
@@ -990,17 +1093,15 @@ export default function Workbench() {
                     ))}
                   </div>
                   {!items("sources").length && (
-                    <Empty>
-                      导入后，逐行引用、重复数据和原文哈希会显示在这里。
-                    </Empty>
+                    <Empty>导入后，逐行引用和重复数据提示会显示在这里。</Empty>
                   )}
                 </>
               )}
-              {tab === "VOC 研究" && (
+              {tab === "用户反馈研究" && (
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">VOICE OF CUSTOMER</p>
+                      <p className="eyebrow">用户反馈研究</p>
                       <h2>保留分歧，不制造共识。</h2>
                     </div>
                     <button
@@ -1014,16 +1115,16 @@ export default function Workbench() {
                   {items("research").at(-1) && (
                     <div className="research-note">
                       <Badge tone="amber">
-                        {items("research").at(-1)?.data.sufficiency.status}
+                        {sufficiencyLabel(
+                          items("research").at(-1)?.data.sufficiency.status,
+                        )}
                       </Badge>
                       <p>
                         {items("research")
                           .at(-1)
                           ?.data.output.sample_limitations.join(" ")}
                       </p>
-                      <small>
-                        SDK Fake Model · 已记录 Skill 哈希 · 不代表真实模型效果
-                      </small>
+                      <small>由本地模拟模型生成，不代表真实模型效果</small>
                     </div>
                   )}
                   <div className="insights">
@@ -1031,7 +1132,7 @@ export default function Workbench() {
                       <article className="insight" key={i.id}>
                         <div>
                           <span className="eyebrow">
-                            INFERRED / {i.data.confidence_class}
+                            推断 · {confidenceLabel(i.data.confidence_class)}
                           </span>
                           <h3>{i.data.name}</h3>
                           <p>{i.data.interpretation}</p>
@@ -1057,11 +1158,11 @@ export default function Workbench() {
                   )}
                 </>
               )}
-              {tab === "机会" && (
+              {tab === "产品机会" && (
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">G1 / OPPORTUNITY REVIEW</p>
+                      <p className="eyebrow">产品机会</p>
                       <h2>值得验证的产品假设。</h2>
                     </div>
                     <button
@@ -1069,7 +1170,7 @@ export default function Workbench() {
                       onClick={() => run("concepts")}
                       disabled={busy || activeGate("G1")?.decision !== "accept"}
                     >
-                      从选中机会开发概念 →
+                      从选中机会生成产品方案 →
                     </button>
                   </div>
                   {items("opportunities").map((o, i) => (
@@ -1079,10 +1180,13 @@ export default function Workbench() {
                       </div>
                       <div>
                         <div className="heading-badges">
-                          <Badge>HYPOTHESIS</Badge>
+                          <Badge>待验证假设</Badge>
                           <Badge tone="amber">
-                            {o.data.data_sufficiency_status}
+                            {sufficiencyLabel(o.data.data_sufficiency_status)}
                           </Badge>
+                          {activeGate("G1")?.subject_id === o.id && (
+                            <Badge tone="green">当前选择</Badge>
+                          )}
                         </div>
                         <h3>{o.data.title}</h3>
                         <p>{o.data.problem}</p>
@@ -1100,9 +1204,6 @@ export default function Workbench() {
                         >
                           审核机会
                         </button>
-                        {activeGate("G1")?.subject_id === o.id && (
-                          <Badge tone="green">当前选择</Badge>
-                        )}
                       </div>
                     </article>
                   ))}
@@ -1111,11 +1212,11 @@ export default function Workbench() {
                   )}
                 </>
               )}
-              {tab === "概念与 Spec" && (
+              {tab === "产品方案与规格" && (
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">G2 / PRODUCT DEFINITION</p>
+                      <p className="eyebrow">产品方案与规格</p>
                       <h2>比较方向，明确未知。</h2>
                     </div>
                     <button
@@ -1123,16 +1224,29 @@ export default function Workbench() {
                       onClick={() => run("concepts")}
                       disabled={busy}
                     >
-                      生成概念方向
+                      生成产品方案
                     </button>
                   </div>
                   <div className="concept-grid">
                     {items("concepts").map((c, i) => {
                       const spec = latestSpec(c.id);
+                      // One shared row order keeps specs comparable side by side.
+                      const specRows: string[] = [
+                        ...new Set<string>(
+                          items("concepts").flatMap((other) =>
+                            (latestSpec(other.id)?.data.claims || []).map(
+                              (claim: any) => claim.name,
+                            ),
+                          ),
+                        ),
+                      ];
                       return (
                         <article className="concept" key={c.id}>
                           <div className="concept-number">
-                            DIRECTION {String(i + 1).padStart(2, "0")}
+                            <span>方案 {i + 1}</span>
+                            {selectedConcept?.id === c.id && (
+                              <Badge tone="green">已选 · 当前版本</Badge>
+                            )}
                           </div>
                           <h3>{c.data.title}</h3>
                           <p className="concept-intent">
@@ -1151,7 +1265,9 @@ export default function Workbench() {
                           {spec && (
                             <>
                               <div className="spec-heading">
-                                <strong>Proposed Spec · v{spec.version}</strong>
+                                <strong>
+                                  产品规格草案 · 第 {spec.version} 版
+                                </strong>
                                 <button
                                   className="text-button"
                                   onClick={() =>
@@ -1162,19 +1278,31 @@ export default function Workbench() {
                                 </button>
                               </div>
                               <dl className="spec-list">
-                                {spec.data.claims.map((claim: any) => (
-                                  <div key={claim.name}>
-                                    <dt>{claim.name}</dt>
-                                    <dd>
-                                      {claim.value || (
-                                        <span className="unknown">
-                                          尚未核实
-                                        </span>
-                                      )}
-                                    </dd>
-                                  </div>
-                                ))}
+                                {specRows.map((name) => {
+                                  const claim = spec.data.claims.find(
+                                    (x: any) => x.name === name,
+                                  );
+                                  return (
+                                    <div key={name}>
+                                      <dt>{specFieldLabel(name)}</dt>
+                                      <dd>
+                                        {claim?.value || (
+                                          <span className="unknown">
+                                            尚未核实
+                                          </span>
+                                        )}
+                                      </dd>
+                                    </div>
+                                  );
+                                })}
                               </dl>
+                              <TechDetails>
+                                <p className="hash">
+                                  字段 {specRows.join(" / ")}
+                                  <br />
+                                  规格校验值 {spec.sha256}
+                                </p>
+                              </TechDetails>
                             </>
                           )}
                           <div className="actions">
@@ -1183,11 +1311,8 @@ export default function Workbench() {
                               disabled={busy}
                               onClick={() => gateReview("G2", c)}
                             >
-                              审核概念
+                              审核方案
                             </button>
-                            {selectedConcept?.id === c.id && (
-                              <Badge tone="green">已选 · 当前版本</Badge>
-                            )}
                           </div>
                         </article>
                       );
@@ -1195,11 +1320,12 @@ export default function Workbench() {
                   </div>
                   {items("spec-versions").length > 1 && (
                     <details className="paper">
-                      <summary>Spec 版本历史与差异</summary>
+                      <summary>规格版本历史与差异</summary>
                       {items("spec-versions").map((s) => (
                         <div className="history-row" key={s.id}>
                           <span>
-                            v{s.version} · {s.data.reason}
+                            第 {s.version} 版 ·{" "}
+                            {s.data.parent_spec_id ? "人工修订" : "初始草案"}
                           </span>
                           {s.data.parent_spec_id && (
                             <button
@@ -1221,7 +1347,8 @@ export default function Workbench() {
                       {diff &&
                         diff.map((d) => (
                           <p key={d.name}>
-                            {d.name}：{d.before?.value || "未知"} →{" "}
+                            {specFieldLabel(d.name)}：
+                            {d.before?.value || "未知"} →{" "}
                             {d.after?.value || "未知"}
                           </p>
                         ))}
@@ -1229,16 +1356,16 @@ export default function Workbench() {
                   )}
                   {!items("concepts").length && (
                     <Empty>
-                      先在 G1 选择一个机会。概念为提案，不是已经存在的 SKU。
+                      先选定一个产品机会。方案只是提案，不是已经存在的 SKU。
                     </Empty>
                   )}
                 </>
               )}
-              {tab === "可行性" && (
+              {tab === "成本与风险" && (
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">G3 / COMMERCIAL FEASIBILITY</p>
+                      <p className="eyebrow">成本与风险</p>
                       <h2>不知道的成本，不能算成零。</h2>
                     </div>
                     <div className="actions">
@@ -1256,7 +1383,7 @@ export default function Workbench() {
                         disabled={busy}
                         onClick={() => run("feasibility")}
                       >
-                        计算可行性
+                        核算成本
                       </button>
                     </div>
                   </div>
@@ -1267,7 +1394,7 @@ export default function Workbench() {
                         <>
                           <div className="economics-summary">
                             <div>
-                              <p className="eyebrow">UNIT CONTRIBUTION / USD</p>
+                              <p className="eyebrow">单件贡献（美元）</p>
                               <strong>
                                 {f.data.economics.unit_contribution ?? "—"}
                               </strong>
@@ -1279,19 +1406,19 @@ export default function Workbench() {
                             </div>
                             <div>
                               <Badge tone="amber">
-                                {f.data.economics.status}
+                                {economicsLabel(f.data.economics.status)}
                               </Badge>
                               <p>
                                 按件计算 · 固定投入单列
                                 <br />
-                                FX、费用与数据有效期均需明确依据。
+                                汇率、费用与数据有效期都需要明确依据。
                               </p>
                               <button
                                 className="primary"
                                 disabled={busy}
                                 onClick={() => gateReview("G3", f)}
                               >
-                                审核可行性 / 样品调查
+                                审核成本与样品验证
                               </button>
                             </div>
                           </div>
@@ -1312,9 +1439,9 @@ export default function Workbench() {
                             {f.data.risks.map((r: any) => (
                               <div key={r.domain}>
                                 <Badge tone="amber">待核实</Badge>
-                                <strong>{r.domain}</strong>
-                                <p>{r.question}</p>
-                                <small>责任方：{r.owner}</small>
+                                <strong>{riskDomainLabel(r.domain)}</strong>
+                                <p>{riskQuestionLabel(r.domain, r.question)}</p>
+                                <small>责任方：{ownerLabel(r.owner)}</small>
                               </div>
                             ))}
                           </div>
@@ -1323,18 +1450,16 @@ export default function Workbench() {
                     })()
                   ) : (
                     <Empty>
-                      选定概念后，计算已知与缺失费用。不内置未经核实的平台费率或供应商报价。
+                      选定方案后，核算已知与缺失的费用。系统不内置未经核实的平台费率或供应商报价。
                     </Empty>
                   )}
                 </>
               )}
-              {tab === "视觉资产" && (
+              {tab === "概念图片" && (
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">
-                        CREATIVEENGINE / INTERNAL CONCEPT
-                      </p>
+                      <p className="eyebrow">概念图片 · 仅内部使用</p>
                       <h2>把想法看清，别把图像当事实。</h2>
                     </div>
                     <button
@@ -1356,11 +1481,11 @@ export default function Workbench() {
                         })
                       }
                     >
-                      ＋ 创建概念计划
+                      ＋ 创建概念图片计划
                     </button>
                   </div>
                   <p className="hint">
-                    仅内部用途 · Mock / Concept · 预算 $0 ·
+                    仅内部使用 · 模拟制作 · 不产生费用 ·
                     计划批准与图片审核分别进行
                   </p>
                   {items("visual-tasks").map((v) => (
@@ -1368,12 +1493,16 @@ export default function Workbench() {
                       <div className="section-heading">
                         <div>
                           <Badge tone={v.current ? "neutral" : "amber"}>
-                            {v.current ? v.state : "版本已过期"}
+                            {v.current
+                              ? visualStateLabel(v.state)
+                              : "方案已更新，此任务已过期"}
                           </Badge>
                           <h3>{v.request.requirements}</h3>
-                          <p className="hash">
-                            计划哈希 {v.plan_hash || "尚无计划"}
-                          </p>
+                          <TechDetails>
+                            <p className="hash">
+                              计划校验值 {v.plan_hash || "尚无计划"}
+                            </p>
+                          </TechDetails>
                         </div>
                         <div className="actions">
                           {v.state === "awaiting_plan_review" && (
@@ -1413,7 +1542,7 @@ export default function Workbench() {
                                 })
                               }
                             >
-                              同步已有任务
+                              刷新制作进度
                             </button>
                           )}
                         </div>
@@ -1423,12 +1552,12 @@ export default function Workbench() {
                           <div key={asset.id} className="asset">
                             <img
                               src={`/api/visual-assets/${asset.id}/content`}
-                              alt="MOCK 内部概念素材，不代表真实产品"
+                              alt="模拟的内部概念图片，不代表真实产品"
                             />
                             <div>
-                              <Badge>MOCK · CONCEPT</Badge>
+                              <Badge>模拟图 · 概念</Badge>
                               <p>
-                                机器 QA：
+                                自动检查：
                                 {asset.qa.status === "warn"
                                   ? "有待确认项"
                                   : asset.qa.status === "block"
@@ -1439,11 +1568,11 @@ export default function Workbench() {
                                 {asset.qa.issues
                                   ?.map((issue: any) => issue.description)
                                   .join(" · ") ||
-                                  "请结合原始 QA 记录核实素材。"}
+                                  "没有自动发现问题，仍需人工核对。"}
                               </p>
                               <p className="hint">
                                 {asset.identity === "mock"
-                                  ? "固定 Mock 测试图片；未运行视觉语义检测，不验证产品性能。"
+                                  ? "固定的模拟测试图片；没有检查画面内容，也不验证产品性能。"
                                   : "概念图片不能作为实物验证依据。"}
                               </p>
                               <p>
@@ -1459,7 +1588,7 @@ export default function Workbench() {
                                 disabled={busy || !v.current}
                                 onClick={() => visualReview(v, asset)}
                               >
-                                审核图片资产
+                                审核这张图片
                               </button>
                             </div>
                           </div>
@@ -1467,15 +1596,14 @@ export default function Workbench() {
                       </div>
                       {v.error_code && (
                         <p className="error">
-                          {v.error_code} · 研究与产品定义仍可继续
+                          {errorLabel(v.error_code)} · 研究与产品定义仍可继续
                         </p>
                       )}
                     </article>
                   ))}
                   {!items("visual-tasks").length && (
                     <Empty>
-                      完成 G2 后，可以创建概念图计划。无真实产品照片时，正式
-                      Listing 图像受阻。
+                      选定产品方案后，可以创建概念图片计划。没有真实产品照片时，不能制作正式商品图。
                     </Empty>
                   )}
                 </>
@@ -1491,11 +1619,11 @@ export default function Workbench() {
                   review={gateReview}
                 />
               )}
-              {tab === "LaunchPack" && (
+              {tab === "内部交接资料" && (
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">INTERNAL DRAFT / HANDOFF</p>
+                      <p className="eyebrow">内部交接资料</p>
                       <h2>可交接的草稿，明确未完成的验证。</h2>
                     </div>
                     <button
@@ -1512,14 +1640,14 @@ export default function Workbench() {
                       }
                     >
                       {items("launch-packs").length
-                        ? "生成内部草稿新版本"
-                        : "生成内部 LaunchPack"}
+                        ? "生成新版本"
+                        : "生成内部交接资料"}
                     </button>
                   </div>
                   {items("launch-packs").map((p) => (
                     <article className="pack paper" key={p.id}>
                       <div className="pack-banner">
-                        INTERNAL DRAFT <span>v{p.version}</span>
+                        内部草稿 <span>第 {p.version} 版</span>
                       </div>
                       <h3>{p.data.title}</h3>
                       <div className="heading-badges">
@@ -1529,26 +1657,32 @@ export default function Workbench() {
                       </div>
                       <ul className="blockers">
                         {p.data.blockers.map((b: string) => (
-                          <li key={b}>{b}</li>
+                          <li key={b}>{blockerLabel(b)}</li>
                         ))}
                       </ul>
                       <p>
-                        包括机会备忘录、概念比较、PRD、成本模型、风险表、原文附录和已审核内部素材。
+                        包括机会备忘录、方案比较、产品需求文档、成本模型、风险表、原文附录和已审核的内部素材。
                       </p>
                       <div className="actions">
-                        {["json", "md", "zip"].map((f) => (
+                        {[
+                          ["zip", "完整资料包 ZIP"],
+                          ["md", "文档 Markdown"],
+                          ["json", "JSON"],
+                        ].map(([f, name]) => (
                           <a
                             className="download"
                             key={f}
                             href={`/api/launch-packs/${p.id}/export?format=${f}`}
                           >
-                            下载 {f.toUpperCase()} ↗
+                            下载 {name} ↗
                           </a>
                         ))}
                       </div>
                       <details>
                         <summary>版本追溯清单</summary>
-                        <p className="hash">Spec {p.data.manifest.spec_hash}</p>
+                        <p className="hash">
+                          规格校验值 {p.data.manifest.spec_hash}
+                        </p>
                         <p>
                           {p.data.manifest.sources.length} 个来源 ·{" "}
                           {p.data.manifest.assets.length} 个已审核内部素材 ·{" "}
@@ -1559,17 +1693,16 @@ export default function Workbench() {
                   ))}
                   {!items("launch-packs").length && (
                     <Empty>
-                      先完成机会、概念审核及可行性分析。缺少样品时仍可生成内部草稿，G4/G5
-                      不会因此通过。
+                      先完成机会、方案审核和成本核算。缺少样品时仍可生成内部草稿，但样品验证和内部交接不会因此通过。
                     </Empty>
                   )}
                 </>
               )}
-              {tab === "活动" && (
+              {tab === "变更记录" && (
                 <>
                   <div className="section-heading">
                     <div>
-                      <p className="eyebrow">APPEND-ONLY ACTIVITY</p>
+                      <p className="eyebrow">变更记录</p>
                       <h2>每次变更，都有来处。</h2>
                     </div>
                     <a
@@ -1578,7 +1711,7 @@ export default function Workbench() {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      事件回放 ↗
+                      查看原始事件 ↗
                     </a>
                   </div>
                   <ol className="timeline">
@@ -1587,13 +1720,15 @@ export default function Workbench() {
                       .reverse()
                       .map((e) => (
                         <li key={e.id}>
-                          <span>{e.sequence.toString().padStart(2, "0")}</span>
+                          <span>{e.sequence}</span>
                           <div>
-                            <strong>{e.action}</strong>
-                            <p>
-                              {new Date(e.created_at).toLocaleString("zh-CN")} ·
-                              操作者 {e.actor_id.slice(0, 8)}
-                            </p>
+                            <strong>{activityLabel(e.action)}</strong>
+                            <p>{dateTime(e.created_at)}</p>
+                            <TechDetails>
+                              <p className="hash">
+                                {e.action} · 操作者 {e.actor_id}
+                              </p>
+                            </TechDetails>
                           </div>
                         </li>
                       ))}
@@ -1604,8 +1739,8 @@ export default function Workbench() {
           </>
         )}
         <footer>
-          LAUNCHCASE <span>证据 / 推断 / 假设 / 决策，各有边界。</span>
-          <small>V1 · INTERNAL WORKSPACE</small>
+          LaunchCase <span>证据、推断、假设和决定，各有边界。</span>
+          <small>内部工作区</small>
         </footer>
       </main>
       <dialog ref={dialog} onCancel={closeDialog} className="modal">
@@ -1623,7 +1758,7 @@ export default function Workbench() {
               create();
             }}
           >
-            <p className="eyebrow">NEW PRODUCT CASE</p>
+            <p className="eyebrow">新建产品项目</p>
             <h2>定义一个值得验证的问题。</h2>
             <button
               type="button"
@@ -1633,7 +1768,7 @@ export default function Workbench() {
               载入合成宠物家具示例
             </button>
             <label>
-              Case 名称
+              项目名称
               <input
                 required
                 minLength={3}
@@ -1675,14 +1810,14 @@ export default function Workbench() {
               />
             </label>
             <p className="hint">
-              Amazon US · 差异化开发 ·{" "}
+              亚马逊美国站 · 差异化开发 ·{" "}
               {brief.data_policy.is_synthetic
                 ? "合成测试数据"
                 : "用户资料，未经系统核实"}{" "}
               · 默认内部用途
             </p>
             <button className="primary" disabled={busy}>
-              创建 Case
+              创建项目
             </button>
           </form>
         )}
@@ -1699,18 +1834,18 @@ export default function Workbench() {
                 });
                 setReview(null);
                 if (current) await load(current.id);
-                setNotice("决策已记录，并绑定本次审核的精确版本");
+                setNotice("决定已记录，只对本次审核的这一版有效");
               });
             }}
           >
-            <p className="eyebrow">HUMAN REVIEW / EXACT VERSION</p>
+            <p className="eyebrow">人工决定</p>
             <h2>{review.title}</h2>
             <p>
-              该决定只适用于你正在审核的版本。资料或 Spec 变化后需要重新审核。
+              该决定只适用于你正在审核的这一版。资料或规格变化后需要重新审核。
             </p>
             {current?.is_synthetic && (
               <p className="review-warning">
-                这是合成测试 Case；本次决定不构成真实商业批准。
+                这是合成测试项目；本次决定不构成真实商业批准。
               </p>
             )}
             <label>
@@ -1737,7 +1872,9 @@ export default function Workbench() {
                 placeholder="说明为什么选择，以及仍需验证什么"
               />
             </label>
-            <p className="hash">版本绑定 {review.hash}</p>
+            <TechDetails>
+              <p className="hash">本次决定对应的版本校验值 {review.hash}</p>
+            </TechDetails>
             <button className="primary" disabled={busy}>
               记录人工决定
             </button>
@@ -1766,7 +1903,7 @@ export default function Workbench() {
             <p>修订创建新版本，旧审批失效。这里不能把提案改为已验证事实。</p>
             {specEdit.data.claims.map((claim: any, i: number) => (
               <label key={claim.name}>
-                {claim.name}
+                {specFieldLabel(claim.name)}
                 <input
                   placeholder="未知，留空"
                   value={claim.value || ""}
@@ -1782,7 +1919,7 @@ export default function Workbench() {
               </label>
             ))}
             <button className="primary" disabled={busy}>
-              保存新 Spec 版本
+              保存为新版本
             </button>
           </form>
         )}
@@ -1815,7 +1952,7 @@ export default function Workbench() {
               });
             }}
           >
-            <h2>每件 USD · 假设场景</h2>
+            <h2>每件成本（美元）· 假设场景</h2>
             <p>手工输入均标为假设，留空就是未知；零需要明确输入。</p>
             <div className="cost-inputs">
               {Object.entries(costNames).map(([key, label]) => (

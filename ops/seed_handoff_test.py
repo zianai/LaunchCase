@@ -1,6 +1,7 @@
 """Seed only disposable real-mode contract tests. Never business evidence."""
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -9,7 +10,7 @@ sys.path.insert(0, str(root / "tests"))
 from conftest import brief, setup  # noqa: E402
 from test_handoff import real_mode  # noqa: E402
 
-folder = root / ".launchcase" / "handoff-e2e"
+folder = Path(os.environ.get("LAUNCHCASE_HANDOFF_DIR") or root / ".launchcase" / "handoff-e2e")
 folder.mkdir(parents=True, exist_ok=True)
 # Each run uses a new disposable DB; existing test data is never overwritten.
 from launchcase.domain.common import uid  # noqa: E402

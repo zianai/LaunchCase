@@ -2,11 +2,11 @@ import { test, expect } from "@playwright/test";
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 const root = path.resolve(__dirname, "../..");
+const handoffDir =
+  process.env.LAUNCHCASE_HANDOFF_DIR ||
+  path.join(root, ".launchcase/handoff-e2e");
 const seed = JSON.parse(
-  readFileSync(
-    path.join(root, ".launchcase/handoff-e2e/manifest.json"),
-    "utf8",
-  ),
+  readFileSync(path.join(handoffDir, "manifest.json"), "utf8"),
 );
 const refs = JSON.parse(
   readFileSync(
@@ -14,7 +14,10 @@ const refs = JSON.parse(
     "utf8",
   ),
 );
-const output = path.join(root, "docs/evidence/g4-g5");
+const output = path.join(
+  root,
+  process.env.LAUNCHCASE_SCREENSHOT_DIR || "docs/evidence/g4-g5",
+);
 mkdirSync(output, { recursive: true });
 test("G4 and G5 forms, exact approvals, receipt and responsive states", async ({
   page,
@@ -25,12 +28,7 @@ test("G4 and G5 forms, exact approvals, receipt and responsive states", async ({
   await page.goto("/");
   await page
     .getByLabel("本地身份凭证")
-    .fill(
-      readFileSync(
-        path.join(root, ".launchcase/handoff-e2e/token"),
-        "utf8",
-      ).trim(),
-    );
+    .fill(readFileSync(path.join(handoffDir, "token"), "utf8").trim());
   await page.getByRole("button", { name: "进入工作区 →" }).click();
   await page.locator(".case-row").first().click();
   await page.getByRole("tab", { name: "样品与交接", exact: true }).click();
@@ -41,10 +39,10 @@ test("G4 and G5 forms, exact approvals, receipt and responsive states", async ({
     .getByLabel("样品编号 / SKU / 批次")
     .fill(seed.sample.sample_identifier);
   await page.getByLabel("测试方法与判定范围").fill(seed.sample.test_method);
-  await page.getByLabel("事实名称", { exact: true }).fill("width");
-  await page.getByLabel("实测值（含单位）").fill("40 cm");
+  await page.getByLabel("第 1 条事实名称").fill("width");
+  await page.getByLabel("第 1 条实测值").fill("40 cm");
   await page
-    .getByLabel("原文摘录（须包含实测值）")
+    .getByLabel("第 1 条原文摘录")
     .fill(seed.sample.facts[0].exact_excerpt);
   await page.getByLabel("测试时间", { exact: true }).fill("2026-10-01T10:00");
   await page
@@ -53,8 +51,20 @@ test("G4 and G5 forms, exact approvals, receipt and responsive states", async ({
   await page
     .getByLabel("限制、未测项目与不通过项")
     .fill(seed.sample.limitations);
-  await page.getByRole("button", { name: "保存样品事实，待 G4 审核" }).click();
-  await page.getByRole("button", { name: "审核 G4 样品事实" }).click();
+  // A second row must be validated on its own before anything is submitted.
+  await page.getByRole("button", { name: "＋ 增加一条事实" }).click();
+  await page.getByLabel("第 2 条事实名称").fill("宽度复测");
+  await page.getByLabel("第 2 条实测值").fill("41 cm");
+  await page
+    .getByLabel("第 2 条原文摘录")
+    .fill(seed.sample.facts[0].exact_excerpt);
+  await page.getByRole("button", { name: "保存样品记录，等待审核" }).click();
+  await expect(page.getByText("原文摘录必须包含这个实测值")).toBeVisible();
+  await page.getByLabel("第 2 条实测值").fill("40 cm");
+  await expect(page.getByText("原文摘录必须包含这个实测值")).toHaveCount(0);
+  await page.getByRole("button", { name: "保存样品记录，等待审核" }).click();
+  await expect(page.getByText("宽度复测: 40 cm")).toBeVisible();
+  await page.getByRole("button", { name: "审核样品记录" }).click();
   await expect(
     page
       .getByRole("dialog")
@@ -109,9 +119,9 @@ test("G4 and G5 forms, exact approvals, receipt and responsive states", async ({
   await expect(
     page.getByText("TEST ONLY reviewed reference", { exact: false }),
   ).toBeVisible();
-  await page.getByRole("tab", { name: "LaunchPack", exact: true }).click();
+  await page.getByRole("tab", { name: "内部交接资料", exact: true }).click();
   await page
-    .getByRole("button", { name: "生成内部 LaunchPack", exact: true })
+    .getByRole("button", { name: "生成内部交接资料", exact: true })
     .click();
   await expect(page.getByRole("link", { name: "下载 JSON ↗" })).toBeVisible();
   await page.getByRole("tab", { name: "样品与交接", exact: true }).click();
@@ -131,10 +141,10 @@ test("G4 and G5 forms, exact approvals, receipt and responsive states", async ({
       "No real sample exists. No claims of safety, performance, demand or certification are approved.",
     );
   await page
-    .getByLabel("本次仅内部交接；Mock 素材不具有外部使用权，不批准发布")
+    .getByLabel("本次仅内部交接；模拟素材不具有外部使用权，不批准发布")
     .check();
-  await page.getByRole("button", { name: "保存交接材料，待 G5 审核" }).click();
-  await page.getByRole("button", { name: "审核 G5 内部交接" }).click();
+  await page.getByRole("button", { name: "保存交接材料，等待审核" }).click();
+  await page.getByRole("button", { name: "审核内部交接" }).click();
   await expect(
     page
       .getByRole("dialog")

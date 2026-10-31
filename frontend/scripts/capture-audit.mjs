@@ -18,7 +18,7 @@ try {
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:width===390?844:1000});
   await page.evaluate(()=>window.scrollTo(0,0));
-  const button=await page.getByRole('button',{name:'查看真实样品验证待办 →'}).boundingBox();
+  const button=await page.getByRole('button',{name:'录入样品记录 →'}).boundingBox();
   if(!button || button.y+button.height> (width===390?844:1000)) throw Error('Next action is outside first viewport');
  }
  console.log('Authenticated DOM snapshot captured; current next action visible in both first viewports.');

@@ -23,17 +23,16 @@ for (const viewport of [
       .getByLabel("本地身份凭证")
       .fill(
         readFileSync(
-          path.join(root, ".launchcase/browser-token"),
+          process.env.LAUNCHCASE_TOKEN_FILE ||
+            path.join(root, ".launchcase/browser-token"),
           "utf8",
         ).trim(),
       );
     await page.getByRole("button", { name: "进入工作区 →" }).click();
-    await page.getByRole("button", { name: "＋ 创建产品 Case" }).click();
+    await page.getByRole("button", { name: "＋ 创建产品项目" }).click();
     let dialog = page.getByRole("dialog");
     await dialog.getByRole("button", { name: "载入合成宠物家具示例" }).click();
-    await dialog
-      .getByRole("button", { name: "创建 Case", exact: true })
-      .click();
+    await dialog.getByRole("button", { name: "创建项目", exact: true }).click();
     await expect(page.getByRole("tab", { name: "证据来源" })).toHaveAttribute(
       "aria-selected",
       "true",
@@ -58,10 +57,12 @@ for (const viewport of [
     await expect(page.locator("blockquote")).toHaveText(
       "The screws were hard to align during assembly.",
     );
-    await page.getByRole("tab", { name: "VOC 研究" }).click();
+    await page.getByRole("tab", { name: "用户反馈研究" }).click();
     await page.getByRole("button", { name: "运行研究", exact: true }).click();
-    await expect(page.getByText("conflicted", { exact: true })).toBeVisible();
-    await page.getByRole("tab", { name: "机会", exact: true }).click();
+    await expect(
+      page.getByText("用户反馈存在分歧", { exact: true }),
+    ).toBeVisible();
+    await page.getByRole("tab", { name: "产品机会", exact: true }).click();
     await page
       .locator("article.opportunity")
       .filter({ hasText: "Reduce assembly friction" })
@@ -75,14 +76,16 @@ for (const viewport of [
       );
     await dialog.getByRole("button", { name: "记录人工决定" }).click();
     await expect(dialog).not.toBeVisible();
-    await page.getByRole("button", { name: "从选中机会开发概念 →" }).click();
+    await page
+      .getByRole("button", { name: "从选中机会生成产品方案 →" })
+      .click();
     await expect(page.getByRole("status")).toContainText("G2");
-    await page.getByRole("tab", { name: "概念与 Spec" }).click();
+    await page.getByRole("tab", { name: "产品方案与规格" }).click();
     await expect(page.locator("article.concept")).toHaveCount(2);
     await page
       .locator("article.concept")
       .first()
-      .getByRole("button", { name: "审核概念" })
+      .getByRole("button", { name: "审核方案" })
       .click();
     await page
       .getByRole("dialog")
@@ -95,10 +98,12 @@ for (const viewport of [
       .getByRole("button", { name: "记录人工决定" })
       .click();
     await expect(page.getByRole("dialog")).not.toBeVisible();
-    await page.getByRole("tab", { name: "可行性", exact: true }).click();
-    await page.getByRole("button", { name: "计算可行性" }).click();
+    await page.getByRole("tab", { name: "成本与风险", exact: true }).click();
+    await page.getByRole("button", { name: "核算成本", exact: true }).click();
     await expect(page.getByText("资料不足，无法计算")).toBeVisible();
-    await page.getByRole("button", { name: "审核可行性 / 样品调查" }).click();
+    await page
+      .getByRole("button", { name: "审核成本与样品验证", exact: true })
+      .click();
     await page
       .getByRole("dialog")
       .getByLabel("理由与适用边界")
@@ -110,8 +115,8 @@ for (const viewport of [
       .getByRole("button", { name: "记录人工决定" })
       .click();
     await expect(page.getByRole("dialog")).not.toBeVisible();
-    await page.getByRole("tab", { name: "视觉资产", exact: true }).click();
-    await page.getByRole("button", { name: "＋ 创建概念计划" }).click();
+    await page.getByRole("tab", { name: "概念图片", exact: true }).click();
+    await page.getByRole("button", { name: "＋ 创建概念图片计划" }).click();
     await page.getByRole("button", { name: "审核计划", exact: true }).click();
     await page
       .getByRole("dialog")
@@ -127,7 +132,7 @@ for (const viewport of [
     await page.getByRole("button", { name: "执行已批准计划" }).click();
     await expect(page.getByRole("img")).toBeVisible();
     await expect(page.getByText("人工审核：待独立审核")).toBeVisible();
-    await page.getByRole("button", { name: "审核图片资产" }).click();
+    await page.getByRole("button", { name: "审核这张图片" }).click();
     await page
       .getByRole("dialog")
       .getByLabel("理由与适用边界")
@@ -144,8 +149,8 @@ for (const viewport of [
       path: path.join(screenshotDir, `visual-${viewport.width}.png`),
       fullPage: true,
     });
-    await page.getByRole("tab", { name: "LaunchPack", exact: true }).click();
-    await page.getByRole("button", { name: "生成内部 LaunchPack" }).click();
+    await page.getByRole("tab", { name: "内部交接资料", exact: true }).click();
+    await page.getByRole("button", { name: "生成内部交接资料" }).click();
     await expect(page.getByText("不可发布", { exact: true })).toBeVisible();
     const url = await page
       .getByRole("link", { name: "下载 JSON ↗" })
