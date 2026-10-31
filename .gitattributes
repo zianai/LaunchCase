@@ -1,0 +1,2 @@
+# Command output is evidence: preserve upstream whitespace byte-for-byte.
+docs/evidence/**/*.log -whitespace

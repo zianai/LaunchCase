@@ -96,3 +96,17 @@ one synthetic tenant owner and place only its token in `.launchcase/browser-toke
 Start the production Next build at3310; `npm run test:e2e --prefix frontend` creates fresh synthetic
 Cases and retains screenshots. Failed traces may contain fixture credentials; traces stay ignored
 in `.launchcase/` or `frontend/test-results/`, never commit them. Use a separate browser test tenant.
+
+Reproduce the isolated HTTP Mock endpoint used here (requires the already-installed, inspected
+CreativeEngine sibling; do not install/change its code or reuse its existing data directory):
+
+```bash
+cd '/Users/a/workspaces/AForeign Trade/creative-engine'
+env -i PATH="$PATH" \
+  CREATIVE_DATA_DIR='/Users/a/workspaces/AForeign Trade/LaunchCase/.launchcase/engine-http' \
+  CREATIVE_API_TOKEN='launchcase-isolated-test-token' PORT=4311 \
+  node --import tsx apps/server/index.ts
+```
+
+This token is solely an isolated localhost test credential, not a provider key. The clean environment
+excludes paid-provider credentials. Stop only this process when done; do not stop the existing4310 service.

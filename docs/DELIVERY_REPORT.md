@@ -4,7 +4,7 @@ Workspace: `/Users/a/workspaces/AForeign Trade/LaunchCase`, local branch `codex/
 P0→P6 implemented in dependency order. Scope is the functioning offline evidence-to-internal-draft
 workbench; genuine market/product validation and external launch readiness are not delivered claims.
 Full phase commits, paths, commands, failures and limitations: `docs/PHASE_REPORTS/P0.md` through
-`P6.md`. P6's implementation SHA is recorded in its phase report after committing the tested code.
+`P6.md`. P6 implementation SHA: `1e2b233cfb5be2002579e2bf9542db64a6a01f02`.
 
 ## Actual result
 
@@ -73,3 +73,15 @@ See README and OPERATIONS. Web3310/API8810 are loopback. The delivered running b
 uses `.launchcase/browser`; fixture token file `.launchcase/browser-token` is local/private/ignored.
 To create a fresh environment use CLI init-db/auth provision and the normal quickstart.
 Demo exports are internal/synthetic and retained locally, not published or sent anywhere.
+
+## Phase implementation commits
+
+| Phase | Commit | Evidence at that phase |
+|---|---|---|
+| P0 | `b23147fd61d214aa49975a5162021e3fca105dec` | 2 tests |
+| P1 | `98eb91540474a2f9319024d85b8b82284c13e035` | 15 tests |
+| P2 | `965cbc6aec5cc16625d747b94c923762fc54021d` | 20 tests |
+| P3 | `f34c0a82900c38ecd3eff22b392ff8d5e4795036` | 25 tests |
+| P4 | `00087c312b6736facb2b8a19719c6941e3c63222` | 32 tests including local HTTP Mock |
+| P5 | `e087b2122b564241b395faffde199860066472a3` | 42 tests including local HTTP Mock |
+| P6 | `1e2b233cfb5be2002579e2bf9542db64a6a01f02` | 52 passed + separate PG/Redis 1 passed; browser 3 passed |

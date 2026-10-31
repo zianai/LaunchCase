@@ -1,7 +1,7 @@
 schema_version: 3
 protocol_version: "3.0"
 id: T-001-launchcase-v1
-status: executing
+status: completed
 goal: Implement and verify the complete offline LaunchCase V1 evidence-to-internal-draft workflow
 scope: [src/, frontend/, migrations/, skills/, tests/, docs/, ops/, scripts/]
 non_goals: [Paid models, publishing, supplier contact, modifying TradeCase or CreativeEngine]
@@ -11,6 +11,8 @@ risk_reasons: [local-reversible]
 protected_paths: [docs/handoff/]
 context_refs: [docs/handoff/IMPLEMENTATION_SPEC.md, docs/handoff/PHASE_PLAN.md, docs/handoff/CONTRACTS_AND_SCENARIOS.md]
 decision_refs: [docs/ADR/001-boundaries.md]
-evidence_refs: [docs/BASELINE_AUDIT.md]
+evidence_refs: [docs/BASELINE_AUDIT.md, docs/DELIVERY_REPORT.md, docs/PHASE_REPORTS/P6.md, design/render-manifest.json]
 implementation_started: true
-updated: "2026-10-30"
+updated: "2026-10-31"
+conformance_status: pending
+authorization_basis: direct-user-implementation-request
