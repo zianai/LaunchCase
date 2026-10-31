@@ -1,0 +1,37 @@
+..................F......s                                               [100%]
+=================================== FAILURES ===================================
+__________ test_pilot_manifest_limit_never_silently_hides_real_source __________
+
+setup = (<launchcase.application.services.CaseService object at 0x11287d0a0>, Actor(id='272c6b2b-6fff-4aca-a1e0-d56fcc2b9325',...26a4edc', tenant_id='tenant-b', role='owner', synthetic=True), <starlette.testclient.TestClient object at 0x1128e35c0>)
+case = {'id': '8d186129-c278-4d45-a9b4-919e6a7d5c8d', 'tenant_id': 'tenant-a', 'owner': '272c6b2b-6fff-4aca-a1e0-d56fcc2b9325', 'title': '[SYNTHETIC] US Pet Furniture: Easier Assembly', ...}
+
+    def test_pilot_manifest_limit_never_silently_hides_real_source(setup, case):
+        from launchcase.domain.common import digest
+        from launchcase.infrastructure.models import SourceDocument
+    
+        svc, actor, _, client = setup
+        with svc.write() as session:
+            session.add_all(
+                [
+                    SourceDocument(
+                        tenant_id=actor.tenant_id,
+                        case_id=case["id"],
+                        filename=f"TEST-ONLY-{index}.txt",
+                        sha256=digest(str(index).encode()),
+                        source_type="spec",
+                        rights_status="synthetic_fixture" if index < 5000 else "authorized",
+                        is_synthetic=index < 5000,
+                        metadata_json={},
+                    )
+                    for index in range(5001)
+                ]
+            )
+        response = client.get(f"/api/v1/product-cases/{case['id']}/pilot-export")
+>       assert response.status_code == 409
+E       assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/test_p8_p10.py:421: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_p8_p10.py::test_pilot_manifest_limit_never_silently_hides_real_source
+1 failed, 24 passed, 1 skipped in 7.98s

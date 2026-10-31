@@ -1,0 +1,27 @@
+{
+  "repo": "launchcase",
+  "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+  "scope": "local single-host E0/E1 only",
+  "gates": {
+    "G-ENG": "GO_LOCAL_E1",
+    "G-LIVE": "HOLD",
+    "G-BIZ": "HOLD",
+    "G-PROD": "HOLD"
+  },
+  "business_pilot_accepted": false,
+  "human_design_approved": false,
+  "human_completion_accepted": false,
+  "new_paid_calls": 0,
+  "remote_writes": false,
+  "production_deployed": false,
+  "blocked_acceptance_ids": [
+    "P8-T019",
+    "P10-T013"
+  ],
+  "optional_failed_checks": [
+    "evidence/infrastructure-first/result.json"
+  ],
+  "production_rto_seconds": null,
+  "production_rpo_seconds": null,
+  "reason": "Local engineering validated; genuine data, independent humans, billing and production authority absent."
+}

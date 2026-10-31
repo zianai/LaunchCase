@@ -1,0 +1,53 @@
+..........F...                                                           [100%]
+=================================== FAILURES ===================================
+______ test_g4_g5_receipt_and_pack_stale_after_dependency_revision[rule] _______
+
+real_mode = (<launchcase.application.services.CaseService object at 0x110c46e70>, Actor(id='8293d49d-9fba-46db-a9ab-3f7d7ba86c79',... No actual testing, demand validation or external approval.'), <starlette.testclient.TestClient object at 0x110c46870>)
+change = 'rule'
+
+    @pytest.mark.parametrize("change", ["spec", "rule"])
+    def test_g4_g5_receipt_and_pack_stale_after_dependency_revision(real_mode, change):  # noqa: F811
+        from conftest import decide
+        from test_handoff import ready
+    
+        from launchcase.application.feasibility import FeasibilityService
+        from launchcase.application.launchpacks import LaunchPackService
+        from launchcase.application.products import ProductService
+        from launchcase.domain.contracts import SpecClaim, SpecRevision
+    
+        svc, actor, case, _, client = real_mode
+        pack, prep, rule_request = ready(real_mode)
+        packs = LaunchPackService(svc)
+        packs.prepare(actor, case["id"], prep, uid())
+        decide(svc, actor, case["id"], "G5", pack["id"], "internal_handoff")
+        assert client.get(f"/api/v1/launch-packs/{pack['id']}/handoff-receipt").status_code == 200
+        if change == "spec":
+            product = ProductService(svc)
+            with svc.sessions() as session:
+                concept = product.current(session, actor, case["id"], "G2", {"select"}).subject_id
+                spec = product.latest_spec(session, actor, case["id"], concept)
+                spec_hash = spec.sha256
+            product.revise_spec(
+                actor,
+                case["id"],
+                concept,
+                SpecRevision(
+                    expected_subject_hash=spec_hash,
+                    claims=[SpecClaim(name="material", value="TEST ONLY revision", status="proposed")],
+                    reason="TEST ONLY revision invalidates decisions",
+                ),
+                uid(),
+            )
+        else:
+            rule_request.revision = "TEST ONLY revision 2"
+            FeasibilityService(svc).rule(actor, case["id"], rule_request, uid())
+>       assert client.get(f"/api/v1/launch-packs/{pack['id']}/handoff-receipt").status_code == 409
+E       AssertionError: assert 200 == 409
+E        +  where 200 = <Response [200 OK]>.status_code
+E        +    where <Response [200 OK]> = get('/api/v1/launch-packs/b3b22098-e9b7-462f-823a-95dfddf09419/handoff-receipt')
+E        +      where get = <starlette.testclient.TestClient object at 0x110c46870>.get
+
+tests/test_p8_p10.py:217: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_p8_p10.py::test_g4_g5_receipt_and_pack_stale_after_dependency_revision[rule]
+1 failed, 13 passed in 15.22s

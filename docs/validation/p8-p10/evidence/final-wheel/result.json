@@ -1,0 +1,22 @@
+{
+  "command": [
+    "env",
+    "UV_CACHE_DIR=/Users/a/.cache/uv",
+    "uv",
+    "build",
+    "--offline"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T09:06:59.198176+00:00",
+  "duration_seconds": 6.619,
+  "exit_code": 0,
+  "source_sha": "341bc332298ffe2a8808890b650127514071449e",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dirty_paths": [
+    "?? docs/validation/p8-p10/"
+  ],
+  "log_sha256": "a58c1c6e1b2608d71f90a3bd5789675d66081d92b8c0bdab23940c5923f88e36",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

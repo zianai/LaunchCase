@@ -1,0 +1,1 @@
+{"url":"http://127.0.0.1:50825","mode":"E1","topology":"single_host_loopback","providers":["mock"],"external_business_writes":false}

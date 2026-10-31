@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/ops/verify_infrastructure.py", line 50, in <module>
+    raise RuntimeError("Isolated PostgreSQL did not start")
+RuntimeError: Isolated PostgreSQL did not start

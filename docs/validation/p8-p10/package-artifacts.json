@@ -1,0 +1,20 @@
+{
+  "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+  "artifacts": [
+    {
+      "path": "dist/.gitignore",
+      "sha256": "684888c0ebb17f374298b65ee2807526c066094c701bcc7ebbe1c1095f494fc1",
+      "size_bytes": 1
+    },
+    {
+      "path": "dist/launchcase-0.1.0-py3-none-any.whl",
+      "sha256": "5b4ad1ef4f4dbefb81157bd95b0328dd47d21a5c1ead8fafc9b21f362b591b34",
+      "size_bytes": 103747
+    },
+    {
+      "path": "dist/launchcase-0.1.0.tar.gz",
+      "sha256": "b026719228b36a7761ec0eb4666074cdc09ccbc4fb5fab5bae49a82ad04e3e30",
+      "size_bytes": 13814508
+    }
+  ]
+}

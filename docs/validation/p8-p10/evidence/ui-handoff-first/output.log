@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 tests/handoff.spec.ts:22:5 › G4 and G5 forms, exact approvals, receipt and responsive states (9.4s)
+
+  1 passed (12.9s)

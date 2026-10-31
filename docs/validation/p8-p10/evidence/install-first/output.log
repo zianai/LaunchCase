@@ -1,0 +1,12 @@
+Using CPython 3.12.13 interpreter at: /Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/.venv/bin/python
+Creating virtual environment at: venv
+Using Python 3.12.13 environment at: venv
+error: Distribution not found at: file:///Users/a/workspaces/AForeign%20Trade/validation-coordinator/worktrees/launchcase/dist/launchcase-0.1.0-py3-none-any.whl
+Traceback (most recent call last):
+  File "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/ops/verify_install.py", line 39, in <module>
+    run(
+  File "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/ops/verify_install.py", line 19, in run
+    subprocess.run(
+  File "/Users/a/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '('uv', 'pip', 'install', '--offline', '--python', '/private/var/folders/3c/8s26_dx95_ncnyq26yv52vwr0000gn/T/p8p10-check-mvx0qgfk/launchcase-wheel-3kn05gfi/venv/bin/python', '-r', '/private/var/folders/3c/8s26_dx95_ncnyq26yv52vwr0000gn/T/p8p10-check-mvx0qgfk/launchcase-wheel-3kn05gfi/requirements.txt', '/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/dist/launchcase-0.1.0-py3-none-any.whl')' returned non-zero exit status 2.

@@ -1,0 +1,23 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "ops/verify_p8_p10_stack.py",
+    "--engine-repo",
+    "../creative-engine",
+    "--out",
+    "docs/validation/p8-p10/evidence/final-http-stack"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T09:06:43.193117+00:00",
+  "duration_seconds": 24.217,
+  "exit_code": 0,
+  "source_sha": "341bc332298ffe2a8808890b650127514071449e",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dirty_paths": [
+    "?? docs/validation/p8-p10/"
+  ],
+  "log_sha256": "f976bc628baaac65589655ce2ddfaa1cd27a48e932ab5d99486f0f6f3fab21d6",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

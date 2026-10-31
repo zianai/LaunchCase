@@ -1,0 +1,9 @@
+# Local security review
+
+Scope: reversible P8–P10 code and isolated E0/E1 tests. No genuine credentials/data, paid calls, external sends, publication or remote Git writes were used. Test subprocesses run with stripped credentials/tracing and an OS loopback-only egress sandbox. Fictional real-mode contract fixtures are visibly TEST ONLY; their test actors are not human business signoff.
+
+Controls exercised: tenant checks on source preview, original plan, visual content, pack and operations; image byte limits/magic/decoded format/pixels and immutable object hashes; path/symlink refusal; exact current source-rights approval and later revocation; generated asset rejection as original/sample evidence; missing cutout/truth denial; rules/Spec/sample changes stale downstream decisions; impossible citations and missing/deleted/foreign source proofs fail closed; mixed synthetic/real datasets require pinned private-data grants. SDK research retains read-only tools; model output cannot issue grants or human approvals.
+
+Added runtime checks reject missing QA, mismatched scope and null/invalid/nonzero cost at the CE consumer boundary. A receipt ambiguity remains reconciling without blind resubmit. Token rotation and revocation are owner/tenant-scoped and write replacement secrets only to exclusive mode-0600 files. Legacy raw source/asset history remains readable within tenant authorization where appropriate; revoked visual bytes cannot be exported as current.
+
+Remaining trust boundaries: privileged OS users, a dishonest authorized human attestor, deliberate database tampering, external provider truth/billing, and public network deployment. Public exposure needs independent auth/HTTPS/secret-store/egress review. Current static and synthetic checks are not a production penetration-test claim. See acceptance-results.json and the final evidence manifest for exact checks, including preserved failures and optional infrastructure limitation.

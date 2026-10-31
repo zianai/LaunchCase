@@ -1,0 +1,9 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 tests/labels.spec.ts:4:5 › QA reads as passed only on an explicit pass with nothing outstanding (11ms)
+  ✓  2 tests/workbench.spec.ts:15:7 › real API full internal workflow 1440px (18.2s)
+  ✓  3 tests/workbench.spec.ts:15:7 › real API full internal workflow 390px (13.0s)
+  ✓  4 tests/workbench.spec.ts:200:5 › server proxy rejects missing session and cross-origin writes (47ms)
+
+  4 passed (33.5s)

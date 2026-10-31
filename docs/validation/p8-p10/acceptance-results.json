@@ -1,0 +1,254 @@
+{
+  "repo": "launchcase",
+  "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+  "results": [
+    {
+      "id": "P8-T016",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p8_p10.py::test_voc_dedup_preserves_independent_ids_dates_and_variant_conflicts",
+        "tests/test_intake.py::test_exact_row_provenance_duplicate_and_conflict_preserved",
+        "tests/test_research.py::test_real_sdk_fake_model_citations_injection_and_conflicts"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P8-T017",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p8_p10.py::test_research_rejects_nonexistent_citation_even_for_injected_runner",
+        "tests/test_p8_p10.py::test_wrong_case_citation_rejected_even_if_id_exists"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P8-T018",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_feasibility.py::test_synthetic_sample_rejected",
+        "tests/test_feasibility.py::test_internal_pack_graph_stops_g4_and_never_publishable",
+        "tests/test_p7_sku.py::test_actual_http_strict_sku_and_review"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json",
+        "docs/validation/p8-p10/evidence/rc-http/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P8-T019",
+      "state": "BLOCKED_EXTERNAL",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [],
+      "evidence_refs": [
+        "docs/validation/p8-p10/KNOWN_LIMITATIONS.md",
+        "docs/validation/p8-p10/GO_NO_GO.json"
+      ],
+      "reason": "No authorized genuine product cases, sample evidence, paired time/cost baseline or two independent human reviewers. Synthetic fixtures are not business success.",
+      "scope": "E3 genuine business pilot not executed"
+    },
+    {
+      "id": "P9-T005",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "frontend/tests/p8-p10.spec.ts::SKU originals, rights, strict HTTP composition, independent review and internal pack"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-ui/result.json",
+        "docs/validation/p8-p10/evidence/rc-ui-stack/browser/scope.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T006",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p7_sku.py::test_missing_rights_concept_and_bad_raster",
+        "tests/test_p8_p10.py::test_sku_upload_paths_format_and_object_symlink",
+        "tests/test_intake.py::test_size_unicode_and_traversal"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T007",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p8_p10.py::test_strict_plan_rejects_missing_or_foreign_dependencies[foreign_source]",
+        "tests/test_p8_p10.py::test_sku_read_preview_tenant_and_revoked_rights",
+        "tests/test_p7_sku.py::test_actual_http_strict_sku_and_review"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json",
+        "docs/validation/p8-p10/evidence/rc-http/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T008",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p7_sku.py::test_actual_http_strict_sku_and_review"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-http/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T009",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p8_p10.py::test_strict_plan_rejects_missing_or_foreign_dependencies[no_cutout]",
+        "tests/test_p8_p10.py::test_strict_plan_rejects_missing_or_foreign_dependencies[wrong_truth]",
+        "tests/test_visuals.py::test_listing_blocked_and_version_mismatch"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T010",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p8_p10.py::test_derived_asset_cannot_be_original_or_sample_evidence"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T011",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p8_p10.py::test_g4_g5_receipt_and_pack_stale_after_dependency_revision",
+        "tests/test_handoff.py::test_g5_invalidation",
+        "tests/test_feasibility.py::test_quote_change_stales_g3_and_pack"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T012",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "frontend/tests/p8-p10.spec.ts::SKU originals, rights, strict HTTP composition, independent review and internal pack"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-ui/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T013",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p7_live.py::test_real_runner_rejects_invented_citation",
+        "tests/test_p8_p10.py::test_research_rejects_unlocatable_source_row",
+        "tests/test_p8_p10.py::test_research_provenance_and_source_revocation",
+        "tests/test_p8_p10.py::test_insight_source_loss_or_tenant_change_marks_stale",
+        "frontend/tests/p8-p10.spec.ts::SKU originals, rights, strict HTTP composition, independent review and internal pack"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json",
+        "docs/validation/p8-p10/evidence/rc-ui/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T014",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_feasibility.py::test_missing_not_zero_and_unknown_currency",
+        "tests/test_feasibility.py::test_currency_unit_fx_validity",
+        "tests/test_feasibility.py::test_source_id_cannot_launder_invented_quote"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P9-T030",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "tests/test_p10_recovery.py::test_two_worker_processes_recover_one_expired_task[before_execution]",
+        "tests/test_p10_recovery.py::test_two_worker_processes_recover_one_expired_task[after_checkpoint]"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-backend/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P10-T005",
+      "state": "passed",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [
+        "ops/verify_p10_recovery.py"
+      ],
+      "evidence_refs": [
+        "docs/validation/p8-p10/evidence/rc-recovery/result.json"
+      ],
+      "reason": null,
+      "scope": "E1 isolated synthetic engineering"
+    },
+    {
+      "id": "P10-T013",
+      "state": "BLOCKED_EXTERNAL",
+      "tested_commit": "5eb44ff384fe86027863847d0ddf30f41f62987d",
+      "test_nodes": [],
+      "evidence_refs": [
+        "docs/validation/p8-p10/KNOWN_LIMITATIONS.md",
+        "docs/validation/p8-p10/GO_NO_GO.json"
+      ],
+      "reason": "No human product-owner acceptance of an exact genuine E3 report; real market/SKU/sample evidence and independent business review are absent.",
+      "scope": "E3 genuine business pilot not executed"
+    }
+  ],
+  "notes": [
+    "15 local engineering cases passed; 2 E3 cases remain BLOCKED_EXTERNAL.",
+    "Counts overlap actual test nodes; passing SDK adapter tests use a deterministic E1 Model, never paid business validation.",
+    "Cross-system aggregate acceptance is owned by the coordinator; contributions are in P10_REPORT.md."
+  ]
+}

@@ -1,0 +1,79 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 tests/labels.spec.ts:4:5 › QA reads as passed only on an explicit pass with nothing outstanding (12ms)
+  ✘  2 tests/workbench.spec.ts:15:7 › real API full internal workflow 1440px (16.8s)
+  ✘  3 tests/workbench.spec.ts:15:7 › real API full internal workflow 390px (14.8s)
+  ✓  4 tests/workbench.spec.ts:196:5 › server proxy rejects missing session and cross-origin writes (68ms)
+
+
+  1) tests/workbench.spec.ts:15:7 › real API full internal workflow 1440px ─────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('img')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('img') with timeout 5000ms
+      - waiting for getByRole('img')
+
+
+      131 |     await expect(page.getByRole("dialog")).not.toBeVisible();
+      132 |     await page.getByRole("button", { name: "执行已批准计划" }).click();
+    > 133 |     await expect(page.getByRole("img")).toBeVisible();
+          |                                         ^
+      134 |     await expect(page.getByText("人工审核：待独立审核")).toBeVisible();
+      135 |     await page.getByRole("button", { name: "审核这张图片" }).click();
+      136 |     await page
+        at /Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/frontend/tests/workbench.spec.ts:133:41
+
+    Error Context: test-results/workbench-real-API-full-internal-workflow-1440px/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/workbench-real-API-full-internal-workflow-1440px/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/workbench-real-API-full-internal-workflow-1440px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/workbench.spec.ts:15:7 › real API full internal workflow 390px ──────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('img')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('img') with timeout 5000ms
+      - waiting for getByRole('img')
+
+
+      131 |     await expect(page.getByRole("dialog")).not.toBeVisible();
+      132 |     await page.getByRole("button", { name: "执行已批准计划" }).click();
+    > 133 |     await expect(page.getByRole("img")).toBeVisible();
+          |                                         ^
+      134 |     await expect(page.getByText("人工审核：待独立审核")).toBeVisible();
+      135 |     await page.getByRole("button", { name: "审核这张图片" }).click();
+      136 |     await page
+        at /Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/frontend/tests/workbench.spec.ts:133:41
+
+    Error Context: test-results/workbench-real-API-full-internal-workflow-390px/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/workbench-real-API-full-internal-workflow-390px/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/workbench-real-API-full-internal-workflow-390px/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2 failed
+    tests/workbench.spec.ts:15:7 › real API full internal workflow 1440px ──────────────────────────
+    tests/workbench.spec.ts:15:7 › real API full internal workflow 390px ───────────────────────────
+  2 passed (36.9s)

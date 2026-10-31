@@ -1,0 +1,11 @@
+# P10 LaunchCase report
+
+Tested code `5eb44ff384fe86027863847d0ddf30f41f62987d`. Selected topology: one host, independent business SQLite/object store/checkpoint, separate CE trusted loopback service; no shared business database. OPERATIONS.md and ops/staging.env.example define local startup, auth/rotation, queue/reconciliation alerts, stopped-writer backup, new-directory restore, migration and restore rollback. None deploys publicly.
+
+`evidence/rc-recovery` restores all 7 backup files into a new directory, verifies the exact internal pack bytes, approval subjects, business case and object/checkpoint hashes, and restores an untouched rollback copy. It measures 100 local reads and restore/migrate/read wall time on this synthetic dataset. Production RTO/RPO are null; results are not a service-level promise. `evidence/rc-migrations` verifies all five migrations and metadata consistency. `evidence/rc-wheel` and `evidence/rc-install` prove a clean offline installed wheel can doctor/demo/strict-validate outside the source tree.
+
+Cross-system contributions: P8-T004/005/007/009 authorization and null metrics; P9-T025/026/027 frozen consumer missing QA/cost/additive/breaking-field tests; P10-T003 tenant/secret boundaries; P10-T008 synthetic reviewer refusal; P10-T009 existing receipt reconciliation/SSE replay and Case readability; P10-T010 migration/restore; P10-T011 actual desktop/mobile source/approval screens. The coordinator owns the combined three-process and all-73-ID verdict, including network interruption and security scan evidence; this repo does not claim those whole-system cases by analogy.
+
+The required LaunchCase local engineering tests pass. P10-T013 remains BLOCKED_EXTERNAL: no genuine product-owner signoff, two independent human reviews or real evidence. G-LIVE/G-BIZ/G-PROD remain HOLD. No remote push, publication, purchase, production deployment or external message was performed.
+
+Remaining unresolved issue: optional PG/Redis container probe failed mapped-port readiness. The chosen SQLite topology is tested; deployments needing PG/Redis/multi-host require their own successful operational evidence. Known limitations and all earlier failures remain in this release's evidence, with no rewritten P7 results.

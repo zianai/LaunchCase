@@ -1,0 +1,243 @@
+............F...                                                         [100%]
+=================================== FAILURES ===================================
+____ test_insight_source_loss_or_tenant_change_marks_stale[deleted_source] _____
+
+self = <sqlalchemy.engine.base.Connection object at 0x10e42f170>
+dialect = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x10e2ddd90>
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x10e499070>
+statement = <sqlalchemy.dialects.sqlite.base.SQLiteCompiler object at 0x10e2ac710>
+parameters = [('7538ddce-87c6-4954-a6fd-4a39e0c5ccd5',)]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -> CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+>                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1958: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x10e2ddd90>
+cursor = <sqlite3.Cursor object at 0x10e510140>
+statement = 'DELETE FROM source_documents WHERE source_documents.id = ?'
+parameters = ('7538ddce-87c6-4954-a6fd-4a39e0c5ccd5',)
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x10e499070>
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+>       cursor.execute(statement, parameters)
+E       sqlite3.IntegrityError: FOREIGN KEY constraint failed
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: IntegrityError
+
+The above exception was the direct cause of the following exception:
+
+setup = (<launchcase.application.services.CaseService object at 0x10e2dd850>, Actor(id='dd3033fb-ddc8-43e3-93b8-4ff8c2b1fc5b',...90a5483', tenant_id='tenant-b', role='owner', synthetic=True), <starlette.testclient.TestClient object at 0x10e1022a0>)
+case = {'id': 'a4d9ef81-ecbd-41cd-b378-b266bb3eacc1', 'tenant_id': 'tenant-a', 'owner': 'dd3033fb-ddc8-43e3-93b8-4ff8c2b1fc5b', 'title': '[SYNTHETIC] US Pet Furniture: Easier Assembly', ...}
+imported = (SourceImport(schema_version='1.0.0', filename='synthetic-voc.csv', content='review_id,product_id,variant,review_date,...256': '6b002ea4f340af33776839e355a03261c5011df6e0f1ed5ebfff96f67aa63b89', 'rows_imported': 23, 'rows_skipped': 1, ...})
+mutation = 'deleted_source'
+
+    @pytest.mark.parametrize("mutation", ["deleted_source", "foreign_source"])
+    def test_insight_source_loss_or_tenant_change_marks_stale(setup, case, imported, mutation):
+        from launchcase.infrastructure.models import SourceDocument
+    
+        svc, actor, _, client = setup
+        execute_task(svc, actor, enqueue_run(svc, actor, case["id"], "research", uid())["id"])
+        insight = svc.list_scoped(actor, case["id"], Artifact, kind="Insight")[0]
+>       with svc.write() as session:
+             ^^^^^^^^^^^
+
+tests/test_p8_p10.py:254: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/Users/a/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+src/launchcase/application/services.py:50: in write
+    s.commit()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2095: in commit
+    trans.commit(_to_root=True)
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit>:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1330: in commit
+    self._prepare_impl()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction._prepare_impl>:2: in _prepare_impl
+    return target(fn, self)
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1304: in _prepare_impl
+    self.session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4543: in flush
+    self._flush(objects)
+<sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush>:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4686: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4647: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:680: in execute
+    util.preloaded.orm_persistence._delete_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:192: in _delete_obj
+    _emit_delete_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:1475: in _emit_delete_statements
+    c = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1463: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1683: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1837: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1977: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2347: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1958: in _exec_single_context
+    self.dialect.do_execute(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.dialects.sqlite.pysqlite.SQLiteDialect_pysqlite object at 0x10e2ddd90>
+cursor = <sqlite3.Cursor object at 0x10e510140>
+statement = 'DELETE FROM source_documents WHERE source_documents.id = ?'
+parameters = ('7538ddce-87c6-4954-a6fd-4a39e0c5ccd5',)
+context = <sqlalchemy.dialects.sqlite.base.SQLiteExecutionContext object at 0x10e499070>
+
+    def do_execute(self, cursor, statement, parameters, context=None):
+>       cursor.execute(statement, parameters)
+E       sqlalchemy.exc.IntegrityError: (sqlite3.IntegrityError) FOREIGN KEY constraint failed
+E       [SQL: DELETE FROM source_documents WHERE source_documents.id = ?]
+E       [parameters: ('7538ddce-87c6-4954-a6fd-4a39e0c5ccd5',)]
+E       (Background on this error at: https://sqlalche.me/e/21/gkpj)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: IntegrityError
+=========================== short test summary info ============================
+FAILED tests/test_p8_p10.py::test_insight_source_loss_or_tenant_change_marks_stale[deleted_source]
+1 failed, 15 passed in 65.09s (0:01:05)

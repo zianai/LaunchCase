@@ -1,0 +1,42 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build",
+    "--prefix",
+    "frontend"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T08:55:05.201873+00:00",
+  "duration_seconds": 16.055,
+  "exit_code": 0,
+  "source_sha": "13bfd8ba088ab671978cfc5463f2626a58c6e563",
+  "tracked_diff_sha256": "f017b01f4fd2a87d2cc2afe50ee58ee84cbbb602cea1f3659fc45557e2a87226",
+  "dirty_paths": [
+    " M frontend/app/globals.css",
+    " M frontend/app/page.tsx",
+    " M project/state.yaml",
+    " M src/launchcase/agents/live.py",
+    " M src/launchcase/agents/runtime.py",
+    " M src/launchcase/api/__init__.py",
+    " M src/launchcase/application/research.py",
+    " M src/launchcase/application/sku_visuals.py",
+    " M src/launchcase/application/visuals.py",
+    " M src/launchcase/integrations/creative.py",
+    "?? contracts/",
+    "?? docs/validation/p8-p10/",
+    "?? docs/validation/post-p7/",
+    "?? frontend/app/provenance.tsx",
+    "?? frontend/app/sku.tsx",
+    "?? src/launchcase/application/pilot.py",
+    "?? src/launchcase/application/provenance.py",
+    "?? tests/test_ce_contract.py",
+    "?? tests/test_p10_recovery.py",
+    "?? tests/test_p8_p10.py",
+    "?? work/active/T-011-p8-p10/"
+  ],
+  "log_sha256": "2d050941e962bd6080f0581e1212b64ba1095ad708df7cb7066c2d6631b40236",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

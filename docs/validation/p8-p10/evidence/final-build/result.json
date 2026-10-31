@@ -1,0 +1,22 @@
+{
+  "command": [
+    "npm",
+    "run",
+    "build",
+    "--prefix",
+    "frontend"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T09:06:59.198170+00:00",
+  "duration_seconds": 9.953,
+  "exit_code": 0,
+  "source_sha": "341bc332298ffe2a8808890b650127514071449e",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dirty_paths": [
+    "?? docs/validation/p8-p10/"
+  ],
+  "log_sha256": "55173150366593da30deddcd5bdaed602efdaa66f3e9b5df12d8a57143e10786",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

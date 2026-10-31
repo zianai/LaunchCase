@@ -1,0 +1,17 @@
+{
+  "scope": "E1 synthetic single-host stopped-writer SQLite, 100 local case reads",
+  "restored_files": 7,
+  "pack_sha256": "3aa979dd566c507254ff89ee8c58a49701e8deaeb6626c3f0cd60e2a244b1164",
+  "checkpoint_sha256": "8a499893765c6870e68f182fdf8f4678daefbab9117763f840862ac6ad578588",
+  "restore_migrate_read_seconds": 0.024688750505447388,
+  "read_latency_ms": {
+    "samples": 100,
+    "median": 0.16737496480345726,
+    "p95": 0.20249933004379272
+  },
+  "rollback_hashes_equal": true,
+  "production_rto_seconds": null,
+  "production_rpo_seconds": null,
+  "multi_host": "not_tested",
+  "business_pilot_accepted": false
+}

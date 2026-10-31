@@ -1,0 +1,25 @@
+{
+  "command": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "tests/test_p8_p10.py::test_real_pilot_export_cannot_borrow_synthetic_grant_context",
+    "tests/test_p8_p10.py::test_synthetic_case_cannot_export_mixed_real_sources_without_grant",
+    "-q"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T09:07:45.854320+00:00",
+  "duration_seconds": 19.238,
+  "exit_code": 0,
+  "source_sha": "341bc332298ffe2a8808890b650127514071449e",
+  "tracked_diff_sha256": "22c9f4fd56fee234cf721adf06aa482c2ca8fb1fe5a9bd5f0d4ed8215005e835",
+  "dirty_paths": [
+    " M src/launchcase/application/pilot.py",
+    " M tests/test_p8_p10.py",
+    "?? docs/validation/p8-p10/"
+  ],
+  "log_sha256": "db3e99b2189698c66c8bab5797bbd0e6e48a53ab1682d30102c5756e01106fc3",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}

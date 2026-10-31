@@ -1,0 +1,6 @@
+
+Running 1 test using 1 worker
+
+  ✓  1 tests/p8-p10.spec.ts:10:5 › SKU originals, rights, strict HTTP composition, independent review and internal pack (12.9s)
+
+  1 passed (15.2s)

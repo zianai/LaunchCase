@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/ops/verify_p8_p10_stack.py", line 62, in <module>
+    if __name__ == "__main__":
+                         ^^^^^^
+  File "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase/ops/verify_p8_p10_stack.py", line 44, in main
+    else:
+        ^^
+RuntimeError: Isolated CE readiness timeout

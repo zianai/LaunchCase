@@ -1,0 +1,21 @@
+{
+  "command": [
+    "env",
+    "UV_CACHE_DIR=/Users/a/.cache/uv",
+    ".venv/bin/python",
+    "ops/verify_install.py"
+  ],
+  "cwd": "/Users/a/workspaces/AForeign Trade/validation-coordinator/worktrees/launchcase",
+  "started_at": "2026-10-31T09:07:21.495820+00:00",
+  "duration_seconds": 63.526,
+  "exit_code": 0,
+  "source_sha": "341bc332298ffe2a8808890b650127514071449e",
+  "tracked_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "dirty_paths": [
+    "?? docs/validation/p8-p10/"
+  ],
+  "log_sha256": "245e370d23b2cb95d53b57cc97aca7c13da1b8d6ba77e8371e7077f3ec5850fc",
+  "scope": "local E0/E1; service credentials not inherited",
+  "public_network": "OS denied",
+  "new_paid_calls_authorized": false
+}
