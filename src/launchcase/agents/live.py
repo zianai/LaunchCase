@@ -40,6 +40,7 @@ class RealAgentRunner:
         return asyncio.run(self.arun(evidence, budget or self.budget or LiveBudget()))
 
     async def arun(self, evidence, budget):
+        self.last_receipts = []
         if isinstance(budget, AgentBudget):
             raise PolicyDenied("LIVE_BUDGET_REQUIRED")
         if not self.model_name or not math.isfinite(self.rate) or self.rate <= 0:
@@ -59,7 +60,6 @@ class RealAgentRunner:
             raise PolicyDenied("DATA_SCOPE_DENIED")
         self.policy.validate(request, budget.max_cost_usd)
         hashes, instructions = skill_snapshot(["market-research", "voc-analysis", "opportunity-discovery"])
-        self.last_receipts = []
         receipts = self.last_receipts
         client = None
         base = self.model

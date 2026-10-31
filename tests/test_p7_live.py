@@ -138,3 +138,23 @@ def test_live_receipt_preserves_raw_cache_usage(policy):
     )
     assert result["request_receipts"][0]["raw_usage"]["vendor_future_field"] == 23
     assert result["cost_actual_usd"] is None
+
+
+def test_denied_later_run_does_not_report_previous_receipts(policy):
+    p, r, evidence, rate = prepared(policy)
+    model = DeterministicModel(analyze(evidence).model_dump())
+    runner = RealAgentRunner(
+        r["tenant_id"],
+        r["case_id"],
+        policy=p,
+        model=model,
+        model_name="stub-model",
+        rate=rate,
+        budget=LiveBudget(max_tokens=50000, max_cost_usd=0.3),
+    )
+    runner.run(evidence)
+    assert len(runner.last_receipts) == 2
+    (p.root / "revoked").touch()
+    with pytest.raises(PolicyDenied, match="AUTH_REVOKED"):
+        runner.run(evidence)
+    assert runner.last_receipts == [] and model.calls == 2
