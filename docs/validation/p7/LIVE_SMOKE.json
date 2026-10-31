@@ -12,6 +12,6 @@
   "source_sha_at_live_call": "6ec11f4d072e13c4f02ae9bc6d7929a8c985811b",
   "limitations": [
     "Synthetic smoke only; no human business assessment or real-case validation.",
-    "Full model output was not persisted; only execution summary is independently available."
+    "The complete model response need not be retained; this run saved only a summary without specific findings and citations, so its substantive content cannot be independently reviewed later. Future business reviews need traceable findings, source locators and versions."
   ]
 }
