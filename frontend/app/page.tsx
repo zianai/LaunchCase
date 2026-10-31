@@ -1,4 +1,5 @@
 "use client";
+import HandoffWorkspace from "./handoff";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type Item = { id: string; [key: string]: any };
@@ -17,6 +18,7 @@ const tabs = [
   "概念与 Spec",
   "可行性",
   "视觉资产",
+  "样品与交接",
   "LaunchPack",
   "活动",
 ];
@@ -33,6 +35,10 @@ const kinds = [
   "activity",
   "gates",
   "research",
+  "samples",
+  "truth",
+  "rules",
+  "handoff-preparations",
 ];
 const stages: Record<string, string> = {
   collecting_sources: "收集证据",
@@ -138,6 +144,7 @@ export default function Workbench() {
     [reason, setReason] = useState(""),
     [decision, setDecision] = useState(""),
     [sourceType, setSourceType] = useState("review"),
+    [sourceUrl, setSourceUrl] = useState(""),
     [synthetic, setSynthetic] = useState(true),
     [rights, setRights] = useState(false),
     [excerpt, setExcerpt] = useState<Item | null>(null),
@@ -275,13 +282,16 @@ export default function Workbench() {
         ? "G3"
         : !activeGate("G4")
           ? "G4"
-          : "G5";
+          : activeGate("G5")
+            ? "DONE"
+            : "G5";
   const gateLabels: Record<string, string> = {
     G1: "机会选择与证据复核",
     G2: "概念与规格审核",
     G3: "可行性与样品调查",
     G4: "等待真实样品验证",
-    G5: "上市交接条件尚待核实",
+    G5: "内部业务交接待审核",
+    DONE: "内部业务交接已批准（未发布）",
   };
   const nextAction = () => {
     if (!items("sources").length)
@@ -307,7 +317,8 @@ export default function Workbench() {
       label: items("launch-packs").length
         ? "查看真实样品验证待办 →"
         : "准备内部草稿 →",
-      action: () => setTab("LaunchPack"),
+      action: () =>
+        setTab(items("launch-packs").length ? "样品与交接" : "LaunchPack"),
     };
   };
   const gateReview = (gate: string, subject: Item) =>
@@ -329,13 +340,30 @@ export default function Workbench() {
                 { value: "revise", label: "修改后重审" },
                 { value: "reject", label: "否决" },
               ]
-            : [
-                { value: "sample_validation", label: "仅授权样品调查" },
-                { value: "revise", label: "补充可行性数据" },
-                { value: "hold", label: "暂缓" },
-              ];
+            : gate === "G4"
+              ? [
+                  { value: "hold", label: "暂缓，待补齐证据" },
+                  {
+                    value: "verify_sample",
+                    label: "确认本次样品事实（不代表全部性能）",
+                  },
+                  { value: "rework", label: "返工重测" },
+                ]
+              : gate === "G5"
+                ? [
+                    { value: "needs_changes", label: "补充材料后重审" },
+                    {
+                      value: "internal_handoff",
+                      label: "批准内部业务交接（不授权发布）",
+                    },
+                  ]
+                : [
+                    { value: "sample_validation", label: "仅授权样品调查" },
+                    { value: "revise", label: "补充可行性数据" },
+                    { value: "hold", label: "暂缓" },
+                  ];
       setReview({
-        title: `${gate} · ${subject.data.title || "可行性决策"}`,
+        title: `${gate} · ${subject.data.title || (gate === "G4" ? "样品事实与限制" : "可行性决策")}`,
         endpoint: `product-cases/${current.id}/gates/${gate}/decision`,
         hash: info.subject_hash,
         options,
@@ -345,7 +373,11 @@ export default function Workbench() {
               ? "opportunity"
               : gate === "G2"
                 ? "concept"
-                : "feasibility",
+                : gate === "G4"
+                  ? "sample"
+                  : gate === "G5"
+                    ? "launch_pack"
+                    : "feasibility",
           subject_id: subject.id,
         },
       });
@@ -416,6 +448,7 @@ export default function Workbench() {
         filename: file.name,
         content: await file.text(),
         source_type: sourceType,
+        source_url: sourceUrl || null,
         rights_status: synthetic ? "synthetic_fixture" : "authorized",
         is_synthetic: synthetic,
       });
@@ -788,7 +821,7 @@ export default function Workbench() {
                         ["G2", "概念与规格"],
                         ["G3", "可行性 / 样品调查"],
                         ["G4", "真实样品验证"],
-                        ["G5", "上市交接审核"],
+                        ["G5", "内部业务交接审核"],
                       ].map(([gate, label]) => (
                         <div className="gate-step" key={gate}>
                           <b
@@ -856,6 +889,15 @@ export default function Workbench() {
                         <option value="sample">真实样品记录</option>
                         <option value="rule">规则来源</option>
                       </select>
+                    </label>
+                    <label>
+                      来源 URL（规则必填；样品原始记录留空）
+                      <input
+                        type="url"
+                        value={sourceUrl}
+                        onChange={(e) => setSourceUrl(e.target.value)}
+                        placeholder="https://官方来源"
+                      />
                     </label>
                     <label className="check">
                       <input
@@ -1437,6 +1479,17 @@ export default function Workbench() {
                     </Empty>
                   )}
                 </>
+              )}
+              {tab === "样品与交接" && (
+                <HandoffWorkspace
+                  current={current}
+                  data={data}
+                  busy={busy}
+                  api={api}
+                  act={act}
+                  reload={() => load(current.id)}
+                  review={gateReview}
+                />
               )}
               {tab === "LaunchPack" && (
                 <>

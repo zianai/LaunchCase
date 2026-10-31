@@ -22,3 +22,5 @@ choices pending human preference, not proof of complete token conformance. Remai
 compactness and type/spacing polish are recorded in round3/review.md. Manual finishing choices:
 confirm the provisional direction, preferred reading density, Chinese/English typography and the
 real-data vocabulary. No automatic optical correction or human aesthetic acceptance is claimed.
+
+2026-10-31 G4/G5 extension: preserve existing tokens and ledger layout, add one task workspace. Independent new-screen screenshot review requested under ai-design-aesthetics; no prior screen baseline exists. Review identified ambiguous technical status labels after approval. Revised to Chinese approval outcomes, record identifiers, explicit re-review labels, completion/next-action summary, step anchors and collapsed completed intake forms. Human design approval remains pending.

@@ -13,6 +13,7 @@ from launchcase.domain.contracts import (
     BriefRevision,
     CostRequest,
     GateRequest,
+    HandoffPreparation,
     ProductBrief,
     ReviewRequest,
     RightsChange,
@@ -151,6 +152,8 @@ def create_app(settings=None):
         ("launch-packs", "LaunchPack"),
         ("truth", "ProductTruthSnapshot"),
         ("rules", "RuleSnapshot"),
+        ("samples", "SampleValidation"),
+        ("handoff-preparations", "HandoffPreparation"),
     ]:
         app.add_api_route(
             f"/api/v1/product-cases/{{case_id}}/{suffix}", listing(Artifact, kind), methods=["GET"]
@@ -269,6 +272,24 @@ def create_app(settings=None):
     @app.post("/api/v1/product-cases/{case_id}/rule-attestations")
     def rule(case_id: str, body: RuleAttestation, actor=Depends(identity), request_key=Depends(key)):
         return FeasibilityService(service).rule(actor, case_id, body, request_key)
+
+    @app.post("/api/v1/product-cases/{case_id}/handoff-preparations")
+    def prepare_handoff(
+        case_id: str, body: HandoffPreparation, actor=Depends(identity), request_key=Depends(key)
+    ):
+        return LaunchPackService(service).prepare(actor, case_id, body, request_key)
+
+    @app.get("/api/v1/launch-packs/{pack_id}/handoff-receipt")
+    def handoff_receipt(pack_id: str, actor=Depends(identity)):
+        return LaunchPackService(service).handoff_receipt(actor, pack_id)
+
+    @app.get("/api/v1/launch-packs/{pack_id}/handoff-export")
+    def handoff_export(pack_id: str, actor=Depends(identity)):
+        return Response(
+            LaunchPackService(service).export_handoff(actor, pack_id),
+            media_type="application/zip",
+            headers={"Content-Disposition": 'attachment; filename="internal-handoff.zip"'},
+        )
 
     @app.post("/api/v1/product-cases/{case_id}/launch-packs")
     def pack_create(case_id: str, actor=Depends(identity), request_key=Depends(key)):

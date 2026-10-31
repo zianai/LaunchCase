@@ -136,6 +136,8 @@ class FactAttestation(Contract):
 
 
 class SampleAttestation(Contract):
+    sample_identifier: str | None = Field(default=None, min_length=2, max_length=200)
+    test_method: str | None = Field(default=None, min_length=10, max_length=2000)
     expected_spec_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
     facts: list[FactAttestation] = Field(min_length=1, max_length=50)
     tested_at: str
@@ -154,3 +156,13 @@ class RuleAttestation(Contract):
     review_due_at: str
     exact_excerpt: str = Field(min_length=5, max_length=3000)
     applicability_reason: str = Field(min_length=10, max_length=2000)
+
+
+class HandoffPreparation(Contract):
+    pack_id: str
+    expected_pack_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    rule_ids: list[str] = Field(min_length=1, max_length=30)
+    responsible_person: str = Field(min_length=2, max_length=100)
+    risk_acceptance: str = Field(min_length=20, max_length=5000)
+    excluded_claims: str = Field(min_length=10, max_length=3000)
+    internal_assets_only: Literal[True]

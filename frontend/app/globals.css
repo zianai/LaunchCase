@@ -1625,3 +1625,36 @@ footer small {
     line-height: 1.25;
   }
 }
+
+.handoff-section {
+  padding: 24px;
+  margin-block: 24px;
+}
+.handoff-section fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.handoff-section form {
+  max-width: 760px;
+}
+.handoff-section article {
+  border-top: 1px solid var(--line);
+  padding-block: 16px;
+}
+.handoff-section label,
+.handoff-section p {
+  overflow-wrap: anywhere;
+}
+.handoff-section fieldset:disabled {
+  opacity: 0.65;
+}
+.handoff-section summary {
+  min-height: 44px;
+  padding-block: 12px;
+  cursor: pointer;
+}
+.handoff-section details + details {
+  margin-top: 8px;
+}

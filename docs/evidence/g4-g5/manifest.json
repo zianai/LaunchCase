@@ -1,0 +1,12 @@
+{
+  "base_commit": "8009baaca05411d2277671dcc53dc655eec163f1",
+  "scope": "software contract tests and public reference import only",
+  "real_business_validation": false,
+  "external_effects": "none",
+  "files": {
+    "docs/evidence/g4-g5/handoff-390.png": "01ccf7b986d37d5d8e836a196a550d3f459428c534b29e587ee3d9cbfa57e780",
+    "docs/evidence/g4-g5/handoff-1440.png": "785e82aeb6c11fc626acd03ec473e6c9366d96b5935bc0fb61790f3461b2e003",
+    "fixtures/public-references/ftc-substantiation.txt": "91188c9ef63086241d2fe912e5ab7152dad893936db16c10e1fb546f414f50be",
+    "fixtures/public-references/cpsc-general-use.txt": "b1e8907189d3d0117813ca96e6cd7bd178a60ba946052b56e327be3f9b1ef35f"
+  }
+}

@@ -193,6 +193,8 @@ class FeasibilityService:
                 raise DomainError(
                     "SAMPLE_BLOCKED", "Real Case, current G3 and responsible human required", 409
                 )
+            if not request.sample_identifier or not request.test_method:
+                raise DomainError("SAMPLE_BLOCKED", "Sample/SKU identity and test method required", 409)
             spec = product.latest_spec(s, actor, case_id, g2.subject_id)
             if spec.sha256 != request.expected_spec_hash or instant(request.tested_at) > datetime.now(
                 timezone.utc
@@ -208,6 +210,8 @@ class FeasibilityService:
                     or source.is_synthetic
                     or source.rights_status != "authorized"
                     or fact.exact_excerpt not in content
+                    or fact.value not in fact.exact_excerpt
+                    or source.metadata_json.get("source_url") is not None
                 ):
                     raise DomainError(
                         "SAMPLE_BLOCKED", "Real authorized sample source and exact excerpt required", 409
@@ -227,6 +231,8 @@ class FeasibilityService:
                 "ProductTruthSnapshot",
                 {
                     "facts": facts,
+                    "sample_identifier": request.sample_identifier,
+                    "test_method": request.test_method,
                     "spec_id": spec.id,
                     "spec_hash": spec.sha256,
                     "confirmed_at": request.tested_at,
@@ -242,6 +248,8 @@ class FeasibilityService:
                 case,
                 "SampleValidation",
                 {
+                    "sample_identifier": request.sample_identifier,
+                    "test_method": request.test_method,
                     "truth_id": truth.id,
                     "truth_hash": truth.sha256,
                     "spec_hash": spec.sha256,
@@ -275,6 +283,24 @@ class FeasibilityService:
                 raise DomainError(
                     "RULE_BLOCKED", "Current authorized rule source and exact excerpt required", 409
                 )
+            from urllib.parse import urlparse
+
+            from launchcase.infrastructure.models import BriefVersion
+
+            brief = s.scalar(
+                select(BriefVersion).where(
+                    BriefVersion.case_id == case_id,
+                    BriefVersion.tenant_id == actor.tenant_id,
+                    BriefVersion.version == case.brief_version,
+                )
+            )
+            host = urlparse(request.authority_url).hostname or ""
+            if (
+                src.metadata_json.get("source_url") != request.authority_url
+                or not (host.endswith(".gov") or host in {"sellercentral.amazon.com", "www.amazon.com"})
+                or request.product_scope != brief.data["category"]
+            ):
+                raise DomainError("RULE_SCOPE", "Original official URL and exact Case category required", 409)
             if (
                 not instant(request.effective_at)
                 <= datetime.now(timezone.utc)

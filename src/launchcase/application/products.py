@@ -94,6 +94,9 @@ class ProductService:
                     )
                 dependencies["g3_id"] = g3.id
                 if gate == "G4":
+                    samples = self.artifacts(s, actor, case_id, "SampleValidation")
+                    if not samples or samples[0].id != artifact.id:
+                        raise DomainError("STALE_SUBJECT", "New sample record requires review", 409)
                     spec = self.latest_spec(s, actor, case_id, g2.subject_id)
                     if artifact.data["spec_hash"] != spec.sha256:
                         raise DomainError("STALE_SUBJECT", "Sample refers to an older Spec", 409)
@@ -113,6 +116,19 @@ class ProductService:
                     if not g4:
                         raise DomainError("GATE_BLOCKED", "G4 real sample validation required", 409)
                     dependencies["g4_id"] = g4.id
+                    from launchcase.application.launchpacks import LaunchPackService
+
+                    packs = LaunchPackService(self.service)
+                    case = self.service.case_row(s, actor, case_id)
+                    if digest(packs.snapshot(s, actor, case)) != artifact.dependency_hash:
+                        raise DomainError(
+                            "STALE_PACK", "Rebuild pack after evidence or approvals change", 409
+                        )
+                    preparations = self.artifacts(s, actor, case_id, "HandoffPreparation")
+                    preparation = next((x for x in preparations if x.data["pack_id"] == artifact.id), None)
+                    dependencies["handoff_hash"] = preparation.sha256 if preparation else None
+                    dependencies["rules"] = packs.rule_bindings(s, actor, case_id, preparation)
+
         return dependencies, digest(dependencies)
 
     def current(self, s, actor, case_id, gate, decisions):
@@ -131,7 +147,7 @@ class ProductService:
             dependencies, sha = self.subject(s, actor, case_id, gate, subject_id)
             return {"gate": gate, "subject_id": subject_id, "subject_hash": sha, "dependencies": dependencies}
 
-    def decisions(self, actor, case_id):
+    def decisions(self, actor, case_id, exclude_g5=False):
         with self.service.sessions() as s:
             self.service.case_row(s, actor, case_id)
             rows = list(
@@ -144,6 +160,8 @@ class ProductService:
             result = []
             latest = {r.gate: r.id for r in rows}
             for row in rows:
+                if exclude_g5 and row.gate == "G5":
+                    continue
                 try:
                     _, sha = self.subject(s, actor, case_id, row.gate, row.subject_id)
                     status = "current" if row.subject_hash == sha and latest[row.gate] == row.id else "stale"

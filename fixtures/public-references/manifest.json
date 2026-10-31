@@ -1,0 +1,21 @@
+{
+  "retrieved_at": "2026-10-31",
+  "purpose": "Public official reference import tests only; not sample, supplier, demand or compliance evidence for this product.",
+  "applicability_review": "not_performed",
+  "references": [
+    {
+      "file": "ftc-substantiation.txt",
+      "url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-regarding-advertising-substantiation",
+      "source_type": "rule",
+      "is_synthetic": false,
+      "rights_basis": "Short attributed public agency excerpt for internal review only; no image rights inferred."
+    },
+    {
+      "file": "cpsc-general-use.txt",
+      "url": "https://www.cpsc.gov/Business--Manufacturing/Testing-Certification/General-Use-Products-Certification-and-Testing",
+      "source_type": "rule",
+      "is_synthetic": false,
+      "rights_basis": "Short attributed public agency excerpt for internal review only; no image rights inferred."
+    }
+  ]
+}

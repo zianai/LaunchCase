@@ -1,0 +1,18 @@
+schema_version: 3
+protocol_version: "3.0"
+id: T-002-real-handoff
+status: completed
+goal: Implement evidence-bound G4/G5 internal business handoff and UI with offline tests
+scope: [src/, frontend/, tests/, docs/, fixtures/, project/, work/, design/]
+non_goals: [Actual sample validation, Publication, Paid services, Supplier contact]
+acceptance: [G4 evidence intake, G5 human internal handoff, Expiry and mutation invalidation, API and browser tests]
+risk: low
+risk_reasons: [local-reversible, no-external-effects]
+protected_paths: [docs/handoff/]
+context_refs: [docs/ADR/002-real-handoff.md]
+decision_refs: [docs/ADR/001-boundaries.md]
+evidence_refs: [docs/evidence/g4-g5/verification.md, docs/evidence/g4-g5/manifest.json, design/rounds/g4-g5/review.md]
+implementation_started: true
+updated: "2026-10-31"
+conformance_status: pending
+authorization_basis: direct-user-request-to-implement-G4-G5-and-public-reference-tests

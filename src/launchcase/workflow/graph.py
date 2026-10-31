@@ -82,28 +82,31 @@ def build_graph(service, actor, checkpointer):
         result = LaunchPackService(service).build(actor, state["case_id"], "task-pack-" + state["task_id"])
         return {"pack_id": result["id"]}
 
-    def g4(state):
-        interrupt(
-            {
-                "gate": "G4",
-                "case_id": state["case_id"],
-                "reason": "Real sample evidence required; internal draft does not pass this gate",
-            }
-        )
+    def checked_gate(state, gate, choice):
         with service.sessions() as s:
-            if not ProductService(service).current(s, actor, state["case_id"], "G4", {"verify_sample"}):
-                raise DomainError("GATE_BLOCKED", "Real G4 required", 409)
+            return ProductService(service).current(s, actor, state["case_id"], gate, {choice})
+
+    def g4(state):
+        if not checked_gate(state, "G4", "verify_sample"):
+            interrupt({"gate": "G4", "case_id": state["case_id"], "reason": "Real sample evidence required"})
+        if not checked_gate(state, "G4", "verify_sample"):
+            raise DomainError("GATE_BLOCKED", "Real G4 required", 409)
         return {}
 
     def g5(state):
-        interrupt(
-            {
-                "gate": "G5",
-                "case_id": state["case_id"],
-                "reason": "Launch review requires verified truth and current rules; no publication",
-            }
-        )
-        return {}
+        gate = checked_gate(state, "G5", "internal_handoff")
+        if not gate or gate.subject_id != state.get("pack_id"):
+            interrupt(
+                {
+                    "gate": "G5",
+                    "case_id": state["case_id"],
+                    "reason": "Exact pack review required; no publication",
+                }
+            )
+        gate = checked_gate(state, "G5", "internal_handoff")
+        if not gate or gate.subject_id != state.get("pack_id"):
+            raise DomainError("GATE_BLOCKED", "Current G5 internal handoff approval required", 409)
+        return {"waiting_for": "complete_internal_handoff"}
 
     graph.add_node("validate_brief", validate)
     graph.add_node("normalize_sources", lambda state: research.snapshot(actor, state["case_id"]) and {})
@@ -136,6 +139,14 @@ def build_graph(service, actor, checkpointer):
 
 
 def enqueue_run(service, actor, case_id, kind, key):
+    if kind == "handoff":
+        with service.sessions() as s:
+            service.case_row(s, actor, case_id)
+            gate = ProductService(service).current(s, actor, case_id, "G5", {"internal_handoff"})
+            if not gate:
+                raise DomainError("GATE_BLOCKED", "Current G5 required", 409)
+            snapshot = {"gate_id": gate.id, "gate_hash": gate.subject_hash, "pack_id": gate.subject_id}
+        return TaskManager(service).enqueue(actor, case_id, kind, snapshot, key)
     if kind in {"feasibility", "launch_draft"}:
         from launchcase.application.feasibility import FeasibilityService
 
@@ -180,7 +191,21 @@ def execute_task(service, actor, task_id):
             source_hash = digest(ResearchService(service).snapshot(actor, task["case_id"]))
             config = {"configurable": {"thread_id": f"{actor.tenant_id}:{task['case_id']}:{source_hash}"}}
             state = {"case_id": task["case_id"], "task_id": task_id, "fence": task["fence"]}
-            if task["kind"] in {"concepts", "feasibility", "launch_draft"}:
+            if task["kind"] == "handoff":
+                with service.sessions() as s:
+                    gate = ProductService(service).current(
+                        s, actor, task["case_id"], "G5", {"internal_handoff"}
+                    )
+                    if (
+                        not gate
+                        or gate.id != task["input_data"]["gate_id"]
+                        or gate.subject_hash != task["input_data"]["gate_hash"]
+                    ):
+                        raise DomainError("STALE_INPUT", "Handoff approval changed", 409)
+                state["pack_id"] = task["input_data"]["pack_id"]
+                graph.update_state(config, state, as_node="build_internal_draft")
+                result = graph.invoke(None, config)
+            elif task["kind"] in {"concepts", "feasibility", "launch_draft"}:
                 saved = graph.get_state(config)
                 gate, prior = {
                     "concepts": ("G1", "research_merge_propose"),
@@ -201,6 +226,9 @@ def execute_task(service, actor, task_id):
                 if result.get("research", {}).get("sufficiency", {}).get("draft_minimum_met")
                 else "needs_input",
             )
+            if task["kind"] in {"handoff", "launch_draft"}:
+                pending = graph.get_state(config).next
+                waiting = pending[0] if pending else "complete_internal_handoff"
             return manager.finish(
                 actor,
                 task_id,

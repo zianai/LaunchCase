@@ -3,7 +3,10 @@ import { readFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 const root = path.resolve(__dirname, "../..");
 const fixture = path.join(root, "fixtures/scenarios/pet-furniture-us");
-const screenshotDir = path.join(root, "docs/evidence/browser");
+const screenshotDir = path.join(
+  root,
+  process.env.LAUNCHCASE_SCREENSHOT_DIR || "docs/evidence/browser",
+);
 mkdirSync(screenshotDir, { recursive: true });
 for (const viewport of [
   { width: 1440, height: 1000 },

@@ -1,0 +1,1582 @@
+{
+  "target": "docs/evidence/g4-g5/handoff-render.html",
+  "url": "file:///Users/a/workspaces/AForeign%20Trade/LaunchCase/docs/evidence/g4-g5/handoff-render.html",
+  "generatedAt": "2026-10-31T05:04:51.131Z",
+  "browser": "playwright-chromium 156.0.8078.4",
+  "options": {
+    "out": "design/rounds/g4-g5/audit",
+    "viewports": "1440x900,390x844",
+    "states": [],
+    "tokens": null,
+    "primary": null,
+    "grid": 4,
+    "minTarget": 24,
+    "minTargetMobile": 44,
+    "wait": 300,
+    "browser": null,
+    "fullPage": true,
+    "target": "docs/evidence/g4-g5/handoff-render.html"
+  },
+  "runs": [
+    {
+      "viewport": "1440x900",
+      "state": "default",
+      "screenshots": {
+        "first": "1440x900-default.png",
+        "full": "1440x900-default-full.png"
+      },
+      "checks": {
+        "console-errors": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "failed-requests": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "horizontal-overflow": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "clipped-text": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "touch-target": {
+          "level": "fail",
+          "count": 2,
+          "items": [
+            {
+              "selector": "div#g4-sample > details > summary",
+              "label": "录入新的样品记录",
+              "rect": [
+                305,
+                750,
+                1062,
+                20
+              ],
+              "size": "1062×20"
+            },
+            {
+              "selector": "div#g4-sample > details > summary",
+              "label": "导入完整样品确认 JSON（多条事实）",
+              "rect": [
+                305,
+                769,
+                1062,
+                20
+              ],
+              "size": "1062×20"
+            }
+          ],
+          "note": "小于 24px 且与相邻控件过近（WCAG 2.2 AA 2.5.8）"
+        },
+        "primary-action": {
+          "level": "ok",
+          "count": 1,
+          "items": [
+            {
+              "selector": "div.app-shell > aside.sidebar > nav > button.active",
+              "label": "◫ 产品 Cases",
+              "rect": [
+                16,
+                192,
+                200,
+                55
+              ],
+              "fill": "rgb(233, 234, 220)",
+              "contrastWithSurround": 10
+            }
+          ],
+          "note": "heuristic: 实心且与周围背景对比 ≥ 3 的按钮；首屏内 1 个"
+        },
+        "focus-visible": {
+          "level": "ok",
+          "count": 0,
+          "items": [],
+          "note": "Tab 走过 32 个焦点"
+        },
+        "focus-hidden-stop": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "a11y-axe": {
+          "level": "fail",
+          "count": 2,
+          "items": [
+            {
+              "id": "target-size",
+              "impact": "serious",
+              "help": "All touch targets must be 24px large, or leave sufficient space",
+              "count": 2,
+              "nodes": [
+                "#g4-sample > details:nth-child(3) > summary",
+                "details:nth-child(4) > summary"
+              ]
+            }
+          ],
+          "note": "另有 4 处对比度 axe 无法判断（渐变/图片背景、被遮挡等），需人工看：.active > span[aria-hidden=\"true\"]；button:nth-child(2) > span[aria-hidden=\"true\"]；button:nth-child(3) > span[aria-hidden=\"true\"]"
+        },
+        "font-families": {
+          "level": "ok",
+          "count": 2,
+          "items": [
+            {
+              "family": "Helvetica Neue",
+              "chars": 1473,
+              "inTokens": null
+            },
+            {
+              "family": "Georgia",
+              "chars": 137,
+              "inTokens": null
+            }
+          ],
+          "note": "等宽字体不计入"
+        },
+        "off-token-colors": {
+          "level": "warn",
+          "count": 23,
+          "items": [
+            {
+              "color": "rgb(174, 184, 169)",
+              "count": 24,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "main#main > div.case-heading > button.secondary",
+                "main#main > div.case-heading > button.secondary",
+                "main#main > div.case-heading > button.secondary"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(206, 217, 207)",
+              "count": 9,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > nav > button",
+                "aside.sidebar > nav > button > span",
+                "aside.sidebar > nav > button > b"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(119, 142, 124)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > button.brand > span.monogram",
+                "div.app-shell > aside.sidebar > button.brand > span.monogram",
+                "div.app-shell > aside.sidebar > button.brand > span.monogram"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(118, 138, 124)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "aside.sidebar > nav > button > b",
+                "aside.sidebar > nav > button > b",
+                "aside.sidebar > nav > button > b"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(227, 213, 183)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "div.case-heading > div > div.heading-badges > span.badge.amber",
+                "div.case-heading > div > div.heading-badges > span.badge.amber",
+                "div.case-heading > div > div.heading-badges > span.badge.amber"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(202, 208, 196)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "div.case-heading > div > div.heading-badges > span.badge.neutral",
+                "div.case-heading > div > div.heading-badges > span.badge.neutral",
+                "div.case-heading > div > div.heading-badges > span.badge.neutral"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(183, 198, 187)",
+              "count": 3,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "aside.sidebar > button.brand > span > small",
+                "body > div.app-shell > aside.sidebar > div.workspace-label",
+                "div.app-shell > aside.sidebar > div.workspace-label > span"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(255, 248, 230)",
+              "count": 2,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > button.brand > span.monogram",
+                "div.app-shell > aside.sidebar > button.brand > span"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(62, 90, 77)",
+              "count": 2,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "body > div.app-shell > aside.sidebar > div.workspace-label",
+                "body > div.app-shell > aside.sidebar > button.logout"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(201, 213, 200)",
+              "count": 2,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "body > div.app-shell > aside.sidebar > div.sidebar-note",
+                "body > div.app-shell > aside.sidebar > button.logout"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(233, 234, 220)",
+              "count": 1,
+              "props": [
+                "background"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > nav > button.active"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(178, 200, 136)",
+              "count": 1,
+              "props": [
+                "background"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > div.sidebar-note > span.dot"
+              ],
+              "token": null
+            }
+          ],
+          "note": "token 来源：page :root，9 个颜色 token"
+        },
+        "spacing-off-grid": {
+          "level": "warn",
+          "count": 17,
+          "items": [
+            {
+              "value": "18px",
+              "count": 12,
+              "examples": [
+                "main#main > div.case-heading > button.secondary {paddingRight}",
+                "main#main > div.case-heading > button.secondary {paddingLeft}",
+                "div#g4-sample > article > button.secondary {paddingRight}"
+              ]
+            },
+            {
+              "value": "18.62px",
+              "count": 4,
+              "examples": [
+                "div#g4-sample > article > h4 {marginTop}",
+                "div#g4-sample > article > h4 {marginBottom}",
+                "section.tab-content > div.paper.handoff-section > article > h4 {marginTop}"
+              ]
+            },
+            {
+              "value": "19.92px",
+              "count": 1,
+              "examples": [
+                "main#main > section.tab-content > h2 {marginBottom}"
+              ]
+            }
+          ],
+          "note": "栅格 4px，≤2px 视为光学微调不计"
+        },
+        "gradients": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        }
+      },
+      "inventory": {
+        "tokenSource": "page :root",
+        "tokenColorCount": 9,
+        "fonts": [
+          {
+            "family": "Helvetica Neue",
+            "chars": 1473,
+            "inTokens": null
+          },
+          {
+            "family": "Georgia",
+            "chars": 137,
+            "inTokens": null
+          }
+        ],
+        "fontSizes": [
+          {
+            "size": "8px/400",
+            "count": 1
+          },
+          {
+            "size": "10px/700",
+            "count": 3
+          },
+          {
+            "size": "10px/400",
+            "count": 6
+          },
+          {
+            "size": "11px/400",
+            "count": 8
+          },
+          {
+            "size": "12px/400",
+            "count": 16
+          },
+          {
+            "size": "12px/600",
+            "count": 1
+          },
+          {
+            "size": "13px/500",
+            "count": 6
+          },
+          {
+            "size": "14px/400",
+            "count": 24
+          },
+          {
+            "size": "14px/700",
+            "count": 2
+          },
+          {
+            "size": "19px/400",
+            "count": 5
+          },
+          {
+            "size": "20px/500",
+            "count": 3
+          },
+          {
+            "size": "23px/400",
+            "count": 1
+          },
+          {
+            "size": "24px/400",
+            "count": 1
+          },
+          {
+            "size": "24px/500",
+            "count": 1
+          },
+          {
+            "size": "32px/500",
+            "count": 1
+          }
+        ],
+        "colors": [
+          {
+            "color": "rgb(37, 60, 54)",
+            "count": 31,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > div.case-heading > div > h1",
+              "main#main > div.case-heading > button.secondary",
+              "main#main > section.tab-content > h2"
+            ],
+            "token": "ink"
+          },
+          {
+            "color": "rgb(174, 184, 169)",
+            "count": 24,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "main#main > div.case-heading > button.secondary",
+              "main#main > div.case-heading > button.secondary",
+              "main#main > div.case-heading > button.secondary"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(217, 221, 211)",
+            "count": 17,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "main#main > header.topline",
+              "main#main > div.case-tabs",
+              "div#g4-sample"
+            ],
+            "token": "line"
+          },
+          {
+            "color": "rgb(96, 108, 101)",
+            "count": 17,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > header.topline > span",
+              "main#main > header.topline > div",
+              "main#main > div.case-heading > div > p.eyebrow"
+            ],
+            "token": "muted"
+          },
+          {
+            "color": "rgb(206, 217, 207)",
+            "count": 9,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > nav > button",
+              "aside.sidebar > nav > button > span",
+              "aside.sidebar > nav > button > b"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(40, 94, 73)",
+            "count": 5,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "html > body > div.app-shell > a.skip",
+              "main#main > section.tab-content > nav.actions > a",
+              "main#main > section.tab-content > nav.actions > a"
+            ],
+            "token": "green"
+          },
+          {
+            "color": "rgb(24, 60, 52)",
+            "count": 5,
+            "props": [
+              "background",
+              "color",
+              "border"
+            ],
+            "examples": [
+              "html > body > div.app-shell > aside.sidebar",
+              "div.app-shell > aside.sidebar > nav > button.active",
+              "aside.sidebar > nav > button.active > span"
+            ],
+            "token": "forest"
+          },
+          {
+            "color": "rgb(255, 254, 250)",
+            "count": 4,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "html > body > div.app-shell > a.skip",
+              "div#g4-sample",
+              "main#main > section.tab-content > div.paper.handoff-section"
+            ],
+            "token": "surface"
+          },
+          {
+            "color": "rgb(119, 142, 124)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > button.brand > span.monogram",
+              "div.app-shell > aside.sidebar > button.brand > span.monogram",
+              "div.app-shell > aside.sidebar > button.brand > span.monogram"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(118, 138, 124)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "aside.sidebar > nav > button > b",
+              "aside.sidebar > nav > button > b",
+              "aside.sidebar > nav > button > b"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(227, 213, 183)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.amber",
+              "div.case-heading > div > div.heading-badges > span.badge.amber",
+              "div.case-heading > div > div.heading-badges > span.badge.amber"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(202, 208, 196)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.neutral",
+              "div.case-heading > div > div.heading-badges > span.badge.neutral",
+              "div.case-heading > div > div.heading-badges > span.badge.neutral"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(183, 198, 187)",
+            "count": 3,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "aside.sidebar > button.brand > span > small",
+              "body > div.app-shell > aside.sidebar > div.workspace-label",
+              "div.app-shell > aside.sidebar > div.workspace-label > span"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(255, 248, 230)",
+            "count": 2,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > button.brand > span.monogram",
+              "div.app-shell > aside.sidebar > button.brand > span"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(62, 90, 77)",
+            "count": 2,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "body > div.app-shell > aside.sidebar > div.workspace-label",
+              "body > div.app-shell > aside.sidebar > button.logout"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(201, 213, 200)",
+            "count": 2,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "body > div.app-shell > aside.sidebar > div.sidebar-note",
+              "body > div.app-shell > aside.sidebar > button.logout"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(233, 234, 220)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > nav > button.active"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(178, 200, 136)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > div.sidebar-note > span.dot"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(174, 191, 178)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > div.sidebar-note > p"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(135, 149, 138)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > header.topline > span > i"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(85, 128, 100)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main#main > header.topline > div > span.online-dot"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(173, 182, 169)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > header.topline > div > span.top-separator"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(36, 87, 63)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > p.notice.banner"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(228, 238, 223)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main#main > p.notice.banner"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(120, 80, 25)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.amber"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(245, 236, 216)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.amber"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(76, 93, 81)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.neutral"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(236, 238, 229)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.neutral"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(128, 83, 29)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > section.tab-content > p.review-warning"
+            ],
+            "token": "amber"
+          },
+          {
+            "color": "rgb(244, 236, 216)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main#main > section.tab-content > p.review-warning"
+            ],
+            "token": null
+          }
+        ],
+        "gradients": [],
+        "spacingOffGrid": [
+          {
+            "value": "18px",
+            "count": 12,
+            "examples": [
+              "main#main > div.case-heading > button.secondary {paddingRight}",
+              "main#main > div.case-heading > button.secondary {paddingLeft}",
+              "div#g4-sample > article > button.secondary {paddingRight}"
+            ]
+          },
+          {
+            "value": "18.62px",
+            "count": 4,
+            "examples": [
+              "div#g4-sample > article > h4 {marginTop}",
+              "div#g4-sample > article > h4 {marginBottom}",
+              "section.tab-content > div.paper.handoff-section > article > h4 {marginTop}"
+            ]
+          },
+          {
+            "value": "19.92px",
+            "count": 1,
+            "examples": [
+              "main#main > section.tab-content > h2 {marginBottom}"
+            ]
+          }
+        ],
+        "spacingOffGridCount": 17,
+        "radii": [
+          {
+            "value": "4px",
+            "count": 18
+          }
+        ]
+      }
+    },
+    {
+      "viewport": "390x844",
+      "state": "default",
+      "screenshots": {
+        "first": "390x844-default.png",
+        "full": "390x844-default-full.png"
+      },
+      "checks": {
+        "console-errors": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "failed-requests": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "horizontal-overflow": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "clipped-text": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "touch-target": {
+          "level": "fail",
+          "count": 2,
+          "items": [
+            {
+              "selector": "div#g4-sample > details > summary",
+              "label": "录入新的样品记录",
+              "rect": [
+                45,
+                1049,
+                300,
+                20
+              ],
+              "size": "300×20"
+            },
+            {
+              "selector": "div#g4-sample > details > summary",
+              "label": "导入完整样品确认 JSON（多条事实）",
+              "rect": [
+                45,
+                1068,
+                300,
+                20
+              ],
+              "size": "300×20"
+            }
+          ],
+          "note": "小于 24px 且与相邻控件过近（WCAG 2.2 AA 2.5.8）"
+        },
+        "primary-action": {
+          "level": "ok",
+          "count": 1,
+          "items": [
+            {
+              "selector": "div.app-shell > aside.sidebar > nav > button.active",
+              "label": "◫ 产品 Cases",
+              "rect": [
+                16,
+                84,
+                94,
+                44
+              ],
+              "fill": "rgb(233, 234, 220)",
+              "contrastWithSurround": 10
+            }
+          ],
+          "note": "heuristic: 实心且与周围背景对比 ≥ 3 的按钮；首屏内 1 个"
+        },
+        "focus-visible": {
+          "level": "ok",
+          "count": 0,
+          "items": [],
+          "note": "Tab 走过 31 个焦点"
+        },
+        "focus-hidden-stop": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        },
+        "a11y-axe": {
+          "level": "fail",
+          "count": 2,
+          "items": [
+            {
+              "id": "target-size",
+              "impact": "serious",
+              "help": "All touch targets must be 24px large, or leave sufficient space",
+              "count": 2,
+              "nodes": [
+                "#g4-sample > details:nth-child(3) > summary",
+                "details:nth-child(4) > summary"
+              ]
+            }
+          ],
+          "note": "另有 11 处对比度 axe 无法判断（渐变/图片背景、被遮挡等），需人工看：.active > span[aria-hidden=\"true\"]；button:nth-child(2) > span[aria-hidden=\"true\"]；button:nth-child(3) > span[aria-hidden=\"true\"]"
+        },
+        "font-families": {
+          "level": "ok",
+          "count": 2,
+          "items": [
+            {
+              "family": "Helvetica Neue",
+              "chars": 1426,
+              "inTokens": null
+            },
+            {
+              "family": "Georgia",
+              "chars": 137,
+              "inTokens": null
+            }
+          ],
+          "note": "等宽字体不计入"
+        },
+        "off-token-colors": {
+          "level": "warn",
+          "count": 18,
+          "items": [
+            {
+              "color": "rgb(174, 184, 169)",
+              "count": 24,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "main#main > div.case-heading > button.secondary",
+                "main#main > div.case-heading > button.secondary",
+                "main#main > div.case-heading > button.secondary"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(206, 217, 207)",
+              "count": 9,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > nav > button",
+                "aside.sidebar > nav > button > span",
+                "div.app-shell > aside.sidebar > nav > button"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(119, 142, 124)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > button.brand > span.monogram",
+                "div.app-shell > aside.sidebar > button.brand > span.monogram",
+                "div.app-shell > aside.sidebar > button.brand > span.monogram"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(227, 213, 183)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "div.case-heading > div > div.heading-badges > span.badge.amber",
+                "div.case-heading > div > div.heading-badges > span.badge.amber",
+                "div.case-heading > div > div.heading-badges > span.badge.amber"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(202, 208, 196)",
+              "count": 4,
+              "props": [
+                "border"
+              ],
+              "examples": [
+                "div.case-heading > div > div.heading-badges > span.badge.neutral",
+                "div.case-heading > div > div.heading-badges > span.badge.neutral",
+                "div.case-heading > div > div.heading-badges > span.badge.neutral"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(255, 248, 230)",
+              "count": 2,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > button.brand > span.monogram",
+                "div.app-shell > aside.sidebar > button.brand > span"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(183, 198, 187)",
+              "count": 1,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "aside.sidebar > button.brand > span > small"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(233, 234, 220)",
+              "count": 1,
+              "props": [
+                "background"
+              ],
+              "examples": [
+                "div.app-shell > aside.sidebar > nav > button.active"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(135, 149, 138)",
+              "count": 1,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "main#main > header.topline > span > i"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(85, 128, 100)",
+              "count": 1,
+              "props": [
+                "background"
+              ],
+              "examples": [
+                "main#main > header.topline > div > span.online-dot"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(173, 182, 169)",
+              "count": 1,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "main#main > header.topline > div > span.top-separator"
+              ],
+              "token": null
+            },
+            {
+              "color": "rgb(36, 87, 63)",
+              "count": 1,
+              "props": [
+                "color"
+              ],
+              "examples": [
+                "main#main > p.notice.banner"
+              ],
+              "token": null
+            }
+          ],
+          "note": "token 来源：page :root，9 个颜色 token"
+        },
+        "spacing-off-grid": {
+          "level": "warn",
+          "count": 17,
+          "items": [
+            {
+              "value": "18px",
+              "count": 6,
+              "examples": [
+                "div#g4-sample > article > button.secondary {paddingRight}",
+                "div#g4-sample > article > button.secondary {paddingLeft}",
+                "section.tab-content > div.paper.handoff-section > article > button.secondary {paddingRight}"
+              ]
+            },
+            {
+              "value": "18.62px",
+              "count": 4,
+              "examples": [
+                "div#g4-sample > article > h4 {marginTop}",
+                "div#g4-sample > article > h4 {marginBottom}",
+                "section.tab-content > div.paper.handoff-section > article > h4 {marginTop}"
+              ]
+            },
+            {
+              "value": "10px",
+              "count": 4,
+              "examples": [
+                "section.tab-content > div.paper.handoff-section > p > a.download {paddingTop}",
+                "section.tab-content > div.paper.handoff-section > p > a.download {paddingBottom}",
+                "main#main > section.tab-content > div.paper.handoff-section > a.download {paddingTop}"
+              ]
+            },
+            {
+              "value": "6px",
+              "count": 2,
+              "examples": [
+                "main#main > div.case-heading > div > div.heading-badges {rowGap}",
+                "main#main > div.case-heading > div > div.heading-badges {columnGap}"
+              ]
+            },
+            {
+              "value": "19.92px",
+              "count": 1,
+              "examples": [
+                "main#main > section.tab-content > h2 {marginBottom}"
+              ]
+            }
+          ],
+          "note": "栅格 4px，≤2px 视为光学微调不计"
+        },
+        "gradients": {
+          "level": "ok",
+          "count": 0,
+          "items": []
+        }
+      },
+      "inventory": {
+        "tokenSource": "page :root",
+        "tokenColorCount": 9,
+        "fonts": [
+          {
+            "family": "Helvetica Neue",
+            "chars": 1426,
+            "inTokens": null
+          },
+          {
+            "family": "Georgia",
+            "chars": 137,
+            "inTokens": null
+          }
+        ],
+        "fontSizes": [
+          {
+            "size": "7px/400",
+            "count": 1
+          },
+          {
+            "size": "9px/400",
+            "count": 2
+          },
+          {
+            "size": "10px/400",
+            "count": 9
+          },
+          {
+            "size": "10px/700",
+            "count": 2
+          },
+          {
+            "size": "11px/400",
+            "count": 6
+          },
+          {
+            "size": "11px/500",
+            "count": 3
+          },
+          {
+            "size": "12px/400",
+            "count": 15
+          },
+          {
+            "size": "12px/600",
+            "count": 1
+          },
+          {
+            "size": "13px/500",
+            "count": 3
+          },
+          {
+            "size": "14px/400",
+            "count": 19
+          },
+          {
+            "size": "14px/700",
+            "count": 2
+          },
+          {
+            "size": "15px/400",
+            "count": 5
+          },
+          {
+            "size": "20px/400",
+            "count": 1
+          },
+          {
+            "size": "20px/500",
+            "count": 3
+          },
+          {
+            "size": "22px/400",
+            "count": 1
+          },
+          {
+            "size": "24px/500",
+            "count": 2
+          }
+        ],
+        "colors": [
+          {
+            "color": "rgb(37, 60, 54)",
+            "count": 31,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > div.case-heading > div > h1",
+              "main#main > div.case-heading > button.secondary",
+              "main#main > section.tab-content > h2"
+            ],
+            "token": "ink"
+          },
+          {
+            "color": "rgb(174, 184, 169)",
+            "count": 24,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "main#main > div.case-heading > button.secondary",
+              "main#main > div.case-heading > button.secondary",
+              "main#main > div.case-heading > button.secondary"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(96, 108, 101)",
+            "count": 18,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > header.topline > span",
+              "main#main > header.topline > div",
+              "main#main > div.case-heading > div > p.eyebrow"
+            ],
+            "token": "muted"
+          },
+          {
+            "color": "rgb(217, 221, 211)",
+            "count": 17,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "main#main > header.topline",
+              "main#main > div.case-tabs",
+              "div#g4-sample"
+            ],
+            "token": "line"
+          },
+          {
+            "color": "rgb(206, 217, 207)",
+            "count": 9,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > nav > button",
+              "aside.sidebar > nav > button > span",
+              "div.app-shell > aside.sidebar > nav > button"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(40, 94, 73)",
+            "count": 5,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "html > body > div.app-shell > a.skip",
+              "main#main > section.tab-content > nav.actions > a",
+              "main#main > section.tab-content > nav.actions > a"
+            ],
+            "token": "green"
+          },
+          {
+            "color": "rgb(24, 60, 52)",
+            "count": 5,
+            "props": [
+              "background",
+              "color",
+              "border"
+            ],
+            "examples": [
+              "html > body > div.app-shell > aside.sidebar",
+              "div.app-shell > aside.sidebar > nav > button.active",
+              "aside.sidebar > nav > button.active > span"
+            ],
+            "token": "forest"
+          },
+          {
+            "color": "rgb(255, 254, 250)",
+            "count": 4,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "html > body > div.app-shell > a.skip",
+              "div#g4-sample",
+              "main#main > section.tab-content > div.paper.handoff-section"
+            ],
+            "token": "surface"
+          },
+          {
+            "color": "rgb(119, 142, 124)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > button.brand > span.monogram",
+              "div.app-shell > aside.sidebar > button.brand > span.monogram",
+              "div.app-shell > aside.sidebar > button.brand > span.monogram"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(227, 213, 183)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.amber",
+              "div.case-heading > div > div.heading-badges > span.badge.amber",
+              "div.case-heading > div > div.heading-badges > span.badge.amber"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(202, 208, 196)",
+            "count": 4,
+            "props": [
+              "border"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.neutral",
+              "div.case-heading > div > div.heading-badges > span.badge.neutral",
+              "div.case-heading > div > div.heading-badges > span.badge.neutral"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(255, 248, 230)",
+            "count": 2,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > button.brand > span.monogram",
+              "div.app-shell > aside.sidebar > button.brand > span"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(183, 198, 187)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "aside.sidebar > button.brand > span > small"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(233, 234, 220)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "div.app-shell > aside.sidebar > nav > button.active"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(135, 149, 138)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > header.topline > span > i"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(85, 128, 100)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main#main > header.topline > div > span.online-dot"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(173, 182, 169)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > header.topline > div > span.top-separator"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(36, 87, 63)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > p.notice.banner"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(228, 238, 223)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main#main > p.notice.banner"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(120, 80, 25)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.amber"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(245, 236, 216)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.amber"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(76, 93, 81)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.neutral"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(236, 238, 229)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "div.case-heading > div > div.heading-badges > span.badge.neutral"
+            ],
+            "token": null
+          },
+          {
+            "color": "rgb(128, 83, 29)",
+            "count": 1,
+            "props": [
+              "color"
+            ],
+            "examples": [
+              "main#main > section.tab-content > p.review-warning"
+            ],
+            "token": "amber"
+          },
+          {
+            "color": "rgb(244, 236, 216)",
+            "count": 1,
+            "props": [
+              "background"
+            ],
+            "examples": [
+              "main#main > section.tab-content > p.review-warning"
+            ],
+            "token": null
+          }
+        ],
+        "gradients": [],
+        "spacingOffGrid": [
+          {
+            "value": "18px",
+            "count": 6,
+            "examples": [
+              "div#g4-sample > article > button.secondary {paddingRight}",
+              "div#g4-sample > article > button.secondary {paddingLeft}",
+              "section.tab-content > div.paper.handoff-section > article > button.secondary {paddingRight}"
+            ]
+          },
+          {
+            "value": "18.62px",
+            "count": 4,
+            "examples": [
+              "div#g4-sample > article > h4 {marginTop}",
+              "div#g4-sample > article > h4 {marginBottom}",
+              "section.tab-content > div.paper.handoff-section > article > h4 {marginTop}"
+            ]
+          },
+          {
+            "value": "10px",
+            "count": 4,
+            "examples": [
+              "section.tab-content > div.paper.handoff-section > p > a.download {paddingTop}",
+              "section.tab-content > div.paper.handoff-section > p > a.download {paddingBottom}",
+              "main#main > section.tab-content > div.paper.handoff-section > a.download {paddingTop}"
+            ]
+          },
+          {
+            "value": "6px",
+            "count": 2,
+            "examples": [
+              "main#main > div.case-heading > div > div.heading-badges {rowGap}",
+              "main#main > div.case-heading > div > div.heading-badges {columnGap}"
+            ]
+          },
+          {
+            "value": "19.92px",
+            "count": 1,
+            "examples": [
+              "main#main > section.tab-content > h2 {marginBottom}"
+            ]
+          }
+        ],
+        "spacingOffGridCount": 17,
+        "radii": [
+          {
+            "value": "4px",
+            "count": 17
+          }
+        ]
+      }
+    }
+  ],
+  "counts": {
+    "fail": 4,
+    "warn": 4
+  },
+  "status": "fail"
+}

@@ -10,8 +10,8 @@
 | Visual plan/Mock assets/separate reviews | tested_offline / tested_local_http | Persistent fake and actual isolated CreativeEngine1.0.0 HTTP Mock; no paid image generation |
 | Image reference upload / verified SKU Listing | blocked | `source_asset_ids` must be empty; listing intent rejected; no source-rights bypass |
 | Unit economics and quote provenance | tested_offline | Decimal, FX/unit scenarios, null costs, matching quote field check, expiry; no current platform fee claims |
-| Sample/Rule/Truth attestation | implemented; synthetic rejection tested_offline | Human-role source/excerpt checks; no actual sample/certification/compliance validation |
-| G4/G5 real approval | blocked | Synthetic actors/cases cannot satisfy G4; external readiness unavailable for internal concept packs |
+| Sample/Rule/Truth attestation | tested_offline / browser tested | Sample identity/method, exact values/excerpts, source rights, scoped official URL and expiry; no actual sample/compliance validation |
+| G4/G5 internal business handoff | tested_offline / browser tested | Real-mode contracts tested only in isolated fictional databases; exact pack/rules/risk ownership, invalidation and receipt ZIP. Actual business approval remains absent; publication unavailable |
 | Internal LaunchPack JSON/MD/ZIP | tested_offline | Exact manifest; approved internal assets; stale/tampered objects block export; no auth tokens/config serialized |
 | Next.js / CLI / accessibility | tested_offline + local browser/API | Real API/DB journey at1440px and390px, keyboard/focus/axe checks; English fixture content in Chinese UI |
 | Installation / backup/restore / deletion | tested_offline | Clean wheel resources and cached install, SQLite hash-preserving restore; external backups/exports excluded from purge |

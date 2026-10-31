@@ -58,3 +58,5 @@ launchcase --idempotency-key LOGICAL_KEY <mutation-command>
 No MCP server is exposed in V1 (optional in handoff). No CLI shortcut bypasses the same
 application-service checks. Strict validators inspect the persisted synthetic demo and manifests;
 they do not certify real market evidence or legal applicability.
+
+G4/G5 additions and exact request fields: see [G4_G5_HANDOFF.md](G4_G5_HANDOFF.md).

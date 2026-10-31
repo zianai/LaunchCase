@@ -65,8 +65,11 @@ class LaunchPackService:
                     "allowed_use": "internal_only",
                 }
             )
-        decisions = ProductService(self.service).decisions(actor, case.id)
+        decisions = ProductService(self.service).decisions(actor, case.id, exclude_g5=True)
         return {
+            "sample_id": (
+                g4.subject_id if (g4 := product.current(s, actor, case.id, "G4", {"verify_sample"})) else None
+            ),
             "brief_version": case.brief_version,
             "sources": [
                 {"id": x.id, "sha256": x.sha256, "rights": x.rights_status, "is_synthetic": x.is_synthetic}
@@ -103,7 +106,15 @@ class LaunchPackService:
                     .order_by(Evidence.source_locator)
                 )
             ]
+            sample = (
+                self.service.get_row(s, Artifact, actor, snapshot["sample_id"])
+                if snapshot["sample_id"]
+                else None
+            )
+            truth = self.service.get_row(s, Artifact, actor, sample.data["truth_id"]) if sample else None
             data = {
+                "sample_validation": row_dict(sample) if sample else None,
+                "product_truth": row_dict(truth) if truth else None,
                 "schema_version": "1.0.0",
                 "title": case.title,
                 "audience": "internal",
@@ -138,7 +149,7 @@ class LaunchPackService:
                     ],
                 },
                 "blockers": [
-                    "G4: real sample/test confirmation required",
+                    *(["G4: real sample/test confirmation required"] if not sample else []),
                     "G5: verified product facts, current scoped rules and external image rights required",
                     *(
                         ["Unit economics incomplete; missing costs are not zero"]
@@ -189,6 +200,8 @@ class LaunchPackService:
         for title, value in [
             ("Opportunity", data["opportunity_memo"]),
             ("Proposed PRD", data["prd"]),
+            ("Sample validation", data.get("sample_validation")),
+            ("Product truth (human attested)", data.get("product_truth")),
             ("Cost model", data["cost_model"]),
             ("Risk register", data["risk_register"]),
             ("Blockers", data["blockers"]),
@@ -218,25 +231,132 @@ class LaunchPackService:
                 archive.writestr(entry, content)
         return out.getvalue()
 
+    def rule_bindings(self, s, actor, case_id, preparation):
+        if not preparation:
+            return []
+        bindings = []
+        for rule_id in preparation.data["rule_ids"]:
+            rule = self.service.get_row(s, Artifact, actor, rule_id)
+            if rule.case_id != case_id or rule.kind != "RuleSnapshot":
+                raise DomainError("RULE_BLOCKED", "Rule belongs to another Case/type", 409)
+            src = self.service.get_row(s, SourceDocument, actor, rule.data["source_id"])
+            self.service.objects.get(src.sha256)
+            valid = (
+                src.case_id == case_id
+                and src.source_type == "rule"
+                and not src.is_synthetic
+                and not rule.data["is_synthetic"]
+                and src.rights_status == "authorized"
+                and src.sha256 == rule.data["source_sha256"]
+                and src.metadata_json.get("source_url") == rule.data["authority_url"]
+                and instant(rule.data["effective_at"])
+                <= datetime.now(timezone.utc)
+                < instant(rule.data["review_due_at"])
+            )
+            bindings.append({"id": rule.id, "sha256": rule.sha256, "valid": valid})
+        return bindings
+
+    def prepare(self, actor, case_id, request, key):
+        self.service.require(actor, human=True)
+
+        def run(s):
+            case = self.service.case_row(s, actor, case_id, True)
+            pack = self.service.get_row(s, Artifact, actor, request.pack_id)
+            if pack.case_id != case_id or pack.kind != "LaunchPack":
+                raise DomainError("SUBJECT_MISMATCH", "Pack belongs to another Case/type", 409)
+            if case.is_synthetic or actor.synthetic:
+                raise DomainError("GATE_BLOCKED", "Synthetic work cannot pass real handoff", 409)
+            if (
+                request.expected_pack_hash != pack.sha256
+                or digest(self.snapshot(s, actor, case)) != pack.dependency_hash
+            ):
+                raise DomainError("STALE_PACK", "Rebuild and review current pack", 409)
+            if not ProductService(self.service).current(s, actor, case_id, "G4", {"verify_sample"}):
+                raise DomainError("GATE_BLOCKED", "Current G4 required", 409)
+            artifact = self.service.artifact(
+                s, actor, case, "HandoffPreparation", request.model_dump(), pack.sha256
+            )
+            rules = self.rule_bindings(s, actor, case_id, artifact)
+            if not rules or not all(x["valid"] for x in rules):
+                raise DomainError("RULE_BLOCKED", "Current authorized scoped rules required", 409)
+            self.service.event(s, actor, case_id, "handoff.prepared", {"preparation_id": artifact.id})
+            return row_dict(artifact)
+
+        return self.service.command(
+            actor, key, {"action": "handoff.prepare", "case": case_id, **request.model_dump()}, run
+        )
+
     def outward_prerequisites(self, s, actor, case, pack):
         if case.is_synthetic or actor.synthetic:
-            raise DomainError("GATE_BLOCKED", "Synthetic work cannot pass real launch review", 409)
-        rules = ProductService(self.service).artifacts(s, actor, case.id, "RuleSnapshot")
-        current = [
-            x
-            for x in rules
-            if not x.data["is_synthetic"]
-            and instant(x.data["effective_at"])
-            <= datetime.now(timezone.utc)
-            < instant(x.data["review_due_at"])
-        ]
-        if not current:
+            raise DomainError("GATE_BLOCKED", "Synthetic work cannot pass real handoff", 409)
+        preparations = ProductService(self.service).artifacts(s, actor, case.id, "HandoffPreparation")
+        preparation = next((x for x in preparations if x.data["pack_id"] == pack.id), None)
+        if not preparation or preparation.data["expected_pack_hash"] != pack.sha256:
             raise DomainError(
-                "GATE_BLOCKED", "Current scoped official rules require human applicability review", 409
+                "GATE_BLOCKED", "Prepare risk ownership and claim exclusions for this pack", 409
             )
-        # V1 only produces concept/mock visual material. External-ready mode is intentionally unavailable.
-        raise DomainError(
-            "GATE_BLOCKED",
-            "V1 internal concept pack cannot become an external listing pack; publication unavailable",
-            409,
+        bindings = self.rule_bindings(s, actor, case.id, preparation)
+        if not bindings or not all(x["valid"] for x in bindings):
+            raise DomainError("RULE_BLOCKED", "Rules expired or source rights changed; review again", 409)
+        return preparation
+
+    def handoff_receipt(self, actor, pack_id):
+        with self.service.sessions() as s:
+            pack = self.service.get_row(s, Artifact, actor, pack_id)
+            if pack.kind != "LaunchPack":
+                raise DomainError("NOT_FOUND", "Pack not found", 404)
+            gate = ProductService(self.service).current(s, actor, pack.case_id, "G5", {"internal_handoff"})
+            if not gate or gate.subject_id != pack.id:
+                raise DomainError("GATE_BLOCKED", "Current G5 approval required for this pack", 409)
+            preparation = self.outward_prerequisites(
+                s, actor, self.service.case_row(s, actor, pack.case_id), pack
+            )
+            return {
+                "pack_id": pack.id,
+                "pack_sha256": pack.sha256,
+                "approval": row_dict(gate),
+                "preparation": row_dict(preparation),
+                "status": "approved_internal_handoff",
+                "publishable": False,
+                "publication_action": "unavailable",
+            }
+
+    def export_handoff(self, actor, pack_id):
+        """Immutable draft plus separately version-bound approval and original rule evidence."""
+        receipt = self.handoff_receipt(actor, pack_id)
+        files = {
+            "approval.json": canonical(receipt),
+            "internal-draft.zip": self.export(actor, pack_id, "zip"),
+        }
+        with self.service.sessions() as s:
+            for rule_id in receipt["preparation"]["data"]["rule_ids"]:
+                rule = self.service.get_row(s, Artifact, actor, rule_id)
+                files[f"rules/{rule.id}.json"] = canonical(row_dict(rule))
+                files[f"sources/{rule.data['source_id']}.txt"] = self.service.objects.get(
+                    rule.data["source_sha256"]
+                )
+            pack = self.service.get_row(s, Artifact, actor, pack_id)
+            truth = pack.data.get("product_truth")
+            for fact in truth["data"]["facts"] if truth else []:
+                files[f"sources/{fact['source_id']}.txt"] = self.service.objects.get(fact["source_sha256"])
+        files["README.txt"] = (
+            "APPROVED INTERNAL HANDOFF ONLY. NOT PUBLISHED.\n"
+            "The immutable internal draft retains its pre-approval blockers; approval.json is the exact-version receipt.\n"
+            "Review preparation risk ownership, excluded claims, rule scope and sample limitations.\n"
+            "Mock/concept images remain internal-only. Human attestations are not independent automated verification.\n"
+        ).encode()
+        files["manifest.json"] = canonical(
+            {
+                "pack_id": pack_id,
+                "publishable": False,
+                "files": {name: digest(value) for name, value in files.items()},
+            }
         )
+        out = io.BytesIO()
+        with zipfile.ZipFile(out, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+            for name, content in sorted(files.items()):
+                archive.writestr(zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0)), content)
+        # Refuse delivery if rights or approvals changed during assembly.
+        if self.handoff_receipt(actor, pack_id) != receipt:
+            raise DomainError("STALE_PACK", "Handoff changed during export", 409)
+        return out.getvalue()
