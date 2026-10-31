@@ -123,6 +123,13 @@ class RealAgentRunner:
                         "input_tokens": response.usage.input_tokens,
                         "output_tokens": response.usage.output_tokens,
                         "total_tokens": count,
+                        "raw_usage": response.raw_usage,
+                        "input_tokens_details": response.usage.input_tokens_details.model_dump(
+                            mode="json", exclude_unset=True
+                        ),
+                        "output_tokens_details": response.usage.output_tokens_details.model_dump(
+                            mode="json", exclude_unset=True
+                        ),
                         "upper_usd": ceiling,
                         "cost_actual_usd": None,
                     }
@@ -164,7 +171,9 @@ class RealAgentRunner:
                         tools=[list_evidence],
                         output_type=ResearchOutput,
                         model_settings=ModelSettings(
-                            max_tokens=budget.max_output_tokens, parallel_tool_calls=False
+                            max_tokens=budget.max_output_tokens,
+                            parallel_tool_calls=False,
+                            preserve_raw_usage=True,
                         ),
                     ),
                     "Analyze the frozen evidence and record uncertainty.",

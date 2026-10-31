@@ -109,3 +109,32 @@ def test_real_runner_unknown_receipt_never_retries(policy):
     with pytest.raises(PolicyDenied, match="UNRESOLVED_RECEIPT"):
         runner.run(evidence, LiveBudget(max_tokens=50000, max_cost_usd=0.3))
     assert model.calls == 1
+
+
+def test_live_receipt_preserves_raw_cache_usage(policy):
+    p, r, evidence, rate = prepared(policy)
+
+    class UsageModel(DeterministicModel):
+        async def get_response(self, *args, **kwargs):
+            assert kwargs["model_settings"].preserve_raw_usage is True
+            response = await super().get_response(*args, **kwargs)
+            response.raw_usage = {
+                "input_tokens_details": {"cached_tokens": 11, "cache_write_tokens": 17},
+                "vendor_future_field": 23,
+            }
+            return response
+
+    result = RealAgentRunner(
+        r["tenant_id"],
+        r["case_id"],
+        policy=p,
+        model=UsageModel(analyze(evidence).model_dump()),
+        model_name="stub-model",
+        rate=rate,
+    ).run(evidence, LiveBudget(max_tokens=50000, max_cost_usd=0.3))
+    assert all(
+        receipt["raw_usage"]["input_tokens_details"]["cache_write_tokens"] == 17
+        for receipt in result["request_receipts"]
+    )
+    assert result["request_receipts"][0]["raw_usage"]["vendor_future_field"] == 23
+    assert result["cost_actual_usd"] is None
