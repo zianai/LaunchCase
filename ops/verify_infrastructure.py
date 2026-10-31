@@ -11,6 +11,7 @@ import psycopg
 
 suffix = uuid4().hex[:8]
 names = []
+pull_policy = ["--pull=never"] if os.environ.get("P7_OFFLINE_DOCKER") == "1" else []
 try:
     ports = {}
     for kind, image, inside in [
@@ -18,7 +19,7 @@ try:
         ("redis", "redis:7.4.6-alpine", 6379),
     ]:
         name = f"launchcase-p6-{kind}-{suffix}"
-        cmd = ["docker", "run", "--pull=never", "--rm", "-d", "--name", name, "-p", f"127.0.0.1::{inside}"]
+        cmd = ["docker", "run", *pull_policy, "--rm", "-d", "--name", name, "-p", f"127.0.0.1::{inside}"]
         if kind == "pg":
             cmd += ["-e", "POSTGRES_PASSWORD=launchcase-test-only", "-e", "POSTGRES_DB=launchcase"]
         cmd += [image]
