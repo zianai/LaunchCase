@@ -138,3 +138,29 @@ class GateDecision(Scoped, Base):
     role: Mapped[str] = mapped_column(String(30))
     reason: Mapped[str] = mapped_column(Text)
     is_synthetic: Mapped[bool] = mapped_column(Boolean)
+
+
+class VisualTask(Scoped, Base):
+    __tablename__ = "visual_tasks"
+    concept_id: Mapped[str] = mapped_column(String(36))
+    request: Mapped[dict] = mapped_column(JSON)
+    state: Mapped[str] = mapped_column(String(40), default="draft")
+    dependency_hash: Mapped[str] = mapped_column(String(64))
+    configuration_hash: Mapped[str] = mapped_column(String(64))
+    plan: Mapped[dict] = mapped_column(JSON, default=dict)
+    plan_hash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    plan_review: Mapped[dict] = mapped_column(JSON, default=dict)
+    remote: Mapped[dict] = mapped_column(JSON, default=dict)
+    submission_key: Mapped[str] = mapped_column(String(100), default=uid, unique=True)
+    error_code: Mapped[str | None] = mapped_column(String(80), nullable=True)
+
+
+class VisualAsset(Scoped, Base):
+    __tablename__ = "visual_assets"
+    visual_task_id: Mapped[str] = mapped_column(ForeignKey("visual_tasks.id"), index=True)
+    remote_id: Mapped[str] = mapped_column(String(160))
+    sha256: Mapped[str] = mapped_column(String(64))
+    identity: Mapped[str] = mapped_column(String(30), default="mock")
+    qa: Mapped[dict] = mapped_column(JSON)
+    review: Mapped[dict] = mapped_column(JSON, default=dict)
+    __table_args__ = (UniqueConstraint("tenant_id", "visual_task_id", "remote_id"),)

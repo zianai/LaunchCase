@@ -4,17 +4,27 @@ from fastapi.responses import JSONResponse, Response
 
 from launchcase.application.products import ProductService
 from launchcase.application.services import CaseService
+from launchcase.application.visuals import VisualService
 from launchcase.domain.common import DomainError
 from launchcase.domain.contracts import (
     BriefRevision,
     GateRequest,
     ProductBrief,
+    ReviewRequest,
     RightsChange,
     SourceImport,
     SpecRevision,
+    VisualRequest,
 )
 from launchcase.infrastructure.config import Settings
-from launchcase.infrastructure.models import Artifact, AuditEvent, BriefVersion, Evidence, SourceDocument
+from launchcase.infrastructure.models import (
+    Artifact,
+    AuditEvent,
+    BriefVersion,
+    Evidence,
+    SourceDocument,
+    VisualTask,
+)
 from launchcase.infrastructure.tasks import TaskManager
 from launchcase.workflow.graph import enqueue_run, execute_task
 
@@ -130,6 +140,47 @@ def create_app(settings=None):
         rows = service.list_scoped(actor, case_id, AuditEvent, limit=5000)
         body = "".join(f"id: {r['sequence']}\nevent: progress\ndata: {json.dumps(r)}\n\n" for r in sorted(rows, key=lambda x: x['sequence']) if r['sequence'] > max(after, last_event_id))
         return Response(body + ": reconnect for new events\n\n", media_type="text/event-stream", headers={"Cache-Control": "no-cache"})
+
+    @app.post("/api/v1/product-cases/{case_id}/visual-tasks")
+    def visual_create(case_id: str, body: VisualRequest, actor=Depends(identity), request_key=Depends(key)):
+        return VisualService(service).create(actor, case_id, body, request_key)
+
+    @app.get("/api/v1/product-cases/{case_id}/visual-tasks")
+    def visual_list(case_id: str, actor=Depends(identity)):
+        visual = VisualService(service)
+        return {"items": [visual.get(actor, x["id"]) for x in service.list_scoped(actor, case_id, VisualTask)]}
+
+    @app.get("/api/v1/visual-tasks/{task_id}")
+    def visual_get(task_id: str, actor=Depends(identity)):
+        return VisualService(service).get(actor, task_id)
+
+    @app.post("/api/v1/visual-tasks/{task_id}/approve-plan")
+    def visual_approve(task_id: str, body: ReviewRequest, actor=Depends(identity), request_key=Depends(key)):
+        return VisualService(service).approve(actor, task_id, body, request_key)
+
+    @app.post("/api/v1/visual-tasks/{task_id}/submit")
+    def visual_submit(task_id: str, actor=Depends(identity), request_key=Depends(key)):
+        return VisualService(service).submit(actor, task_id)
+
+    @app.post("/api/v1/visual-tasks/{task_id}/sync")
+    def visual_sync(task_id: str, actor=Depends(identity), request_key=Depends(key)):
+        return VisualService(service).sync(actor, task_id)
+
+    @app.post("/api/v1/visual-tasks/{task_id}/cancel")
+    def visual_cancel(task_id: str, actor=Depends(identity), request_key=Depends(key)):
+        return VisualService(service).cancel(actor, task_id)
+
+    @app.get("/api/v1/visual-assets/{asset_id}")
+    def visual_asset(asset_id: str, actor=Depends(identity)):
+        return VisualService(service).asset(actor, asset_id)
+
+    @app.get("/api/v1/visual-assets/{asset_id}/content")
+    def visual_content(asset_id: str, actor=Depends(identity)):
+        return Response(VisualService(service).asset(actor, asset_id, True), media_type="image/png", headers={"X-Content-Type-Options": "nosniff"})
+
+    @app.post("/api/v1/visual-assets/{asset_id}/review")
+    def visual_review(asset_id: str, body: ReviewRequest, actor=Depends(identity), request_key=Depends(key)):
+        return VisualService(service).review(actor, asset_id, body, request_key)
 
     return app
 

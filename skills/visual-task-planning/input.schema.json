@@ -1,0 +1,56 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "concept_id": {
+      "title": "Concept Id",
+      "type": "string"
+    },
+    "intent": {
+      "default": "concept_exploration",
+      "enum": [
+        "concept_exploration",
+        "listing"
+      ],
+      "title": "Intent",
+      "type": "string"
+    },
+    "requirements": {
+      "maxLength": 5000,
+      "minLength": 5,
+      "title": "Requirements",
+      "type": "string"
+    },
+    "variants": {
+      "default": 1,
+      "maximum": 3,
+      "minimum": 1,
+      "title": "Variants",
+      "type": "integer"
+    },
+    "budget_usd": {
+      "const": 0,
+      "default": 0,
+      "title": "Budget Usd",
+      "type": "integer"
+    },
+    "source_asset_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 0,
+      "title": "Source Asset Ids",
+      "type": "array"
+    }
+  },
+  "required": [
+    "concept_id",
+    "requirements"
+  ],
+  "title": "VisualRequest",
+  "type": "object"
+}

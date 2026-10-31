@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": [
+    "project_id",
+    "brief_id",
+    "plan_id",
+    "plan"
+  ]
+}

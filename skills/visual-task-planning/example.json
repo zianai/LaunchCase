@@ -1,0 +1,6 @@
+{
+  "concept_id": "synthetic-concept",
+  "requirements": "Internal concept only; no dimensions or safety claims",
+  "variants": 1,
+  "budget_usd": 0
+}

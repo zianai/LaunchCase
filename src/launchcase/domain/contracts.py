@@ -75,3 +75,18 @@ class SpecRevision(Contract):
     expected_subject_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
     claims: list[SpecClaim] = Field(min_length=1, max_length=50)
     reason: str = Field(min_length=5, max_length=2000)
+
+
+class VisualRequest(Contract):
+    concept_id: str
+    intent: Literal["concept_exploration", "listing"] = "concept_exploration"
+    requirements: str = Field(min_length=5, max_length=5000)
+    variants: int = Field(default=1, ge=1, le=3)
+    budget_usd: Literal[0] = 0
+    source_asset_ids: list[str] = Field(default_factory=list, max_length=0)
+
+
+class ReviewRequest(Contract):
+    expected_subject_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    decision: Literal["approved", "rejected"]
+    reason: str = Field(min_length=5, max_length=2000)
