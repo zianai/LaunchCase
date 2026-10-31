@@ -1,0 +1,101 @@
+{
+  "components": {
+    "net_sales_revenue_ex_tax": {
+      "amount": "120",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "ex_factory": {
+      "amount": "35",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "freight": {
+      "amount": "8",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "tariff_duty": {
+      "amount": "5",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "import_handling": {
+      "amount": "2",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "referral_fee": {
+      "amount": "18",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "fulfillment": {
+      "amount": "12",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "variable_storage": {
+      "amount": "1",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "advertising_allocated": {
+      "amount": "10",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "returns_allowance": {
+      "amount": "4",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "other_variable_costs": {
+      "amount": "2",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    }
+  },
+  "fixed_costs": {
+    "tooling": {
+      "amount": "300",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "sample": {
+      "amount": "150",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "rnd": {
+      "amount": "250",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    },
+    "overhead": {
+      "amount": "100",
+      "currency": "USD",
+      "unit": "piece",
+      "provenance": "assumption"
+    }
+  },
+  "fx_rates": [],
+  "assumptions": [
+    "TEST ONLY: all prices, costs, fees and rates are fabricated scenario assumptions; no supplier quotation or real Amazon fee verification.",
+    "TEST ONLY: fixed costs total USD 800, separate from per-piece contribution. No market demand or profit forecast is validated."
+  ]
+}

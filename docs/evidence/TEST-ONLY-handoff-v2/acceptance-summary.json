@@ -1,0 +1,117 @@
+{
+  "test_only": true,
+  "real_business_validation": false,
+  "case_id": "b2bcec1e-c1ce-4310-987a-c648e8d157bf",
+  "pack_id": "ab9983ce-2dcc-4a3b-8ecf-3b6aca5bd6ae",
+  "pack_version": 2,
+  "prior_pack_id": "f4cb6abc-35d9-4fa7-9623-ca758208efcf",
+  "prior_receipt_rejected": true,
+  "costs": {
+    "assumed_components": [
+      "net_sales_revenue_ex_tax",
+      "ex_factory",
+      "freight",
+      "tariff_duty",
+      "import_handling",
+      "referral_fee",
+      "fulfillment",
+      "variable_storage",
+      "advertising_allocated",
+      "returns_allowance",
+      "other_variable_costs",
+      "fixed_tooling",
+      "fixed_sample",
+      "fixed_rnd",
+      "fixed_overhead"
+    ],
+    "assumptions": [
+      "TEST ONLY: all prices, costs, fees and rates are fabricated scenario assumptions; no supplier quotation or real Amazon fee verification.",
+      "TEST ONLY: fixed costs total USD 800, separate from per-piece contribution. No market demand or profit forecast is validated."
+    ],
+    "components": {
+      "advertising_allocated": "10.0000",
+      "ex_factory": "35.0000",
+      "freight": "8.0000",
+      "fulfillment": "12.0000",
+      "import_handling": "2.0000",
+      "net_sales_revenue_ex_tax": "120.0000",
+      "other_variable_costs": "2.0000",
+      "referral_fee": "18.0000",
+      "returns_allowance": "4.0000",
+      "tariff_duty": "5.0000",
+      "variable_storage": "1.0000"
+    },
+    "currency": "USD",
+    "fixed_costs": {
+      "overhead": "100.0000",
+      "rnd": "250.0000",
+      "sample": "150.0000",
+      "tooling": "300.0000"
+    },
+    "fixed_costs_excluded_from_unit_contribution": true,
+    "formula": "net_sales_revenue_ex_tax - ex_factory - freight - tariff_duty - import_handling - referral_fee - fulfillment - variable_storage - advertising_allocated - returns_allowance - other_variable_costs",
+    "landed_product_cost": "50.0000",
+    "missing": [],
+    "profitability_decision": "requires_human_review",
+    "status": "conditional",
+    "unit": "piece",
+    "unit_contribution": "23.0000"
+  },
+  "asset_count": 1,
+  "asset_ids": [
+    "9661f5a4-f1b4-49d3-a2f9-5bbca443890f"
+  ],
+  "publishable": false,
+  "workflow": "complete_internal_handoff",
+  "hashes_verified": 9,
+  "zip_sha256": "ccac244e18b9b26cadf02b59238eff517cd800feaab4723e7bbb48befb49f763",
+  "gates": [
+    {
+      "gate": "G1",
+      "subject_id": "0b0ba8e6-2de1-4a4d-b39e-c12244607363",
+      "status": "current",
+      "reason": "Synthetic test actor decision; no real product approval"
+    },
+    {
+      "gate": "G2",
+      "subject_id": "11a8cdac-f213-4324-9da3-833d44e346af",
+      "status": "current",
+      "reason": "Synthetic test actor decision; no real product approval"
+    },
+    {
+      "gate": "G3",
+      "subject_id": "6318cfcb-7863-49f7-be39-5fa14069cc8c",
+      "status": "current",
+      "reason": "TEST ONLY simulated approval explicitly authorized for effect testing. No real sample, supplier quote, business validation or publication approval."
+    },
+    {
+      "gate": "G4",
+      "subject_id": "7400ed63-3a24-47a7-a17e-ed1ef0442964",
+      "status": "current",
+      "reason": "TEST ONLY simulated approval explicitly authorized for effect testing. No real sample, supplier quote, business validation or publication approval."
+    },
+    {
+      "gate": "G5",
+      "subject_id": "ab9983ce-2dcc-4a3b-8ecf-3b6aca5bd6ae",
+      "status": "current",
+      "reason": "TEST ONLY simulated approval explicitly authorized for effect testing. No real sample, supplier quote, business validation or publication approval."
+    }
+  ],
+  "outer_files": [
+    "README.txt",
+    "approval.json",
+    "internal-draft.zip",
+    "manifest.json",
+    "rules/7f21afed-16d8-449d-883a-e5c86ea893f9.json",
+    "sources/61dcb284-7e8c-4d14-9e6b-1011dcb56c02.txt",
+    "sources/e6b128b3-d9d6-48fd-901f-6d7a2bf382f6.txt"
+  ],
+  "inner_files": [
+    "assets/9661f5a4-f1b4-49d3-a2f9-5bbca443890f.png",
+    "launchpack.json",
+    "launchpack.md",
+    "manifest.json"
+  ],
+  "paid_calls": 0,
+  "paid_calls_basis": "Only local persistent Mock Provider, budget zero."
+}
