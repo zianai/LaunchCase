@@ -124,3 +124,17 @@ class Attempt(Base):
     started_at: Mapped[str] = mapped_column(String(40), default=now)
     status: Mapped[str] = mapped_column(String(30), default="running")
     __table_args__ = (UniqueConstraint("task_id", "fence"),)
+
+
+class GateDecision(Scoped, Base):
+    __tablename__ = "gate_decisions"
+    gate: Mapped[str] = mapped_column(String(4))
+    decision: Mapped[str] = mapped_column(String(30))
+    subject_id: Mapped[str] = mapped_column(String(100))
+    subject_type: Mapped[str] = mapped_column(String(40))
+    subject_hash: Mapped[str] = mapped_column(String(64))
+    dependencies: Mapped[dict] = mapped_column(JSON)
+    actor_id: Mapped[str] = mapped_column(String(100))
+    role: Mapped[str] = mapped_column(String(30))
+    reason: Mapped[str] = mapped_column(Text)
+    is_synthetic: Mapped[bool] = mapped_column(Boolean)

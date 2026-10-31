@@ -1,0 +1,71 @@
+{
+  "$defs": {
+    "ConceptDraft": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "design_intent": {
+          "title": "Design Intent",
+          "type": "string"
+        },
+        "differentiators": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Differentiators",
+          "type": "array"
+        },
+        "risks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Risks",
+          "type": "array"
+        },
+        "validation_plan": {
+          "title": "Validation Plan",
+          "type": "string"
+        }
+      },
+      "required": [
+        "title",
+        "design_intent",
+        "differentiators",
+        "risks",
+        "validation_plan"
+      ],
+      "title": "ConceptDraft",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "concepts": {
+      "items": {
+        "$ref": "#/$defs/ConceptDraft"
+      },
+      "maxItems": 3,
+      "minItems": 2,
+      "title": "Concepts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "concepts"
+  ],
+  "title": "ProductOutput",
+  "type": "object"
+}

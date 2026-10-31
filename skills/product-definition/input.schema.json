@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": [
+    "evidence_refs",
+    "problem",
+    "assumptions"
+  ]
+}

@@ -2,9 +2,17 @@ from fastapi import BackgroundTasks, Depends, FastAPI, Header, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 
+from launchcase.application.products import ProductService
 from launchcase.application.services import CaseService
 from launchcase.domain.common import DomainError
-from launchcase.domain.contracts import BriefRevision, ProductBrief, RightsChange, SourceImport
+from launchcase.domain.contracts import (
+    BriefRevision,
+    GateRequest,
+    ProductBrief,
+    RightsChange,
+    SourceImport,
+    SpecRevision,
+)
 from launchcase.infrastructure.config import Settings
 from launchcase.infrastructure.models import Artifact, AuditEvent, BriefVersion, Evidence, SourceDocument
 from launchcase.infrastructure.tasks import TaskManager
@@ -83,7 +91,7 @@ def create_app(settings=None):
     for suffix, model in [("sources", SourceDocument), ("evidence", Evidence), ("activity", AuditEvent), ("brief-versions", BriefVersion)]:
         app.add_api_route(f"/api/v1/product-cases/{{case_id}}/{suffix}", listing(model), methods=["GET"])
     app.add_api_route("/api/v1/product-cases/{case_id}/market-snapshots", listing(Artifact, "MarketSnapshot"), methods=["GET"])
-    for suffix, kind in [("insights", "Insight"), ("opportunities", "Opportunity"), ("research", "Research")]:
+    for suffix, kind in [("insights", "Insight"), ("opportunities", "Opportunity"), ("research", "Research"), ("concepts", "Concept"), ("spec-versions", "ProductSpec")]:
         app.add_api_route(f"/api/v1/product-cases/{{case_id}}/{suffix}", listing(Artifact, kind), methods=["GET"])
 
     @app.post("/api/v1/product-cases/{case_id}/runs/{kind}", status_code=202)
@@ -95,6 +103,33 @@ def create_app(settings=None):
     @app.get("/api/v1/tasks/{task_id}")
     def task(task_id: str, actor=Depends(identity)):
         return TaskManager(service).get(actor, task_id)
+
+    @app.get("/api/v1/product-cases/{case_id}/gates")
+    def gates(case_id: str, actor=Depends(identity)):
+        return {"items": ProductService(service).decisions(actor, case_id)}
+
+    @app.get("/api/v1/product-cases/{case_id}/gates/{gate}/subject/{subject_id}")
+    def subject(case_id: str, gate: str, subject_id: str, actor=Depends(identity)):
+        return ProductService(service).gate_subject(actor, case_id, gate, subject_id)
+
+    @app.post("/api/v1/product-cases/{case_id}/gates/{gate}/decision")
+    def decide(case_id: str, gate: str, body: GateRequest, actor=Depends(identity), request_key=Depends(key)):
+        return ProductService(service).decide(actor, case_id, gate, body, request_key)
+
+    @app.post("/api/v1/product-cases/{case_id}/concepts/{concept_id}/spec-versions")
+    def spec_revision(case_id: str, concept_id: str, body: SpecRevision, actor=Depends(identity), request_key=Depends(key)):
+        return ProductService(service).revise_spec(actor, case_id, concept_id, body, request_key)
+
+    @app.get("/api/v1/product-cases/{case_id}/spec-diff")
+    def spec_diff(case_id: str, left: str, right: str, actor=Depends(identity)):
+        return ProductService(service).spec_diff(actor, case_id, left, right)
+
+    @app.get("/api/v1/product-cases/{case_id}/events")
+    def events(case_id: str, after: int = Query(0, ge=0), last_event_id: int = Header(default=0), actor=Depends(identity)):
+        import json
+        rows = service.list_scoped(actor, case_id, AuditEvent, limit=5000)
+        body = "".join(f"id: {r['sequence']}\nevent: progress\ndata: {json.dumps(r)}\n\n" for r in sorted(rows, key=lambda x: x['sequence']) if r['sequence'] > max(after, last_event_id))
+        return Response(body + ": reconnect for new events\n\n", media_type="text/event-stream", headers={"Cache-Control": "no-cache"})
 
     return app
 

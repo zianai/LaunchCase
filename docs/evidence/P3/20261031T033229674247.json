@@ -1,0 +1,11 @@
+{
+  "command": [
+    "uv",
+    "run",
+    "alembic",
+    "downgrade",
+    "0003"
+  ],
+  "exit_code": 0,
+  "log": "docs/evidence/P3/20261031T033229674247.log"
+}

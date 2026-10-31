@@ -1,0 +1,10 @@
+{
+  "is_synthetic": true,
+  "problem": "Assembly friction in selected reviews",
+  "evidence_refs": [
+    "fixture-row-2"
+  ],
+  "assumptions": [
+    "Needs recurrence in real samples"
+  ]
+}

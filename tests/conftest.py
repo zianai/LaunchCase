@@ -41,3 +41,30 @@ def imported(setup, case):
         source_type='review', rights_status='synthetic_fixture', is_synthetic=True)
     result = svc.import_source(actor, case['id'], request, 'source-import')
     return request, result
+
+
+def decide(svc, actor, case_id, gate, subject_id, decision):
+    from launchcase.application.products import ProductService
+    from launchcase.domain.common import uid
+    from launchcase.domain.contracts import GateRequest
+    product = ProductService(svc)
+    subject = product.gate_subject(actor, case_id, gate, subject_id)
+    return product.decide(actor, case_id, gate, GateRequest(decision=decision,
+        subject_type={'G1':'opportunity','G2':'concept','G3':'feasibility','G4':'sample','G5':'launch_pack'}[gate],
+        subject_id=subject_id, expected_subject_hash=subject['subject_hash'],
+        reason='Synthetic test actor decision; no real product approval'), uid())
+
+
+@pytest.fixture
+def concepts(setup, case, imported):
+    from launchcase.infrastructure.models import Artifact
+    from launchcase.workflow.graph import enqueue_run, execute_task
+    svc, actor, _, _ = setup
+    research = enqueue_run(svc, actor, case['id'], 'research', 'research-run')
+    execute_task(svc, actor, research['id'])
+    opps = svc.list_scoped(actor, case['id'], Artifact, kind='Opportunity')
+    opp = next(x for x in opps if 'assembly' in x['data']['title'])
+    decide(svc, actor, case['id'], 'G1', opp['id'], 'accept')
+    task = enqueue_run(svc, actor, case['id'], 'concepts', 'concept-run')
+    execute_task(svc, actor, task['id'])
+    return svc.list_scoped(actor, case['id'], Artifact, kind='Concept')

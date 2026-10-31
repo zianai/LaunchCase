@@ -33,6 +33,17 @@ def main():
     source.add_argument('--type', required=True, choices=['review', 'competitor', 'quote', 'spec', 'sample', 'rule'])
     source.add_argument('--rights', required=True, choices=['synthetic_fixture', 'authorized', 'unknown'])
     source.add_argument('--synthetic', action='store_true')
+    run = sub.add_parser('run')
+    run.add_argument('kind', choices=['research', 'opportunities', 'concepts', 'feasibility'])
+    run.add_argument('--case', dest='case_id', required=True)
+    gate = sub.add_parser('gate').add_subparsers(dest='operation', required=True).add_parser('decide')
+    gate.add_argument('--case', dest='case_id', required=True)
+    gate.add_argument('--gate', required=True)
+    gate.add_argument('--file', type=Path, required=True)
+    spec = sub.add_parser('spec').add_subparsers(dest='operation', required=True).add_parser('history')
+    spec.add_argument('--case', dest='case_id', required=True)
+    compare = sub.add_parser('concept').add_subparsers(dest='operation', required=True).add_parser('compare')
+    compare.add_argument('--case', dest='case_id', required=True)
     args = parser.parse_args()
     service = CaseService(Settings.from_env())
     try:
@@ -45,7 +56,20 @@ def main():
             result = {'token': token, 'tenant_id': actor.tenant_id, 'role': actor.role}
         else:
             actor = service.authenticate(os.getenv('LAUNCHCASE_TOKEN', ''))
-            if args.command == 'case' and args.operation == 'create':
+            if args.command == 'run':
+                from launchcase.workflow.graph import enqueue_run, execute_task
+                task = enqueue_run(service, actor, args.case_id, args.kind, uid())
+                result = execute_task(service, actor, task['id'])
+            elif args.command == 'gate':
+                from launchcase.application.products import ProductService
+                from launchcase.domain.contracts import GateRequest
+                result = ProductService(service).decide(actor, args.case_id, args.gate,
+                    GateRequest.model_validate_json(read_import_file(args.file)), uid())
+            elif args.command in {'spec', 'concept'}:
+                from launchcase.infrastructure.models import Artifact
+                result = {'items': service.list_scoped(actor, args.case_id, Artifact,
+                    kind='ProductSpec' if args.command == 'spec' else 'Concept')}
+            elif args.command == 'case' and args.operation == 'create':
                 result = service.create_case(actor, ProductBrief.model_validate_json(read_import_file(args.brief)), uid())
             elif args.command == 'case' and args.operation == 'status':
                 result = service.get_case(actor, args.case_id)

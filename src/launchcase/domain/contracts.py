@@ -53,3 +53,25 @@ class RightsChange(Contract):
     expected_revision: int = Field(ge=1)
     rights_status: Literal["authorized", "unknown", "revoked"]
     reason: str = Field(min_length=5, max_length=1000)
+
+
+class GateRequest(Contract):
+    decision: Literal["accept", "research_more", "reject", "select", "revise", "sample_validation", "hold", "verify_sample", "rework", "internal_handoff", "needs_changes"]
+    subject_type: Literal["opportunity", "concept", "feasibility", "sample", "launch_pack"]
+    subject_id: str = Field(min_length=1, max_length=100)
+    expected_subject_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    reason: str = Field(min_length=5, max_length=2000)
+
+
+class SpecClaim(Contract):
+    name: str = Field(min_length=1, max_length=100)
+    value: str | None = Field(default=None, max_length=1000)
+    unit: str | None = Field(default=None, max_length=50)
+    status: Literal["proposed", "unknown"] = "unknown"
+    evidence_refs: list[str] = Field(default_factory=list, max_length=50)
+
+
+class SpecRevision(Contract):
+    expected_subject_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    claims: list[SpecClaim] = Field(min_length=1, max_length=50)
+    reason: str = Field(min_length=5, max_length=2000)

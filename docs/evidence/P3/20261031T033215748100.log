@@ -1,0 +1,25 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/test_products.py:1:1
+  |
+1 | / import pytest
+2 | | from pydantic import ValidationError
+3 | |
+4 | | from conftest import decide
+5 | | from launchcase.application.products import ProductService
+6 | | from launchcase.domain.common import DomainError
+7 | | from launchcase.domain.contracts import GateRequest, RightsChange, SpecClaim, SpecRevision
+8 | | from launchcase.infrastructure.models import Artifact
+9 | | from launchcase.workflow.graph import enqueue_run
+  | |_________________________________________________^
+help: Organize imports
+  |
+1 | import pytest
+2 + from conftest import decide
+3 | from pydantic import ValidationError
+4 |
+  - from conftest import decide
+5 | from launchcase.application.products import ProductService
+  |
+
+Found 1 error.
+[*] 1 fixable with `--fix`.
