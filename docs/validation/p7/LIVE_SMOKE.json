@@ -1,0 +1,17 @@
+{
+  "system": "launchcase",
+  "run_id": "live-synthetic-20261031T080134Z",
+  "environment": "E2",
+  "data_classification": "synthetic",
+  "actual_api_smoke": "succeeded",
+  "business_pilot_reviewed": false,
+  "business_validation": "not_evaluable",
+  "billing_actual_usd": null,
+  "external_business_writes": 0,
+  "user_authorization": "2026-10-31: synthetic paid three-system smoke, total <= USD 10, no business writes",
+  "source_sha_at_live_call": "6ec11f4d072e13c4f02ae9bc6d7929a8c985811b",
+  "limitations": [
+    "Synthetic smoke only; no human business assessment or real-case validation.",
+    "Full model output was not persisted; only execution summary is independently available."
+  ]
+}
