@@ -22,4 +22,4 @@ implementation_render_subject: "sha256:3d7f0bbb2252df76143d0baaf560cd6185e53022d
 implementation_render_ref: docs/validation/p8-p10/render-manifest.json
 x_visual_approval: "No approved human baseline; design pending"
 handoff_ref: work/active/T-011-p8-p10/handoff.md
-handoff_current: true
+handoff_current: false
