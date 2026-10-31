@@ -90,3 +90,55 @@ class ReviewRequest(Contract):
     expected_subject_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
     decision: Literal["approved", "rejected"]
     reason: str = Field(min_length=5, max_length=2000)
+
+
+class MoneyInput(Contract):
+    amount: str | None = Field(default=None, pattern=r"^\d+(\.\d{1,8})?$")
+    currency: str = Field(default="USD", pattern=r"^[A-Z]{3}$")
+    unit: Literal["piece", "dozen", "carton"] = "piece"
+    units_per_carton: int | None = Field(default=None, ge=1, le=10000)
+    provenance: Literal["quote", "assumption", "missing"] = "missing"
+    source_id: str | None = None
+
+
+class FXRate(Contract):
+    currency: str = Field(pattern=r"^[A-Z]{3}$")
+    usd_per_unit: str = Field(pattern=r"^\d+(\.\d{1,10})?$")
+    effective_at: str
+    source_id: str
+
+
+class CostRequest(Contract):
+    components: dict[str, MoneyInput]
+    fixed_costs: dict[str, MoneyInput] = Field(default_factory=dict)
+    fx_rates: list[FXRate] = Field(default_factory=list, max_length=20)
+    assumptions: list[str] = Field(default_factory=list, max_length=50)
+
+
+class FactAttestation(Contract):
+    name: str = Field(min_length=2, max_length=100)
+    value: str = Field(min_length=1, max_length=1000)
+    source_id: str
+    exact_excerpt: str = Field(min_length=5, max_length=3000)
+    external_allowed: bool = False
+
+
+class SampleAttestation(Contract):
+    expected_spec_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
+    facts: list[FactAttestation] = Field(min_length=1, max_length=50)
+    tested_at: str
+    responsible_person: str = Field(min_length=2, max_length=100)
+    limitations: str = Field(min_length=5, max_length=2000)
+
+
+class RuleAttestation(Contract):
+    source_id: str
+    authority_url: str = Field(pattern=r"^https://[^\s]+$", max_length=2000)
+    market: Literal["US"] = "US"
+    marketplace: Literal["amazon_us"] = "amazon_us"
+    product_scope: str = Field(min_length=2, max_length=300)
+    revision: str = Field(min_length=1, max_length=100)
+    effective_at: str
+    review_due_at: str
+    exact_excerpt: str = Field(min_length=5, max_length=3000)
+    applicability_reason: str = Field(min_length=10, max_length=2000)

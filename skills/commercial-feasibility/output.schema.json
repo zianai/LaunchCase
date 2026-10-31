@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": [
+    "unit_contribution",
+    "missing",
+    "status"
+  ]
+}

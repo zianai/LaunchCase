@@ -1,0 +1,160 @@
+{
+  "$defs": {
+    "FXRate": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "currency": {
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "usd_per_unit": {
+          "pattern": "^\\d+(\\.\\d{1,10})?$",
+          "title": "Usd Per Unit",
+          "type": "string"
+        },
+        "effective_at": {
+          "title": "Effective At",
+          "type": "string"
+        },
+        "source_id": {
+          "title": "Source Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "currency",
+        "usd_per_unit",
+        "effective_at",
+        "source_id"
+      ],
+      "title": "FXRate",
+      "type": "object"
+    },
+    "MoneyInput": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "default": "1.0.0",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "amount": {
+          "anyOf": [
+            {
+              "pattern": "^\\d+(\\.\\d{1,8})?$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Amount"
+        },
+        "currency": {
+          "default": "USD",
+          "pattern": "^[A-Z]{3}$",
+          "title": "Currency",
+          "type": "string"
+        },
+        "unit": {
+          "default": "piece",
+          "enum": [
+            "piece",
+            "dozen",
+            "carton"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "units_per_carton": {
+          "anyOf": [
+            {
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Units Per Carton"
+        },
+        "provenance": {
+          "default": "missing",
+          "enum": [
+            "quote",
+            "assumption",
+            "missing"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "source_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Id"
+        }
+      },
+      "title": "MoneyInput",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "1.0.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "components": {
+      "additionalProperties": {
+        "$ref": "#/$defs/MoneyInput"
+      },
+      "title": "Components",
+      "type": "object"
+    },
+    "fixed_costs": {
+      "additionalProperties": {
+        "$ref": "#/$defs/MoneyInput"
+      },
+      "title": "Fixed Costs",
+      "type": "object"
+    },
+    "fx_rates": {
+      "items": {
+        "$ref": "#/$defs/FXRate"
+      },
+      "maxItems": 20,
+      "title": "Fx Rates",
+      "type": "array"
+    },
+    "assumptions": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 50,
+      "title": "Assumptions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "components"
+  ],
+  "title": "CostRequest",
+  "type": "object"
+}

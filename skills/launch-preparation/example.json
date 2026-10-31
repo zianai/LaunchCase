@@ -1,0 +1,10 @@
+{
+  "is_synthetic": true,
+  "expected_status": "internal_draft",
+  "unverified": [
+    "dimensions",
+    "load_rating",
+    "unit_cost",
+    "sample_performance"
+  ]
+}

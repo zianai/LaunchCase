@@ -15,7 +15,8 @@ class ResearchService:
     def snapshot(self, actor, case_id):
         with self.service.sessions() as s:
             case = self.service.case_row(s, actor, case_id)
-            sources = list(s.scalars(select(SourceDocument).where(SourceDocument.tenant_id == actor.tenant_id, SourceDocument.case_id == case_id).order_by(SourceDocument.id)))
+            sources = list(s.scalars(select(SourceDocument).where(SourceDocument.tenant_id == actor.tenant_id, SourceDocument.case_id == case_id,
+                SourceDocument.source_type.in_(["review", "competitor", "spec"])).order_by(SourceDocument.id)))
             for src in sources:
                 self.service.objects.get(src.sha256)
             return {"case_id": case.id, "brief_version": case.brief_version,

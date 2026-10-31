@@ -24,6 +24,9 @@ launchcase = "launchcase.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/launchcase"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"skills" = "launchcase/skill_resources"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 

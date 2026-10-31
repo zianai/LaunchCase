@@ -47,6 +47,35 @@ class ProductService:
                 raise DomainError("GATE_BLOCKED", "Current G2 selection required", 409)
             dependencies["g2_hash"] = g2.subject_hash
             dependencies["g2_id"] = g2.id
+            if gate == "G3":
+                from launchcase.application.feasibility import FeasibilityService
+                valid, invalid = FeasibilityService(self.service).source_validity(s, actor, case_id)
+                dependencies.update(valid_cost_sources=valid, invalid_cost_sources=invalid)
+                latest = self.artifacts(s, actor, case_id, "Feasibility")
+                if not latest or latest[0].id != artifact.id or artifact.data["g2_hash"] != g2.subject_hash:
+                    raise DomainError("STALE_SUBJECT", "Feasibility no longer describes current selection", 409)
+                if valid != artifact.data["source_hashes"] or invalid != artifact.data["invalid_source_ids"]:
+                    raise DomainError("STALE_SUBJECT", "Quote validity changed; recalculate feasibility", 409)
+            if gate in {"G4", "G5"}:
+                g3 = self.current(s, actor, case_id, "G3", {"sample_validation"})
+                if not g3:
+                    raise DomainError("GATE_BLOCKED", "Current G3 sample investigation approval required", 409)
+                dependencies["g3_id"] = g3.id
+                if gate == "G4":
+                    spec = self.latest_spec(s, actor, case_id, g2.subject_id)
+                    if artifact.data["spec_hash"] != spec.sha256:
+                        raise DomainError("STALE_SUBJECT", "Sample refers to an older Spec", 409)
+                    for fact in artifact.data["facts"]:
+                        from launchcase.infrastructure.models import SourceDocument
+                        src = self.service.get_row(s, SourceDocument, actor, fact["source_id"])
+                        self.service.objects.get(src.sha256)
+                        if src.rights_status != "authorized" or src.is_synthetic or src.sha256 != fact["source_sha256"]:
+                            raise DomainError("GATE_BLOCKED", "Sample evidence rights/integrity invalid", 409)
+                else:
+                    g4 = self.current(s, actor, case_id, "G4", {"verify_sample"})
+                    if not g4:
+                        raise DomainError("GATE_BLOCKED", "G4 real sample validation required", 409)
+                    dependencies["g4_id"] = g4.id
         return dependencies, digest(dependencies)
 
     def current(self, s, actor, case_id, gate, decisions):
@@ -96,14 +125,20 @@ class ProductService:
             subject = self.service.get_row(s, Artifact, actor, request.subject_id)
             if gate == "G1" and request.decision == "accept" and subject.data["data_sufficiency_status"] == "needs_more_data":
                 raise DomainError("GATE_BLOCKED", "Insufficient traceable evidence", 409)
-            if gate in {"G3", "G4", "G5"}:
-                raise DomainError("GATE_BLOCKED", "Required feasibility/sample/truth validation is not available", 409)
+            if gate == "G4" and request.decision == "verify_sample" and (case.is_synthetic or actor.synthetic or subject.data["is_synthetic"]):
+                raise DomainError("GATE_BLOCKED", "Synthetic approvals cannot validate real samples", 409)
+            if gate == "G5" and request.decision == "internal_handoff":
+                from launchcase.application.launchpacks import LaunchPackService
+                LaunchPackService(self.service).outward_prerequisites(s, actor, case, subject)
             row = GateDecision(tenant_id=actor.tenant_id, case_id=case_id, gate=gate, decision=request.decision,
                 subject_type=request.subject_type, subject_id=request.subject_id, subject_hash=sha, dependencies=dependencies,
                 actor_id=actor.id, role=actor.role, reason=request.reason, is_synthetic=actor.synthetic or case.is_synthetic)
             s.add(row)
             s.flush()
-            stage = "concepting" if gate == "G1" and request.decision == "accept" else "feasibility_review" if gate == "G2" and request.decision == "select" else "opportunity_review" if gate == "G1" else "concept_review"
+            stage = {("G1", "accept"): "concepting", ("G2", "select"): "feasibility_review",
+                     ("G3", "sample_validation"): "awaiting_sample_validation", ("G4", "verify_sample"): "launch_draft",
+                     ("G5", "internal_handoff"): "ready_for_internal_handoff"}.get((gate, request.decision),
+                     {"G1": "opportunity_review", "G2": "concept_review", "G3": "feasibility_review", "G4": "awaiting_sample_validation", "G5": "launch_draft"}[gate])
             self.service.bump(case, stage, "needs_review")
             self.service.event(s, actor, case_id, "gate.decided", {"gate": gate, "decision_id": row.id, "subject_hash": sha})
             return row_dict(row)

@@ -2,16 +2,21 @@ from fastapi import BackgroundTasks, Depends, FastAPI, Header, Query, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 
+from launchcase.application.feasibility import FeasibilityService
+from launchcase.application.launchpacks import LaunchPackService
 from launchcase.application.products import ProductService
 from launchcase.application.services import CaseService
 from launchcase.application.visuals import VisualService
 from launchcase.domain.common import DomainError
 from launchcase.domain.contracts import (
     BriefRevision,
+    CostRequest,
     GateRequest,
     ProductBrief,
     ReviewRequest,
     RightsChange,
+    RuleAttestation,
+    SampleAttestation,
     SourceImport,
     SpecRevision,
     VisualRequest,
@@ -101,7 +106,7 @@ def create_app(settings=None):
     for suffix, model in [("sources", SourceDocument), ("evidence", Evidence), ("activity", AuditEvent), ("brief-versions", BriefVersion)]:
         app.add_api_route(f"/api/v1/product-cases/{{case_id}}/{suffix}", listing(model), methods=["GET"])
     app.add_api_route("/api/v1/product-cases/{case_id}/market-snapshots", listing(Artifact, "MarketSnapshot"), methods=["GET"])
-    for suffix, kind in [("insights", "Insight"), ("opportunities", "Opportunity"), ("research", "Research"), ("concepts", "Concept"), ("spec-versions", "ProductSpec")]:
+    for suffix, kind in [("insights", "Insight"), ("opportunities", "Opportunity"), ("research", "Research"), ("concepts", "Concept"), ("spec-versions", "ProductSpec"), ("feasibility", "Feasibility"), ("launch-packs", "LaunchPack"), ("truth", "ProductTruthSnapshot"), ("rules", "RuleSnapshot")]:
         app.add_api_route(f"/api/v1/product-cases/{{case_id}}/{suffix}", listing(Artifact, kind), methods=["GET"])
 
     @app.post("/api/v1/product-cases/{case_id}/runs/{kind}", status_code=202)
@@ -181,6 +186,32 @@ def create_app(settings=None):
     @app.post("/api/v1/visual-assets/{asset_id}/review")
     def visual_review(asset_id: str, body: ReviewRequest, actor=Depends(identity), request_key=Depends(key)):
         return VisualService(service).review(actor, asset_id, body, request_key)
+
+    @app.post("/api/v1/product-cases/{case_id}/feasibility")
+    def cost(case_id: str, body: CostRequest, actor=Depends(identity), request_key=Depends(key)):
+        return FeasibilityService(service).evaluate(actor, case_id, body, request_key)
+
+    @app.post("/api/v1/product-cases/{case_id}/sample-attestations")
+    def sample(case_id: str, body: SampleAttestation, actor=Depends(identity), request_key=Depends(key)):
+        return FeasibilityService(service).sample(actor, case_id, body, request_key)
+
+    @app.post("/api/v1/product-cases/{case_id}/rule-attestations")
+    def rule(case_id: str, body: RuleAttestation, actor=Depends(identity), request_key=Depends(key)):
+        return FeasibilityService(service).rule(actor, case_id, body, request_key)
+
+    @app.post("/api/v1/product-cases/{case_id}/launch-packs")
+    def pack_create(case_id: str, actor=Depends(identity), request_key=Depends(key)):
+        return LaunchPackService(service).build(actor, case_id, request_key)
+
+    @app.get("/api/v1/launch-packs/{pack_id}")
+    def pack_read(pack_id: str, actor=Depends(identity)):
+        return LaunchPackService(service).read(actor, pack_id)
+
+    @app.get("/api/v1/launch-packs/{pack_id}/export")
+    def pack_export(pack_id: str, format: str = "json", actor=Depends(identity)):
+        data = LaunchPackService(service).export(actor, pack_id, format)
+        mime = {"json": "application/json", "md": "text/markdown", "zip": "application/zip"}.get(format, "application/octet-stream")
+        return Response(data, media_type=mime, headers={"Content-Disposition": f'attachment; filename="internal-draft.{format}"', "X-Content-Type-Options": "nosniff"})
 
     return app
 

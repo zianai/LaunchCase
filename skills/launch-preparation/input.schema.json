@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": [
+    "spec_id",
+    "feasibility_id",
+    "decisions",
+    "sources"
+  ]
+}

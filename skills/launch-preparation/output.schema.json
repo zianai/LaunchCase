@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "required": [
+    "publishable",
+    "status",
+    "manifest",
+    "blockers"
+  ],
+  "properties": {
+    "publishable": {
+      "const": false
+    },
+    "status": {
+      "const": "draft"
+    }
+  }
+}
